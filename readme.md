@@ -1,6 +1,10 @@
 
 # ウマウマクルーズ
 
+![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss1.png)
+
+![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss2.png)
+
 ## ■はじめに
 このソフトは、自動でDMM版ウマ娘のウィンドウから、イベント選択肢の効果を知るために作られました
 
@@ -13,6 +17,8 @@
 
 予め、コンボボックスから育成ウマ娘を選択していないと、育成ウマ娘のイベントが表示されないので注意  
 [能力詳細]ボタンから[ウマ娘詳細]を表示すると、自動的に育成ウマ娘が選択されます
+
+![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png)
 
 ## ■アンインストールの方法
 レジストリも何もいじっていないので、UmaUmaCruiseフォルダ事削除すれば終わりです
