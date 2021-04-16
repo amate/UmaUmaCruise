@@ -1,0 +1,1557 @@
+{
+  "Race": {
+    "G1": [
+      {
+        "Name": "天皇賞（秋）",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級10月後半",
+          "シニア級10月後半"
+        ]
+      },
+      {
+        "Name": "エリザベス女王杯",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "チャンピオンズC",
+        "Location": "中京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級12月前半",
+          "シニア級12月前半"
+        ]
+      },
+      {
+        "Name": "マイルチャンピオンシップ",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月後半",
+          "シニア級11月後半"
+        ]
+      },
+      {
+        "Name": "ジャパンカップ",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級11月後半",
+          "シニア級11月後半"
+        ]
+      },
+      {
+        "Name": "JBCレディスクラシック",
+        "Location": "大井",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "JBCスプリント",
+        "Location": "大井",
+        "GroundCondition": "ダート",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "JBCクラシック",
+        "Location": "大井",
+        "GroundCondition": "ダート",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "有馬記念",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "2500m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月後半",
+          "シニア級12月後半"
+        ]
+      },
+      {
+        "Name": "東京大賞典",
+        "Location": "大井",
+        "GroundCondition": "ダート",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月後半",
+          "シニア級12月後半"
+        ]
+      },
+      {
+        "Name": "宝塚記念",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級6月後半",
+          "シニア級6月後半"
+        ]
+      },
+      {
+        "Name": "安田記念",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級6月前半",
+          "シニア級6月前半"
+        ]
+      },
+      {
+        "Name": "スプリンターズステークス",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月後半",
+          "シニア級9月後半"
+        ]
+      },
+      {
+        "Name": "菊花賞",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "3000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級10月後半"
+        ]
+      },
+      {
+        "Name": "秋華賞",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級10月後半"
+        ]
+      },
+      {
+        "Name": "皐月賞",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級4月前半"
+        ]
+      },
+      {
+        "Name": "桜花賞",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級4月前半"
+        ]
+      },
+      {
+        "Name": "日本ダービー",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級5月後半"
+        ]
+      },
+      {
+        "Name": "オークス",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級5月後半"
+        ]
+      },
+      {
+        "Name": "NHKマイルカップ",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級5月前半"
+        ]
+      },
+      {
+        "Name": "ジャパンダートダービー",
+        "Location": "大井",
+        "GroundCondition": "ダート",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級7月前半"
+        ]
+      },
+      {
+        "Name": "フェブラリーステークス",
+        "Location": "東京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級2月後半"
+        ]
+      },
+      {
+        "Name": "高松宮記念",
+        "Location": "中京",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級3月後半"
+        ]
+      },
+      {
+        "Name": "大阪杯",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級3月後半"
+        ]
+      },
+      {
+        "Name": "天皇賞（春）",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "3200m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級4月後半"
+        ]
+      },
+      {
+        "Name": "ヴィクトリアマイル",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級5月前半"
+        ]
+      },
+      {
+        "Name": "ホープフルステークス",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級12月後半"
+        ]
+      },
+      {
+        "Name": "阪神ジュベナイルフィリーズ",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級12月前半"
+        ]
+      },
+      {
+        "Name": "朝日杯フューチュリティステークス",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級12月前半"
+        ]
+      },
+      {
+        "Name": "帝王賞",
+        "Location": "大井",
+        "GroundCondition": "ダート",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級6月後半"
+        ]
+      }
+    ],
+    "G2": [
+      {
+        "Name": "富士S",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級10月後半",
+          "シニア級10月後半"
+        ]
+      },
+      {
+        "Name": "スワンS",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級10月後半",
+          "シニア級10月後半"
+        ]
+      },
+      {
+        "Name": "毎日王冠",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級10月前半",
+          "シニア級10月前半"
+        ]
+      },
+      {
+        "Name": "京都大賞典",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級10月前半",
+          "シニア級10月前半"
+        ]
+      },
+      {
+        "Name": "府中ウマ娘S",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級10月前半",
+          "シニア級10月前半"
+        ]
+      },
+      {
+        "Name": "アルゼンチン共和国杯",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "2500m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "阪神C",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月後半",
+          "シニア級12月後半"
+        ]
+      },
+      {
+        "Name": "ステイヤーズS",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "3600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月前半",
+          "シニア級12月前半"
+        ]
+      },
+      {
+        "Name": "札幌記念",
+        "Location": "札幌",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級8月後半",
+          "シニア級8月後半"
+        ]
+      },
+      {
+        "Name": "オールカマー",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月後半",
+          "シニア級9月後半"
+        ]
+      },
+      {
+        "Name": "セントウルステークス",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月前半",
+          "シニア級9月前半"
+        ]
+      },
+      {
+        "Name": "スプリングステークス",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級3月後半"
+        ]
+      },
+      {
+        "Name": "チューリップ賞",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級3月前半"
+        ]
+      },
+      {
+        "Name": "弥生賞",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級3月前半"
+        ]
+      },
+      {
+        "Name": "フィリーズレビュー",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級3月前半"
+        ]
+      },
+      {
+        "Name": "フローラS",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級4月後半"
+        ]
+      },
+      {
+        "Name": "青葉賞",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級4月後半"
+        ]
+      },
+      {
+        "Name": "ニュージーランドT",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級4月前半"
+        ]
+      },
+      {
+        "Name": "京都新聞杯",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級5月前半"
+        ]
+      },
+      {
+        "Name": "神戸新聞杯",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月後半"
+        ]
+      },
+      {
+        "Name": "セントライト記念",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月後半"
+        ]
+      },
+      {
+        "Name": "ローズS",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月前半"
+        ]
+      },
+      {
+        "Name": "東海S",
+        "Location": "中京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級1月後半"
+        ]
+      },
+      {
+        "Name": "アメリカJCC",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級1月後半"
+        ]
+      },
+      {
+        "Name": "日経新春杯",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2400m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級1月前半"
+        ]
+      },
+      {
+        "Name": "中山記念",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級2月後半"
+        ]
+      },
+      {
+        "Name": "京都記念",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2200m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級2月前半"
+        ]
+      },
+      {
+        "Name": "日経賞",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "2500m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級3月後半"
+        ]
+      },
+      {
+        "Name": "阪神大賞典",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "3000m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級3月後半"
+        ]
+      },
+      {
+        "Name": "金鯱賞",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級3月前半"
+        ]
+      },
+      {
+        "Name": "マイラーズC",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級4月後半"
+        ]
+      },
+      {
+        "Name": "阪神ウマ娘S",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級4月前半"
+        ]
+      },
+      {
+        "Name": "目黒記念",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "2500m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級5月後半"
+        ]
+      },
+      {
+        "Name": "京王杯スプリングC",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級5月前半"
+        ]
+      },
+      {
+        "Name": "デイリー杯ジュニアS",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級11月前半"
+        ]
+      },
+      {
+        "Name": "京王杯ジュニアS",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "左",
+        "Date": [
+          "ジュニア級11月前半"
+        ]
+      }
+    ],
+    "G3": [
+      {
+        "Name": "中日新聞杯",
+        "Location": "中京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級12月前半",
+          "シニア級12月前半"
+        ]
+      },
+      {
+        "Name": "小倉記念",
+        "Location": "小倉",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級8月前半",
+          "シニア級8月前半"
+        ]
+      },
+      {
+        "Name": "京阪杯",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月後半",
+          "シニア級11月後半"
+        ]
+      },
+      {
+        "Name": "みやこS",
+        "Location": "京都",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "武蔵野S",
+        "Location": "東京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "福島記念",
+        "Location": "福島",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級11月前半",
+          "シニア級11月前半"
+        ]
+      },
+      {
+        "Name": "チャレンジC",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月前半",
+          "シニア級12月前半"
+        ]
+      },
+      {
+        "Name": "カペラS",
+        "Location": "中山",
+        "GroundCondition": "ダート",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月前半",
+          "シニア級12月前半"
+        ]
+      },
+      {
+        "Name": "ターコイズS",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級12月前半",
+          "シニア級12月前半"
+        ]
+      },
+      {
+        "Name": "函館スプリントステークス",
+        "Location": "函館",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級6月後半",
+          "シニア級6月後半"
+        ]
+      },
+      {
+        "Name": "鳴尾記念",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級6月前半",
+          "シニア級6月前半"
+        ]
+      },
+      {
+        "Name": "マーメイドS",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級6月前半",
+          "シニア級6月前半"
+        ]
+      },
+      {
+        "Name": "エプソムカップ",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級6月前半",
+          "シニア級6月前半"
+        ]
+      },
+      {
+        "Name": "クイーンS",
+        "Location": "札幌",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級7月後半",
+          "シニア級7月後半"
+        ]
+      },
+      {
+        "Name": "中京記念",
+        "Location": "中京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級7月後半",
+          "シニア級7月後半"
+        ]
+      },
+      {
+        "Name": "アイビスSD",
+        "Location": "新潟",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1000m",
+        "Rotation": "直線",
+        "Date": [
+          "クラシック級7月後半",
+          "シニア級7月後半"
+        ]
+      },
+      {
+        "Name": "CBC賞",
+        "Location": "中京",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級7月前半",
+          "シニア級7月前半"
+        ]
+      },
+      {
+        "Name": "プロキオンS",
+        "Location": "中京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級7月前半",
+          "シニア級7月前半"
+        ]
+      },
+      {
+        "Name": "七夕賞",
+        "Location": "福島",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級7月前半",
+          "シニア級7月前半"
+        ]
+      },
+      {
+        "Name": "函館記念",
+        "Location": "函館",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級7月前半",
+          "シニア級7月前半"
+        ]
+      },
+      {
+        "Name": "北九州記念",
+        "Location": "小倉",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級8月後半",
+          "シニア級8月後半"
+        ]
+      },
+      {
+        "Name": "キーンランドC",
+        "Location": "札幌",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級8月後半",
+          "シニア級8月後半"
+        ]
+      },
+      {
+        "Name": "エルムS",
+        "Location": "札幌",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1700m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級8月前半",
+          "シニア級8月前半"
+        ]
+      },
+      {
+        "Name": "関屋記念",
+        "Location": "新潟",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級8月前半",
+          "シニア級8月前半"
+        ]
+      },
+      {
+        "Name": "シリウスS",
+        "Location": "阪神",
+        "GroundCondition": "ダート",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月後半",
+          "シニア級9月後半"
+        ]
+      },
+      {
+        "Name": "京成杯オータムH",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月前半",
+          "シニア級9月前半"
+        ]
+      },
+      {
+        "Name": "新潟記念",
+        "Location": "新潟",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級9月前半",
+          "シニア級9月前半"
+        ]
+      },
+      {
+        "Name": "シンザン記念",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級1月前半"
+        ]
+      },
+      {
+        "Name": "フェアリーS",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級1月前半"
+        ]
+      },
+      {
+        "Name": "京成杯",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級1月前半"
+        ]
+      },
+      {
+        "Name": "共同通信杯",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級2月前半"
+        ]
+      },
+      {
+        "Name": "きさらぎ賞",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級2月前半"
+        ]
+      },
+      {
+        "Name": "クイーンC",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級2月前半"
+        ]
+      },
+      {
+        "Name": "ファルコンS",
+        "Location": "中京",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級3月後半"
+        ]
+      },
+      {
+        "Name": "フラワーC",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級3月後半"
+        ]
+      },
+      {
+        "Name": "毎日杯",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級3月後半"
+        ]
+      },
+      {
+        "Name": "アーリントンC",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級4月前半"
+        ]
+      },
+      {
+        "Name": "葵ステークス",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級5月後半"
+        ]
+      },
+      {
+        "Name": "ユニコーンステークス",
+        "Location": "東京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級6月後半"
+        ]
+      },
+      {
+        "Name": "ラジオNIKKEI賞",
+        "Location": "福島",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級7月前半"
+        ]
+      },
+      {
+        "Name": "レパードS",
+        "Location": "新潟",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "クラシック級8月前半"
+        ]
+      },
+      {
+        "Name": "紫苑S",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "クラシック級9月前半"
+        ]
+      },
+      {
+        "Name": "根岸ステークス",
+        "Location": "東京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級1月後半"
+        ]
+      },
+      {
+        "Name": "シルクロードS",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級1月後半"
+        ]
+      },
+      {
+        "Name": "京都金杯",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級1月前半"
+        ]
+      },
+      {
+        "Name": "中山金杯",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級1月前半"
+        ]
+      },
+      {
+        "Name": "愛知杯",
+        "Location": "中京",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級1月前半"
+        ]
+      },
+      {
+        "Name": "京都ウマ娘S",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級2月後半"
+        ]
+      },
+      {
+        "Name": "ダイヤモンドS",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "長距離",
+        "Distance": "3400m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級2月後半"
+        ]
+      },
+      {
+        "Name": "小倉大賞典",
+        "Location": "小倉",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級2月後半"
+        ]
+      },
+      {
+        "Name": "阪急杯",
+        "Location": "阪神",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級2月後半"
+        ]
+      },
+      {
+        "Name": "東京新聞杯",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級2月前半"
+        ]
+      },
+      {
+        "Name": "マーチS",
+        "Location": "中山",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級3月後半"
+        ]
+      },
+      {
+        "Name": "オーシャンS",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級3月前半"
+        ]
+      },
+      {
+        "Name": "中山ウマ娘S",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級3月前半"
+        ]
+      },
+      {
+        "Name": "福島ウマ娘S",
+        "Location": "福島",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級4月後半"
+        ]
+      },
+      {
+        "Name": "ダービー卿CT",
+        "Location": "中山",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級4月前半"
+        ]
+      },
+      {
+        "Name": "アンタレスS",
+        "Location": "阪神",
+        "GroundCondition": "ダート",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級4月前半"
+        ]
+      },
+      {
+        "Name": "平安S",
+        "Location": "京都",
+        "GroundCondition": "ダート",
+        "DistanceClass": "中距離",
+        "Distance": "1900m",
+        "Rotation": "右",
+        "Date": [
+          "シニア級5月後半"
+        ]
+      },
+      {
+        "Name": "新潟大賞典",
+        "Location": "新潟",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級5月前半"
+        ]
+      },
+      {
+        "Name": "アルテミスS",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "ジュニア級10月後半"
+        ]
+      },
+      {
+        "Name": "サウジアラビアロイヤルカップ",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "ジュニア級10月前半"
+        ]
+      },
+      {
+        "Name": "東京スポ杯ジュニアS",
+        "Location": "東京",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "左",
+        "Date": [
+          "ジュニア級11月後半"
+        ]
+      },
+      {
+        "Name": "京都ジュニアS",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "中距離",
+        "Distance": "2000m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級11月後半"
+        ]
+      },
+      {
+        "Name": "ファンタジーS",
+        "Location": "京都",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級11月前半"
+        ]
+      },
+      {
+        "Name": "函館ジュニアS",
+        "Location": "函館",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級7月後半"
+        ]
+      },
+      {
+        "Name": "新潟ジュニアS",
+        "Location": "新潟",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1600m",
+        "Rotation": "左",
+        "Date": [
+          "ジュニア級8月後半"
+        ]
+      },
+      {
+        "Name": "札幌ジュニアS",
+        "Location": "札幌",
+        "GroundCondition": "芝",
+        "DistanceClass": "マイル",
+        "Distance": "1800m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級9月前半"
+        ]
+      },
+      {
+        "Name": "小倉ジュニアS",
+        "Location": "小倉",
+        "GroundCondition": "芝",
+        "DistanceClass": "短距離",
+        "Distance": "1200m",
+        "Rotation": "右",
+        "Date": [
+          "ジュニア級9月前半"
+        ]
+      },
+      {
+        "Name": "根岸S",
+        "Location": "東京",
+        "GroundCondition": "ダート",
+        "DistanceClass": "短距離",
+        "Distance": "1400m",
+        "Rotation": "左",
+        "Date": [
+          "シニア級1月後半"
+        ]
+      }
+    ]
+  }
+}
