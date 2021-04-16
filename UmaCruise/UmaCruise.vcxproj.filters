@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{33c45e34-7c75-421d-95ab-59b9577b3ab1}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e6999c77-c1b1-4564-888a-7970a2b57b58}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{4a40d9aa-394c-4c68-bb9f-c6bc6f378a47}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{ebdcf7bf-0779-47a0-ad08-93e8d788a97c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\simstring">
+      <UniqueIdentifier>{5a997501-3f93-4e95-a50b-6cd81ee1b5cc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UmaCruise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainDlg.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\CodeConvert.cpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\CommonUtility.cpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\GdiplusUtil.cpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Logger.cpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewWindow.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UmaEventLibrary.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UmaTextRecognizer.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RaceDateLibrary.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TesseractWrapper.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\CodeConvert.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\CommonUtility.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\GdiplusUtil.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\json.hpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Logger.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\ptreeWrapper.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\timer.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\DropHandler.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="UmaEventLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\cdbpp.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\measure.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\memory_mapped_file.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\memory_mapped_file_posix.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\memory_mapped_file_win32.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\ngram.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="simstring\simstring.h">
+      <Filter>Header Files\simstring</Filter>
+    </ClInclude>
+    <ClInclude Include="UmaTextRecognizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RaceDateLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TesseractWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UmaCruise.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\UmaCruise.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

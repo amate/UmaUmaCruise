@@ -1,0 +1,8 @@
+// ヒント ファイルは、Visual Studio IDE が Visual C++ 識別子を解釈するのに役立ちます
+// 関数およびマクロの名前などです。
+// 詳細については次を参照してください https://go.microsoft.com/fwlink/?linkid=865984
+#define BEGIN_MSG_MAP_EX(theClass) @<
+#define END_MSG_MAP() @>
+#define BEGIN_DDX_MAP(theClass)	@<
+#define END_DDX_MAP()	@>
+#define DECLARE_WND_CLASS_EX(WndClassName, style, bkgnd) static ATL::CWndClassInfo& GetWndClassInfo() { static ATL::CWndClassInfo wc = { { sizeof(WNDCLASSEX), style, StartWindowProc, 0, 0, NULL, NULL, NULL, (HBRUSH)(bkgnd + 1), NULL, WndClassName, NULL }, NULL, NULL, IDC_ARROW, TRUE, 0, _T("") }; return wc; }
