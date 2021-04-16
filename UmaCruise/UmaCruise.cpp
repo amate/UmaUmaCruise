@@ -8,6 +8,7 @@
 #include "Utility\CommonUtility.h"
 #include "Utility\Logger.h"
 #include "Utility\GdiplusUtil.h"
+#include "Utility\WinHTTPWrapper.h"
 #include "TesseractWrapper.h"
 
 CAppModule _Module;
@@ -52,11 +53,13 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
 	GdiplusInit();
 	TesseractWrapper::TesseractInit();
+	WinHTTPWrapper::InitWinHTTP();
 
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 
-	GdiplusTerm();
+	WinHTTPWrapper::TermWinHTTP();
 	TesseractWrapper::TesseractTerm();
+	GdiplusTerm();
 
 	_Module.Term();
 	::CoUninitialize();

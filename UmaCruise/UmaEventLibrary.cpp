@@ -59,58 +59,105 @@ boost::optional<std::wstring> retrieve(
 
 bool UmaEventLibrary::LoadUmaMusumeLibrary()
 {
+	m_charaEventList.clear();
+	m_supportEventList.clear();
 	try {
-		std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibrary.json").string());
-		ATLASSERT(ifs);
-		if (!ifs) {
-			throw std::runtime_error("UmaMusumeLibrary.json の読み込みに失敗");
-		}
-		json jsonLibrary;
-		ifs >> jsonLibrary;
+		auto funcAddjsonEventToUmaEvent = [](const json& jsonEventList, CharaEvent& charaEvent) {
+			for (const json& jsonEvent : jsonEventList) {
+				auto eventElm = *jsonEvent.items().begin();
+				std::wstring eventName = UTF16fromUTF8(eventElm.key());
 
-		auto funcLoad = [](const json& jsonLibrary, const std::string& keyName, CharaEventList& charaEventList) {
-			for (const auto& propElm : jsonLibrary[keyName].items()) {
-				std::wstring prop = UTF16fromUTF8(propElm.key());	// hosi or rare
+				charaEvent.umaEventList.emplace_back();
+				UmaEvent& umaEvent = charaEvent.umaEventList.back();
+				umaEvent.eventName = eventName;
 
-				for (const auto& umaElm : propElm.value().items()) {
-					std::wstring umaName = UTF16fromUTF8(umaElm.key());
+				int i = 0;
+				for (const json& jsonOption : eventElm.value()) {
+					std::wstring option = UTF16fromUTF8(jsonOption["Option"]);
+					std::wstring effect = UTF16fromUTF8(jsonOption["Effect"]);
+					boost::algorithm::replace_all(effect, L"\n", L"\r\n");
 
-					charaEventList.emplace_back(std::make_unique<CharaEvent>());
-					CharaEvent& charaEvent = *charaEventList.back();
-					charaEvent.name = umaName;
-					charaEvent.property = prop;
-
-					for (const json& jsonEvent : umaElm.value()["Event"]) {
-						auto eventElm = *jsonEvent.items().begin();
-						std::wstring eventName = UTF16fromUTF8(eventElm.key());
-
-						charaEvent.umaEventList.emplace_back();
-						UmaEvent& umaEvent = charaEvent.umaEventList.back();
-						umaEvent.eventName = eventName;
-
-						int i = 0;
-						for (const json& jsonOption : eventElm.value()) {
-							std::wstring option = UTF16fromUTF8(jsonOption["Option"]);
-							std::wstring effect = UTF16fromUTF8(jsonOption["Effect"]);
-							boost::algorithm::replace_all(effect, L"\n", L"\r\n");
-
-							if (kMaxOption <= i) {
-								ATLASSERT(FALSE);
-								throw std::runtime_error("選択肢の数が kMaxOption を超えます");
-							}
-
-							umaEvent.eventOptions[i].option = option;
-							umaEvent.eventOptions[i].effect = effect;
-							++i;
-						}
-
+					if (kMaxOption <= i) {
+						ATLASSERT(FALSE);
+						throw std::runtime_error("選択肢の数が kMaxOption を超えます");
 					}
+
+					umaEvent.eventOptions[i].option = option;
+					umaEvent.eventOptions[i].effect = effect;
+					++i;
 				}
 			}
 		};
-		funcLoad(jsonLibrary, "Charactor", m_charaEventList);
-		funcLoad(jsonLibrary, "Support", m_supportEventList);
 
+		{	// UmaMusumeLibrary.json
+			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibrary.json").string());
+			ATLASSERT(ifs);
+			if (!ifs) {
+				throw std::runtime_error("UmaMusumeLibrary.json の読み込みに失敗");
+			}
+			json jsonLibrary;
+			ifs >> jsonLibrary;
+
+			auto funcLoad = [=](const json& jsonLibrary, const std::string& keyName, CharaEventList& charaEventList) {
+				for (const auto& propElm : jsonLibrary[keyName].items()) {
+					std::wstring prop = UTF16fromUTF8(propElm.key());	// hosi or rare
+
+					for (const auto& umaElm : propElm.value().items()) {
+						std::wstring umaName = UTF16fromUTF8(umaElm.key());
+
+						charaEventList.emplace_back(std::make_unique<CharaEvent>());
+						CharaEvent& charaEvent = *charaEventList.back();
+						charaEvent.name = umaName;
+						charaEvent.property = prop;
+
+						funcAddjsonEventToUmaEvent(umaElm.value()["Event"], charaEvent);
+					}
+				}
+			};
+			funcLoad(jsonLibrary, "Charactor", m_charaEventList);
+			funcLoad(jsonLibrary, "Support", m_supportEventList);
+		}
+		{	// UmaMusumeLibraryRevision.json
+			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").string());
+			ATLASSERT(ifs);
+			if (!ifs) {
+				throw std::runtime_error("UmaMusumeLibraryRevision.json の読み込みに失敗");
+			}
+			json jsonRevisionLibrary;
+			ifs >> jsonRevisionLibrary;
+			for (const auto& keyVal : jsonRevisionLibrary.items()) {
+				std::wstring sourceName = UTF16fromUTF8(keyVal.key());
+				CharaEvent charaEvent;
+				charaEvent.name = sourceName;
+				funcAddjsonEventToUmaEvent(keyVal.value()["Event"], charaEvent);
+
+				auto funcUpdateEventOptions = [](const CharaEvent& charaEvent, CharaEventList& charaEventList) -> bool {
+					for (auto& anotherCharaEventList : charaEventList) {
+						if (anotherCharaEventList->name == charaEvent.name) {	// ソース一致
+							bool update = false;
+							for (auto& anotherUmaEventList : anotherCharaEventList->umaEventList) {
+								for (const auto& umaEventList : charaEvent.umaEventList) {
+									if (anotherUmaEventList.eventName == umaEventList.eventName) {	// イベント名一致
+										anotherUmaEventList.eventOptions = umaEventList.eventOptions;	// 選択肢を上書き
+										update = true;
+									}
+								}
+							}
+							ATLASSERT(update);
+							return true;
+						}
+					}
+					return false;
+				};
+				// chara/supportEventList へ上書きする
+				if (!funcUpdateEventOptions(charaEvent, m_charaEventList)) {
+					if (!funcUpdateEventOptions(charaEvent, m_supportEventList)) {
+						// イベントリストにイベント名がなかったので、m_supportEventListへ追加しておく
+						m_supportEventList.emplace_back(std::make_unique<CharaEvent>(charaEvent));
+					}
+				}
+			}
+		}
 		{
 			std::ifstream ifs((GetExeDirectory() / L"Common.json").string());
 			ATLASSERT(ifs);
@@ -181,6 +228,7 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 
 void UmaEventLibrary::_DBUmaNameInit()
 {
+	m_dbUmaNameReader = std::make_unique<simstring::reader>();
 	auto dbFolder = GetExeDirectory() / L"simstringDB" / L"UmaName";
 	auto dbPath = dbFolder / L"umaName_unicode.db";
 
@@ -206,16 +254,15 @@ void UmaEventLibrary::_DBUmaNameInit()
 	dbw.close();
 
 	// Open the database for reading.
-	m_dbUmaNameReader = std::make_unique<simstring::reader>();
 	m_dbUmaNameReader->open(dbPath.string());
 }
 
 void UmaEventLibrary::_DBInit()
 {
-	auto dbFolder = GetExeDirectory() / L"simstringDB" / L"Event";
-	auto dbPath = dbFolder / L"event_unicode.db";
 	if (!m_simstringDBInit) {
 		m_dbReader = std::make_unique<simstring::reader>();
+		auto dbFolder = GetExeDirectory() / L"simstringDB" / L"Event";
+		auto dbPath = dbFolder / L"event_unicode.db";
 
 		// DBフォルダ内を消して初期化
 		if (boost::filesystem::is_directory(dbFolder)) {
@@ -249,6 +296,7 @@ void UmaEventLibrary::_DBInit()
 				dbw.insert(umaEvent.eventName);
 			}
 		}
+		
 		dbw.close();
 
 		// Open the database for reading.

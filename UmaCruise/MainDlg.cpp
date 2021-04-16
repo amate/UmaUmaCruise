@@ -52,6 +52,37 @@ bool	SaveWindowScreenShot(HWND hWndTarget, const std::wstring& filePath)
 }
 
 
+bool SaveScreenShot(const std::wstring& device, const std::wstring& filePath)
+{
+	auto adbPath = GetExeDirectory() / L"platform-tools" / L"adb.exe";
+	std::wstring targetDevice;
+	if (device.length() > 0) {
+		targetDevice = L" -s " + device;
+	}
+
+	std::wstring deviceSSPath = L"/sdcard/screen.png";
+	//if (g_targetDevice.substr(0, 3) != L"127") {
+	//	deviceSSPath = L"/sdcard/Screenshots/screen.png";
+	//}
+
+	std::wstring commandLine = targetDevice + L" shell screencap -p " + deviceSSPath;
+	DWORD ret = StartProcess(adbPath, commandLine);
+	if (ret != 0) {
+		return false;
+		//throw std::runtime_error("shell screencap failed");
+	}
+
+	std::wstring ssPath = filePath;
+	commandLine = std::wstring(targetDevice + L" pull " + deviceSSPath + L" \"") + ssPath + L"\"";
+	ret = StartProcess(adbPath, commandLine);
+	if (ret != 0) {
+		return false;
+		//throw std::runtime_error("pull /sdcard/screen.png failed");
+	}
+	return true;
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -368,11 +399,14 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 	if (!fs::is_directory(ssFolderPath)) {
 		fs::create_directory(ssFolderPath);
 	}
-	auto ssPath = ssFolderPath / L"screenshot.png";
-	//if (GetKeyState(VK_CONTROL) < 0) {
-		ssPath = GetExeDirectory() / (L"screenshot_" + std::to_wstring(std::time(nullptr)) + L".png");
-	//}
+
+	auto ssPath = ssFolderPath / (L"screenshot_" + std::to_wstring(std::time(nullptr)) + L".png");
+	if (GetKeyState(VK_CONTROL) < 0) {
+		ssPath = ssFolderPath / L"screenshot.png";
+	}
+	// 
 	bool success = SaveWindowScreenShot(hwndTarget, ssPath.wstring());
+	//bool success = SaveScreenShot(L"", ssPath.wstring());
 	ATLASSERT(success);
 
 	m_previewWindow.UpdateImage(ssPath.wstring());
@@ -490,6 +524,98 @@ void CMainDlg::OnEventNameChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 // イベント選択肢の効果を修正する
 void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
+	UmaEventLibrary::UmaEvent umaEvent;
+	DoDataExchange(DDX_SAVE, IDC_EDIT_EVENTNAME);
+	DoDataExchange(DDX_SAVE, IDC_EDIT_EVENT_SOURCE);
+	if (m_eventName.IsEmpty()) {
+		MessageBox(L"イベント名 が空です。");
+		return;
+	}
+	if (m_eventSource.IsEmpty()) {
+		MessageBox(L"ソース が空です");
+		return;
+	}
+	
+	json jsonOptionsArray = json::array();
+	const size_t count = umaEvent.eventOptions.size();
+	for (size_t i = 0; i < count; ++i) {
+		const int IDC_OPTION = IDC_EDIT_OPTION1 + i;
+		const int IDC_EFFECT = IDC_EDIT_EFFECT1 + i;
+		CString text;
+		GetDlgItem(IDC_OPTION).GetWindowText(text);
+		umaEvent.eventOptions[i].option = (LPCWSTR)text;
+		GetDlgItem(IDC_EFFECT).GetWindowText(text);
+		umaEvent.eventOptions[i].effect = (LPCWSTR)text;
+
+		if (umaEvent.eventOptions[i].option.empty()) {
+			break;
+		}
+		json jsonOption = {
+			{"Option", UTF8fromUTF16(umaEvent.eventOptions[i].option) },
+			{"Effect", UTF8fromUTF16(umaEvent.eventOptions[i].effect) }
+		};
+		jsonOptionsArray.push_back(jsonOption);
+	}
+	if (jsonOptionsArray.empty()) {
+		MessageBox(L"選択肢 が空です");
+		return;
+	}
+
+	CString msg;
+	msg.Format(L"イベント名 [%s] の選択肢を修正します。\nよろしいですか？", (LPCWSTR)m_eventName);
+	if (MessageBox(msg, L"確認", MB_YESNO) == IDNO) {
+		return;
+	}
+	{
+		std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").string());
+		ATLASSERT(ifs);
+		if (!ifs) {
+			MessageBox(L"UmaMusumeLibraryRevision.json の読み込みに失敗");
+			return;
+		}
+		json jsonRevisionLibrary;
+		ifs >> jsonRevisionLibrary;
+		ifs.close();
+
+		std::string source = UTF8fromUTF16((LPCWSTR)m_eventSource);
+		std::string eventName = UTF8fromUTF16((LPCWSTR)m_eventName);
+
+		bool update = false;
+		json& jsonEventList = jsonRevisionLibrary[source]["Event"];
+		if (jsonEventList.is_array()) {
+			// 更新
+			for (json& jsonEvent : jsonEventList) {
+				auto eventElm = *jsonEvent.items().begin();
+				std::string orgEventName = eventElm.key();
+				if (orgEventName == eventName) {
+					json& jsonOptions = eventElm.value();
+					jsonOptions.clear();		// 選択肢を一旦全部消す
+					jsonOptions = jsonOptionsArray;
+					update = true;
+					break;
+				}
+			}
+		}
+		// 追加
+		if (!update) {
+			json jsonEvent;
+			jsonEvent[eventName] = jsonOptionsArray;
+			jsonEventList.push_back(jsonEvent);
+		}
+
+		// 保存
+		std::ofstream ofs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").string());
+		ATLASSERT(ofs);
+		if (!ofs) {
+			MessageBox(L"UmaMusumeLibraryRevision.json のオープンに失敗");
+			return;
+		}
+		ofs << jsonRevisionLibrary.dump(2);
+		ofs.close();
+
+		m_umaEventLibrary.LoadUmaMusumeLibrary();
+		MessageBox(L"修正完了", L"成功");
+	}
 }
 
 void CMainDlg::OnShowRaceAfterCurrentDate(UINT uNotifyCode, int nID, CWindow wndCtl)

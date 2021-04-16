@@ -60,11 +60,14 @@
     <ClCompile Include="TesseractWrapper.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utility\WinHTTPWrapper.cpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClCompile>
     <ClCompile Include="ConfigDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Config.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\WinHTTPWrapper.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

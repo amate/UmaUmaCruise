@@ -29,6 +29,8 @@
 #define IDC_COMBO_REFRESHINTERVAL       1036
 #define IDC_BUTTON3                     1037
 #define IDC_BUTTON_REVISION             1037
+#define IDC_BUTTON1                     1038
+#define IDC_BUTTON_CHECK_UMALIBRARY     1038
 #define IDC_EDIT_OPTION1                1500
 #define IDC_EDIT_OPTION2                1501
 #define IDC_EDIT_OPTION3                1502
@@ -54,7 +56,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        207
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1038
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

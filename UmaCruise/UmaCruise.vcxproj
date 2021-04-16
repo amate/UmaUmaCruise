@@ -222,6 +222,7 @@
     <ClCompile Include="Utility\CommonUtility.cpp" />
     <ClCompile Include="Utility\GdiplusUtil.cpp" />
     <ClCompile Include="Utility\Logger.cpp" />
+    <ClCompile Include="Utility\WinHTTPWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Utility\Logger.h" />
     <ClInclude Include="Utility\ptreeWrapper.h" />
     <ClInclude Include="Utility\timer.h" />
+    <ClInclude Include="Utility\WinHTTPWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UmaCruise.rc" />

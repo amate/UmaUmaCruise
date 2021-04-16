@@ -27,6 +27,7 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 
+/enc_temp_folder/
 /EventGetAnalyzeBuild/
 /#Release/
 /.vs/

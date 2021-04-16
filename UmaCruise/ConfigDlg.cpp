@@ -1,7 +1,13 @@
 #include "stdafx.h"
 #include "ConfigDlg.h"
 
+#include "Utility\json.hpp"
+#include "Utility\CommonUtility.h"
+#include "Utility\Logger.h"
+#include "Utility\WinHTTPWrapper.h"
 
+using json = nlohmann::json;
+using namespace WinHTTPWrapper;
 
 ConfigDlg::ConfigDlg(Config& config) : m_config(config)
 {
@@ -46,4 +52,56 @@ LRESULT ConfigDlg::OnCancel(WORD, WORD, HWND, BOOL&)
 {
 	EndDialog(IDCANCEL);
 	return 0;
+}
+
+void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	try {
+		std::ifstream ifs((GetExeDirectory() / "Common.json").string());
+		ATLASSERT(ifs);
+		if (!ifs) {
+			MessageBox(L"Common.json の読み込みに失敗");
+			return;
+		}
+		json jsonCommon;
+		ifs >> jsonCommon;
+		std::string libraryURL = jsonCommon["Common"]["UmaMusumeLibraryURL"];
+
+		// ファイルサイズ取得
+		auto umaLibraryPath = GetExeDirectory() / L"UmaMusumeLibrary.json";
+		const DWORD umaLibraryFileSize = static_cast<DWORD>(fs::file_size(umaLibraryPath));
+
+		CUrl	downloadUrl(libraryURL.c_str());
+		auto hConnect = HttpConnect(downloadUrl);
+		auto hRequest = HttpOpenRequest(downloadUrl, hConnect, L"HEAD");
+		if (HttpSendRequestAndReceiveResponse(hRequest)) {
+			if (HttpQueryStatusCode(hRequest) == 200) {
+				DWORD contentLength = 0;
+				HttpQueryHeaders(hRequest, WINHTTP_QUERY_CONTENT_LENGTH, contentLength);
+				if (umaLibraryFileSize != contentLength) {	// ファイルサイズ比較
+					// 更新する
+					auto optDLData = HttpDownloadData(downloadUrl.GetURL());
+					if (optDLData) {
+						SaveFile(umaLibraryPath, optDLData.get());
+						MessageBox(L"更新しました\n更新後の UmaMusumeLibrary.json は再起動後に有効になります", L"成功");
+						GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
+						return;
+					} else {
+						MessageBox(L"ダウンロードに失敗しました...", L"エラー");
+						return;
+					}
+				} else {
+					MessageBox(L"更新は必要ありません");
+					GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
+					return;
+				}
+			}
+		}
+	} catch (boost::exception& e) {
+		std::string expText = boost::diagnostic_information(e);
+		ERROR_LOG << L"OnCheckUmaLibrary exception: " << (LPCWSTR)CA2W(expText.c_str());
+		int a = 0;
+	}
+	ATLASSERT(FALSE);
+	MessageBox(L"何かしらのエラーが発生しました...", L"エラー");
 }

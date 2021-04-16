@@ -1,5 +1,7 @@
 {
     "Common": {
+        "UmaMusumeLibraryURL":"https://raw.githubusercontent.com/amate/UmaUmaCruise/master/UmaLibrary/UmaMusumeLibrary.json",
+
         "TargetWindow": {
             "WindowName": "umamusume",
             "ClassName":  "UnityWndClass"
