@@ -200,6 +200,9 @@
       <TypeLibraryName>$(IntDir)/UmaCruise.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
+    <PostBuildEvent>
+      <Command>copy "$(targetPath)" "$(SolutionDir)#Release\UmaUmaCruise\UmaUmaCruise.exe"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />

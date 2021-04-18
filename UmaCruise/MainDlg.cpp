@@ -239,18 +239,22 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 					m_previewWindow.ShowWindow(SW_NORMAL);
 				}
 			}
-
 			// Race
 			m_showRaceAfterCurrentDate = jsonSetting["MainDlg"].value<bool>("ShowRaceAfterCurrentDate", m_showRaceAfterCurrentDate);
 			const int32_t state = jsonSetting["MainDlg"].value<int32_t>("RaceMatchState", -1);
 			_SetRaceMatchState(state);
-			_UpdateRaceList(L"");
+		} else {
+			_SetRaceMatchState(-1);
 		}
+		_UpdateRaceList(L"");
+
 		DoDataExchange(DDX_LOAD);
 
 	} catch (std::exception& e)
 	{
 		ATLTRACE(L"%s\n", (LPCWSTR)(CA2W(e.what())));
+		ERROR_LOG << L"LoadConfig failed: " << (LPCWSTR)(CA2W(e.what()));
+		ATLASSERT(FALSE);
 	}
 	ChangeWindowTitle(L"init suscess!");
 
@@ -430,11 +434,8 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 				bool success = m_umaTextRecoginzer.TextRecognizer(ssImage.get());
 				if (success) {
 					bool updateImage = true;
-					if (m_config.stopUpdatePreviewOnTraining) {
-						const std::wstring& currentMenu = m_umaTextRecoginzer.GetCurrentMenu();
-						if (currentMenu != L"育成" && currentMenu != L"トレーニング") {
-							updateImage = false;
-						}
+					if (m_config.stopUpdatePreviewOnTraining && !m_umaTextRecoginzer.IsTrainingMenu()) {
+						updateImage = false;
 					}
 					if (updateImage) {
 						m_previewWindow.UpdateImage(ssImage.release());
@@ -518,6 +519,9 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 void CMainDlg::OnEventNameChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	DoDataExchange(DDX_SAVE, IDC_EDIT_EVENTNAME);
+	if (m_eventName.IsEmpty()) {
+		return;
+	}
 	std::vector<std::wstring> eventNames;
 	eventNames.emplace_back((LPCWSTR)m_eventName);
 	auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(eventNames);

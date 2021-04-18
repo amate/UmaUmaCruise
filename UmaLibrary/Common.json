@@ -29,6 +29,12 @@
             },
             "EventNameIconBounds": {
                 "x": 96, "y": 197, "width": 30, "height": 30
+            },
+            "CurrentMenuBounds" : {
+                "x": 19, "y": 2, "width": 114, "height": 31
+            },
+            "BackButtonBounds" : {
+                "x": 43, "y": 993, "width": 58, "height": 32
             }
         },
 

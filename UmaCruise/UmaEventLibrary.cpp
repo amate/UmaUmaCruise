@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UmaEventLibrary.h"
 
+#include <regex>
 #include <boost\algorithm\string\trim.hpp>
 #include <boost\algorithm\string\replace.hpp>
 #include <boost\filesystem.hpp>
@@ -55,6 +56,12 @@ boost::optional<std::wstring> retrieve(
 	return retrieve(dbr, ambiguousEventNames, measure, threshold, kMinThreshold);
 }
 
+void	EventNameNormalize(std::wstring& eventName)
+{
+	std::wregex rx(L"（進行度[^\\）]+）");
+	eventName = std::regex_replace(eventName, rx, L"");
+}
+
 // ==============================================================
 
 bool UmaEventLibrary::LoadUmaMusumeLibrary()
@@ -66,6 +73,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			for (const json& jsonEvent : jsonEventList) {
 				auto eventElm = *jsonEvent.items().begin();
 				std::wstring eventName = UTF16fromUTF8(eventElm.key());
+				EventNameNormalize(eventName);
 
 				charaEvent.umaEventList.emplace_back();
 				UmaEvent& umaEvent = charaEvent.umaEventList.back();

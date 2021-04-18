@@ -278,7 +278,18 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 		cv::Mat thresImage;
 		cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+#if 0
+		// 4倍
+		cv::Mat resizedImage;
+		constexpr double scale = 4.0;
+		cv::resize(cutImage2, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
 
+		cv::Mat grayImage2;
+		cv::cvtColor(resizedImage, grayImage2, cv::COLOR_RGB2GRAY);
+
+		cv::Mat thresImage2;
+		cv::threshold(grayImage2, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);
+#endif
 		auto funcPushBackImageText = [this](cv::Mat& image) {
 			std::wstring text = TextFromImage(image);
 
@@ -299,6 +310,8 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		funcPushBackImageText(grayImage);
 		funcPushBackImageText(invertedImage);
 		funcPushBackImageText(thresImage);
+		//funcPushBackImageText(resizedImage);
+		//funcPushBackImageText(thresImage2);
 	}
 	{	// 現在の日付
 		CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentTurnBounds]);
@@ -328,12 +341,22 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 		//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
 	}
-	{	// 現在メニュー[育成/トレーニング]
+	{	// 現在メニュー[トレーニング]
+		m_bTrainingMenu = false;
+
 		CRect rcCurrentMenuBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentMenuBounds]);
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcCurrentMenuBounds));
 
 		std::wstring cutImageText = TextFromImage(cutImage);
-		m_currentMenu = cutImageText;
+		if (cutImageText == L"トレーニング") {
+			CRect rcBackButtonBounds = _AdjustBounds(srcImage, m_testBounds[kBackButtonBounds]);
+			cv::Mat cutImage2(srcImage, cvRectFromCRect(rcBackButtonBounds));
+
+			std::wstring cutImage2Text = TextFromImage(cutImage2);
+			if (cutImage2Text == L"戻る") {
+				m_bTrainingMenu = true;
+			}
+		}
 	}
 
 	return true;

@@ -28,8 +28,8 @@ public:
 	const std::vector<std::wstring>&	GetEventName() const {
 		return m_eventName;
 	}
-	const std::wstring& GetCurrentMenu() const {
-		return m_currentMenu;
+	bool	IsTrainingMenu() const {
+		return m_bTrainingMenu;
 	}
 
 private:
@@ -44,10 +44,10 @@ private:
 	CSize	m_baseClientSize;
 
 	enum TestBounds {
-		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kCurrentMenuBounds, kMaxCount
+		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kCurrentMenuBounds, kBackButtonBounds, kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"CurrentMenuBounds", 
+		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"CurrentMenuBounds", L"BackButtonBounds", 
 	};
 	std::array<CRect, kMaxCount>	m_testBounds;
 	int		m_kCurrentTurnThreshold = 111;
@@ -56,6 +56,6 @@ private:
 	std::vector<std::wstring>	m_umaMusumeName;
 	std::vector<std::wstring>	m_currentTurn;
 	std::vector<std::wstring>	m_eventName;
-	std::wstring				m_currentMenu;
+	bool						m_bTrainingMenu = false;
 };
 
