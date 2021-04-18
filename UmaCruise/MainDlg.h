@@ -116,7 +116,7 @@ public:
 		
 		// Race List
 		COMMAND_ID_HANDLER_EX(IDC_CHECK_SHOWRACE_AFTERCURRENTDATE, OnShowRaceAfterCurrentDate)
-		COMMAND_RANGE_HANDLER_EX(IDC_CHECK_G1, IDC_CHECK_LINE, OnRaceFilterChanged)
+		COMMAND_RANGE_HANDLER_EX(IDC_CHECK_G1, IDC_CHECK_LOCATION_OOI, OnRaceFilterChanged)
 		
 		CHAIN_MSG_MAP(CCustomDraw<CMainDlg>)
 	END_MSG_MAP()
@@ -196,6 +196,8 @@ private:
 	bool	m_right = true;
 	bool	m_left = true;
 	bool	m_line = true;
+
+	bool	m_raceLocation[RaceDateLibrary::Race::Location::kMaxLocationCount];
 
 	CListViewCtrl	m_raceListView;
 

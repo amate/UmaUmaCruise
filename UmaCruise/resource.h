@@ -29,8 +29,10 @@
 #define IDC_COMBO_REFRESHINTERVAL       1036
 #define IDC_BUTTON3                     1037
 #define IDC_BUTTON_REVISION             1037
+#define IDC_CHECK_STOPUPDATEPREVIEWONTRAINING 1037
 #define IDC_BUTTON1                     1038
 #define IDC_BUTTON_CHECK_UMALIBRARY     1038
+#define IDC_STATIC_ABOUT                1039
 #define IDC_EDIT_OPTION1                1500
 #define IDC_EDIT_OPTION2                1501
 #define IDC_EDIT_OPTION3                1502
@@ -46,9 +48,20 @@
 #define IDC_CHECK_LONG                  1624
 #define IDC_CHECK_GRASS                 1625
 #define IDC_CHECK_DART                  1626
-#define IDC_CHECK_RIGHT                 1628
-#define IDC_CHECK_LEFT                  1629
-#define IDC_CHECK_LINE                  1630
+#define IDC_CHECK_RIGHT                 1627
+#define IDC_CHECK_LEFT                  1628
+#define IDC_CHECK_LINE                  1629
+#define IDC_CHECK_LOCATION_SAPPORO      1630
+#define IDC_CHECK_LOCATION_HAKODATE     1631
+#define IDC_CHECK_LOCATION_HUKUSIMA     1632
+#define IDC_CHECK_LOCATION_NIIGATA      1633
+#define IDC_CHECK_LOCATION_TOKYO        1634
+#define IDC_CHECK_LOCATION_NAKAYAMA     1635
+#define IDC_CHECK_LOCATION_TYUUKYOU     1636
+#define IDC_CHECK_LOCATION_KYOTO        1637
+#define IDC_CHECK_LOCATION_HANSHIN      1638
+#define IDC_CHECK_LOCATION_OGURA        1639
+#define IDC_CHECK_LOCATION_OOI          1640
 
 // Next default values for new objects
 // 
@@ -56,7 +69,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        207
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1039
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

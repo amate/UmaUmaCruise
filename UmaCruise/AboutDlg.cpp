@@ -41,6 +41,7 @@ CRect AdjustBounds(const cv::Mat& srcImage, CRect bounds)
 }
 
 CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds);	// UmaTextRecognizer.cpp
+cv::Rect	cvRectFromCRect(const CRect& rcBounds);
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +52,12 @@ CAboutDlg::CAboutDlg(PreviewWindow& previewWindow): m_previewWindow(previewWindo
 LRESULT CAboutDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 {
 	CenterWindow(GetParent());
+
+	CWindow wndStaticAbout = GetDlgItem(IDC_STATIC_ABOUT);
+	CString about;
+	wndStaticAbout.GetWindowText(about);
+	about.Replace(L"{version}", kAppVersion);
+	wndStaticAbout.SetWindowText(about);
 
 	m_cmbTestBounds = GetDlgItem(IDC_COMBO_TESTBOUNDS);
 	m_editResult = GetDlgItem(IDC_EDIT_RESULT);
@@ -121,13 +128,14 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 	auto srcImage = GdiPlusBitmapToOpenCvMat(&bmp);//cv::imread(ssPath.string());
 	rcBounds = AdjustBounds(srcImage, rcBounds);
 
-	cv::Rect rcTrim(rcBounds.left, rcBounds.top, rcBounds.Width(), rcBounds.Height());
-	cv::Mat cutImage(srcImage, rcTrim);
+	cv::Mat cutImage(srcImage, cvRectFromCRect(rcBounds));
 
-	if (index == kEventNameBounds) {
+	if (index == kEventNameBounds /*|| index == kCurrentMenuBounds*/) {
 		if (!bNoAdjustBounds) {	// テキストを正確囲む
 			CRect rcAdjustTextBounds = GetTextBounds(cutImage, rcBounds);
 			rcBounds = rcAdjustTextBounds;
+
+			cutImage = cv::Mat(srcImage, cvRectFromCRect(rcBounds));
 		}
 	}
 	m_previewWindow.ChangeDragdropBounds(rcBounds);

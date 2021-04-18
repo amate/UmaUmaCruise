@@ -178,7 +178,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	}
 
 	// Race List
-	m_raceListView.SetExtendedListViewStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
+	m_raceListView.SetExtendedListViewStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
 
 	auto funcAddColumn = [this](LPCWSTR columnName, int nItem, int columnWidth) {
 		LVCOLUMN lvc = {};
@@ -190,10 +190,11 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		m_raceListView.InsertColumn(nItem, &lvc);
 	};
 	funcAddColumn(L"開催日", 0, 120);
-	funcAddColumn(L"レース名", 1, 140);
+	funcAddColumn(L"レース名", 1, 144);
 	funcAddColumn(L"距離", 2, 110);
 	funcAddColumn(L"コース", 3, 42);
 	funcAddColumn(L"方向", 4, 38);
+	funcAddColumn(L"レース場", 5, 58);
 
 	try {
 		{
@@ -428,7 +429,16 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 				auto ssImage = m_umaTextRecoginzer.ScreenShot();
 				bool success = m_umaTextRecoginzer.TextRecognizer(ssImage.get());
 				if (success) {
-					m_previewWindow.UpdateImage(ssImage.release());
+					bool updateImage = true;
+					if (m_config.stopUpdatePreviewOnTraining) {
+						const std::wstring& currentMenu = m_umaTextRecoginzer.GetCurrentMenu();
+						if (currentMenu != L"育成" && currentMenu != L"トレーニング") {
+							updateImage = false;
+						}
+					}
+					if (updateImage) {
+						m_previewWindow.UpdateImage(ssImage.release());
+					}
 
 					// 育成ウマ娘名
 					std::wstring prevUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
@@ -659,6 +669,14 @@ int32_t CMainDlg::_GetRaceMatchState()
 	state |= m_right ? RaceDateLibrary::Race::Rotation::kRight : 0;
 	state |= m_left ? RaceDateLibrary::Race::Rotation::kLeft : 0;
 	state |= m_line ? RaceDateLibrary::Race::Rotation::kLine : 0;
+
+	for (int i = 0; i < RaceDateLibrary::Race::Location::kMaxLocationCount; ++i) {
+		const int checkBoxID = IDC_CHECK_LOCATION_SAPPORO + i;
+		bool check = CButton(GetDlgItem(checkBoxID)).GetCheck() == BST_CHECKED;
+		if (check) {
+			state |= RaceDateLibrary::Race::Location::kSapporo << i;
+		}
+	}
 	return state;
 }
 
@@ -680,7 +698,13 @@ void CMainDlg::_SetRaceMatchState(int32_t state)
 	m_left = (state & RaceDateLibrary::Race::kLeft) != 0;
 	m_line = (state & RaceDateLibrary::Race::kLine) != 0;
 
-
+	for (int i = 0; i < RaceDateLibrary::Race::Location::kMaxLocationCount; ++i) {
+		RaceDateLibrary::Race::Location location = 
+			static_cast<RaceDateLibrary::Race::Location>(RaceDateLibrary::Race::Location::kSapporo << i);
+		bool check = (state & location) != 0;
+		const int checkBoxID = IDC_CHECK_LOCATION_SAPPORO + i;
+		CButton(GetDlgItem(checkBoxID)).SetCheck(check);
+	}
 }
 
 void CMainDlg::_UpdateRaceList(const std::wstring& turn)
@@ -688,6 +712,7 @@ void CMainDlg::_UpdateRaceList(const std::wstring& turn)
 	m_currentTurn = turn.c_str();
 	DoDataExchange(DDX_LOAD, IDC_EDIT_NOWDATE);
 
+	m_raceListView.SetRedraw(FALSE);
 	m_raceListView.DeleteAllItems();
 
 	size_t i = 0;
@@ -718,9 +743,11 @@ void CMainDlg::_UpdateRaceList(const std::wstring& turn)
 				m_raceListView.SetItemText(pos, 2, race->DistanceText().c_str());
 				m_raceListView.SetItemText(pos, 3, race->GroundConditionText().c_str());
 				m_raceListView.SetItemText(pos, 4, race->RotationText().c_str());
+				m_raceListView.SetItemText(pos, 5, race->location.c_str());
 				m_raceListView.SetItemData(pos, alter);
 
 			}
 		}
 	}
+	m_raceListView.SetRedraw(TRUE);
 }

@@ -24,6 +24,7 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	m_cmbRefreshInterval.SetCurSel(m_config.refreshInterval - 1);
 
 	m_autoStart = m_config.autoStart;
+	m_stopUpdatePreviewOnTraining = m_config.stopUpdatePreviewOnTraining;
 	DoDataExchange(DDX_LOAD);
 
 	return 0;
@@ -41,6 +42,7 @@ LRESULT ConfigDlg::OnOK(WORD, WORD wID, HWND, BOOL&)
 		m_config.refreshInterval = index + 1;
 	}
 	m_config.autoStart = m_autoStart;
+	m_config.stopUpdatePreviewOnTraining = m_stopUpdatePreviewOnTraining;
 
 	m_config.SaveConfig();
 

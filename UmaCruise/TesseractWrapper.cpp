@@ -45,7 +45,7 @@ namespace TesseractWrapper {
 				ERROR_LOG << L"Could not initialize tesseract.";
 				return L"";
 			}
-			ptess->SetPageSegMode(tesseract::PSM_SINGLE_LINE);
+			ptess->SetPageSegMode(tesseract::/*PSM_SINGLE_BLOCK*/PSM_SINGLE_LINE);
 		}
 		lock.unlock();
 

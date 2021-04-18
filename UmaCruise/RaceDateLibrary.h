@@ -18,7 +18,6 @@ public:
 		};
 		Grade			grade;				// G1・G2・G3
 		std::wstring	name;				// レース名
-		std::wstring	location;			// 場所
 		enum GroundCondition {
 			kGrass = 1 << 3,
 			kDart  = 1 << 4,
@@ -38,6 +37,22 @@ public:
 			kLine	= 1 << 11,
 		};
 		Rotation		rotation;			// 右・左回り・直線
+		std::wstring	location;			// 場所
+		enum Location {
+			kSapporo	= 1 << 12,
+			kHakodate	= 1 << 13,
+			kHukusima	= 1 << 14,
+			kNiigata	= 1 << 15,
+			kTokyo		= 1 << 16,
+			kNakayama	= 1 << 17,
+			kTyuukyou	= 1 << 18,
+			kKyoto		= 1 << 19,
+			kHanshin	= 1 << 20,
+			kOgura		= 1 << 21,
+			kOoi		= 1 << 22,
+			kMaxLocationCount = 11,
+		};
+		Location		locationFlag;
 		std::vector<std::wstring>	date;	// 開催日
 
 		// =============================

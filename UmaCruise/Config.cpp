@@ -26,6 +26,7 @@ bool Config::LoadConfig()
 
 	refreshInterval = jsonSetting["Config"].value("RefreshInterval", refreshInterval);
 	autoStart = jsonSetting["Config"].value("AutoStart", autoStart);
+	stopUpdatePreviewOnTraining = jsonSetting["Config"].value("StopUpdatePreviewOnTraining", stopUpdatePreviewOnTraining);
 
     return true;
 }
@@ -44,6 +45,7 @@ void Config::SaveConfig()
 
 	jsonSetting["Config"]["RefreshInterval"] = refreshInterval;
 	jsonSetting["Config"]["AutoStart"] = autoStart;
+	jsonSetting["Config"]["StopUpdatePreviewOnTraining"] = stopUpdatePreviewOnTraining;
 
 	std::ofstream ofs((GetExeDirectory() / "setting.json").string());
 	ofs << jsonSetting;

@@ -28,6 +28,9 @@ public:
 	const std::vector<std::wstring>&	GetEventName() const {
 		return m_eventName;
 	}
+	const std::wstring& GetCurrentMenu() const {
+		return m_currentMenu;
+	}
 
 private:
 	// BaseClientSize を基準として、imageのサイズに合うように boundsを調節する
@@ -41,10 +44,10 @@ private:
 	CSize	m_baseClientSize;
 
 	enum TestBounds {
-		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kMaxCount
+		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kCurrentMenuBounds, kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds",
+		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"CurrentMenuBounds", 
 	};
 	std::array<CRect, kMaxCount>	m_testBounds;
 	int		m_kCurrentTurnThreshold = 111;
@@ -53,5 +56,6 @@ private:
 	std::vector<std::wstring>	m_umaMusumeName;
 	std::vector<std::wstring>	m_currentTurn;
 	std::vector<std::wstring>	m_eventName;
+	std::wstring				m_currentMenu;
 };
 

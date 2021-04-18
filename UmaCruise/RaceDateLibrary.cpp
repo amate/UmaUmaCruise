@@ -88,6 +88,20 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 			throw std::runtime_error("convert failed");
 		}
 	};
+	auto funcLocationFlagFromText = [](const std::string& text) -> Race::Location {
+		LPCSTR locationNames[Race::Location::kMaxLocationCount] = {
+			u8"札幌", u8"函館", u8"福島", u8"新潟", u8"東京", u8"中山", u8"中京", u8"京都", u8"阪神", u8"小倉", u8"大井"
+		};
+		for (int i = 0; i < Race::Location::kMaxLocationCount; ++i) {
+			LPCSTR location = locationNames[i];
+			if (text == location) {
+				Race::Location loc = static_cast<Race::Location>(Race::kSapporo << i);
+				return loc;
+			}
+		}
+		ATLASSERT(FALSE);
+		throw std::runtime_error("convert failed");
+	};
 
 	for (const auto& items : jsonLibrary["Race"].items()) {
 		std::string gradeText = items.key();
@@ -97,6 +111,7 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 			raceData->grade = grade;
 			raceData->name = UTF16fromUTF8(jsonRace["Name"].get<std::string>());
 			raceData->location = UTF16fromUTF8(jsonRace["Location"].get<std::string>());
+			raceData->locationFlag = funcLocationFlagFromText(jsonRace["Location"].get<std::string>());
 			raceData->groundCondition = funcGroundConditionFromText(jsonRace["GroundCondition"].get<std::string>());
 			raceData->distanceClass = funcDistanceClassFromText(jsonRace["DistanceClass"].get<std::string>());
 			raceData->distance = UTF16fromUTF8(jsonRace["Distance"].get<std::string>());
@@ -290,5 +305,6 @@ bool RaceDateLibrary::Race::IsMatchState(int32_t state)
 	match &= (state & groundCondition) != 0;
 	match &= (state & distanceClass) != 0;
 	match &= (state & rotation) != 0;
+	match &= (state & locationFlag) != 0;
 	return match;
 }

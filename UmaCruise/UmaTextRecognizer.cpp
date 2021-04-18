@@ -56,7 +56,7 @@ cv::Mat GdiPlusBitmapToOpenCvMat(Gdiplus::Bitmap* bmp)
 	return mat;
 }
 
-cv::Rect	cvRectFromCRect(const CRect rcBounds)
+cv::Rect	cvRectFromCRect(const CRect& rcBounds)
 {
 	return cv::Rect(rcBounds.left, rcBounds.top, rcBounds.Width(), rcBounds.Height());
 }
@@ -327,6 +327,13 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		m_currentTurn.emplace_back(thresImageText);
 
 		//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
+	}
+	{	// 現在メニュー[育成/トレーニング]
+		CRect rcCurrentMenuBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentMenuBounds]);
+		cv::Mat cutImage(srcImage, cvRectFromCRect(rcCurrentMenuBounds));
+
+		std::wstring cutImageText = TextFromImage(cutImage);
+		m_currentMenu = cutImageText;
 	}
 
 	return true;

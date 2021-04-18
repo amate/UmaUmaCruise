@@ -17,6 +17,7 @@ public:
 	BEGIN_DDX_MAP(ConfigDlg)
 		DDX_CONTROL_HANDLE(IDC_COMBO_REFRESHINTERVAL, m_cmbRefreshInterval)
 		DDX_CHECK(IDC_CHECK_AUTOSTART, m_autoStart)
+		DDX_CHECK(IDC_CHECK_STOPUPDATEPREVIEWONTRAINING, m_stopUpdatePreviewOnTraining)
 	END_DDX_MAP()
 
 	BEGIN_MSG_MAP_EX(ConfigDlg)
@@ -43,5 +44,6 @@ private:
 
 	CComboBox	m_cmbRefreshInterval;
 	bool	m_autoStart = false;
+	bool	m_stopUpdatePreviewOnTraining = false;
 
 };
