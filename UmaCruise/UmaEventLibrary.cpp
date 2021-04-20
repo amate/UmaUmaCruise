@@ -98,7 +98,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 		};
 
 		{	// UmaMusumeLibrary.json
-			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibrary.json").string());
+			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibrary.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				throw std::runtime_error("UmaMusumeLibrary.json ÇÃì«Ç›çûÇ›Ç…é∏îs");
@@ -126,7 +126,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			funcLoad(jsonLibrary, "Support", m_supportEventList);
 		}
 		{	// UmaMusumeLibraryRevision.json
-			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").string());
+			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				throw std::runtime_error("UmaMusumeLibraryRevision.json ÇÃì«Ç›çûÇ›Ç…é∏îs");
@@ -167,7 +167,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			}
 		}
 		{
-			std::ifstream ifs((GetExeDirectory() / L"Common.json").string());
+			std::ifstream ifs((GetExeDirectory() / L"Common.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				throw std::runtime_error("Common.json ÇÃì«Ç›çûÇ›Ç…é∏îs");

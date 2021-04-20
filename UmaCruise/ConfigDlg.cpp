@@ -59,7 +59,7 @@ LRESULT ConfigDlg::OnCancel(WORD, WORD, HWND, BOOL&)
 void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	try {
-		std::ifstream ifs((GetExeDirectory() / "Common.json").string());
+		std::ifstream ifs((GetExeDirectory() / "Common.json").wstring());
 		ATLASSERT(ifs);
 		if (!ifs) {
 			MessageBox(L"Common.json ÇÃì«Ç›çûÇ›Ç…é∏îs");

@@ -8,7 +8,7 @@ class PreviewWindow;
 
 #include "resource.h"
 
-constexpr LPCWSTR	kAppVersion = L"v1.1";
+constexpr LPCWSTR	kAppVersion = L"v1.2";
 
 class CAboutDlg : public CDialogImpl<CAboutDlg>
 {
@@ -21,6 +21,7 @@ public:
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		COMMAND_ID_HANDLER(IDOK, OnCloseCmd)
 		COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+		NOTIFY_HANDLER(IDC_SYSLINK1, NM_CLICK, OnLinkClick)
 		COMMAND_ID_HANDLER(IDC_BUTTON_OCR, OnOCR)
 	END_MSG_MAP()
 
@@ -31,6 +32,8 @@ public:
 
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+
+	LRESULT OnLinkClick(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/);
 
 	LRESULT OnOCR(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 

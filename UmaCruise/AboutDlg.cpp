@@ -79,6 +79,12 @@ LRESULT CAboutDlg::OnCloseCmd(WORD, WORD wID, HWND, BOOL&)
 	return 0;
 }
 
+LRESULT CAboutDlg::OnLinkClick(int, LPNMHDR, BOOL&)
+{
+	::ShellExecute(NULL, nullptr, L"https://gamerch.com/umamusume/", nullptr, nullptr, SW_NORMAL);
+	return LRESULT();
+}
+
 LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 {
 	const int index = m_cmbTestBounds.GetCurSel();
@@ -93,7 +99,7 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 	CRect rcBounds;
 	if (index != kDirect) {
 		json jsonCommon;
-		std::ifstream ifs((GetExeDirectory() / L"Common.json").string());
+		std::ifstream ifs((GetExeDirectory() / L"Common.json").wstring());
 		ATLASSERT(ifs);
 		if (!ifs) {
 			return 0;

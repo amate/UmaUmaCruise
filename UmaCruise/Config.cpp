@@ -13,7 +13,7 @@ using namespace CodeConvert;
 
 bool Config::LoadConfig()
 {
-	std::ifstream fs((GetExeDirectory() / "setting.json").string());
+	std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
 	if (!fs) {
 		return true;
 	}
@@ -33,7 +33,7 @@ bool Config::LoadConfig()
 
 void Config::SaveConfig()
 {
-	std::ifstream ifs((GetExeDirectory() / "setting.json").string());
+	std::ifstream ifs((GetExeDirectory() / "setting.json").wstring());
 	if (!ifs) {
 		ATLASSERT(FALSE);
 		ERROR_LOG << L"SaveConfig failed: !fs";
@@ -47,6 +47,6 @@ void Config::SaveConfig()
 	jsonSetting["Config"]["AutoStart"] = autoStart;
 	jsonSetting["Config"]["StopUpdatePreviewOnTraining"] = stopUpdatePreviewOnTraining;
 
-	std::ofstream ofs((GetExeDirectory() / "setting.json").string());
-	ofs << jsonSetting;
+	std::ofstream ofs((GetExeDirectory() / "setting.json").wstring());
+	ofs << jsonSetting.dump(4);
 }

@@ -39,8 +39,8 @@ void	SavePointSizeFromJson(json& json, const std::string& key, const CPoint& pt,
 cv::Mat GdiPlusBitmapToOpenCvMat(Gdiplus::Bitmap* bmp)
 {
 	auto format = bmp->GetPixelFormat();
-	//if (format != PixelFormat24bppRGB)
-	//	return cv::Mat();
+	if (format != PixelFormat24bppRGB)
+		return cv::Mat();
 
 	int wd = bmp->GetWidth();
 	int hgt = bmp->GetHeight();
@@ -117,7 +117,7 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 
 bool UmaTextRecognizer::LoadSetting()
 {
-	std::ifstream ifs((GetExeDirectory() / L"Common.json").string());
+	std::ifstream ifs((GetExeDirectory() / L"Common.json").wstring());
 	ATLASSERT(ifs);
 	if (!ifs) {
 		ERROR_LOG << L"LoadSetting failed";
@@ -162,11 +162,15 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 
 	CWindowDC dc(NULL/*hWndTarget*/);	// desktop
 
+	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
 	CRect rcWindow;
 	::GetWindowRect(hwndTarget, &rcWindow);
 
 	CRect rcClient;
 	::GetClientRect(hwndTarget, rcClient);
+
+	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 
 	CRect rcAdjustClient = rcWindow;
 	const int topMargin = (rcWindow.Height() - rcClient.Height() - GetSystemMetrics(SM_CXFRAME) * 2 - GetSystemMetrics(SM_CYCAPTION)) / 2;

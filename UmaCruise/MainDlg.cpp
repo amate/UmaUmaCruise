@@ -22,11 +22,15 @@ bool	SaveWindowScreenShot(HWND hWndTarget, const std::wstring& filePath)
 {
 	CWindowDC dc(NULL/*hWndTarget*/);
 
+	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
 	CRect rcWindow;
 	::GetWindowRect(hWndTarget, &rcWindow);
 
 	CRect rcClient;
 	::GetClientRect(hWndTarget, rcClient);
+
+	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 
 	CRect rcAdjustClient = rcWindow;
 	const int topMargin = (rcWindow.Height() - rcClient.Height() - GetSystemMetrics(SM_CXFRAME) * 2 - GetSystemMetrics(SM_CYCAPTION)) / 2;
@@ -135,6 +139,15 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	UIAddChildWindowContainer(m_hWnd);
 
+	// フォルダパスの文字コードチェック
+	auto exeDir = GetExeDirectory().wstring();
+	auto sjisDir = ShiftJISfromUTF16(exeDir);
+	auto sjis_utf16exeDir = UTF16fromShiftJIS(sjisDir);
+	if (exeDir != sjis_utf16exeDir) {
+		//ERROR_LOG << L"exeDir contain unicode";
+		MessageBox(L"フォルダ名にunicodeが含まれているので正常動作しません。\nもっと浅い階層(C:\\)などにフォルダを移動させてください。", L"エラー", MB_ICONERROR);
+	}
+
 	m_config.LoadConfig();
 
 	DoDataExchange(DDX_LOAD);
@@ -198,7 +211,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	try {
 		{
-			std::ifstream ifs((GetExeDirectory() / "Common.json").string());
+			std::ifstream ifs((GetExeDirectory() / "Common.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				ERROR_LOG << L"Common.json が存在しません...";
@@ -212,7 +225,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 			}
 		}
 
-		std::ifstream fs((GetExeDirectory() / "setting.json").string());
+		std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
 		if (fs) {
 			json jsonSetting;
 			fs >> jsonSetting;
@@ -313,7 +326,7 @@ LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 	DoDataExchange(DDX_SAVE);
 
 	json jsonSetting;
-	std::ifstream fs((GetExeDirectory() / "setting.json").string());
+	std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
 	if (fs) {
 		fs >> jsonSetting;
 	}
@@ -341,8 +354,8 @@ LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 	jsonSetting["MainDlg"]["ShowRaceAfterCurrentDate"] = m_showRaceAfterCurrentDate;
 	jsonSetting["MainDlg"]["RaceMatchState"] = _GetRaceMatchState();
 
-	std::ofstream ofs((GetExeDirectory() / "setting.json").string());
-	ofs << jsonSetting;
+	std::ofstream ofs((GetExeDirectory() / "setting.json").wstring());
+	ofs << jsonSetting.dump(4);
 
 	DestroyWindow();
 	::PostQuitMessage(0);
@@ -581,7 +594,7 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		return;
 	}
 	{
-		std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").string());
+		std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").wstring());
 		ATLASSERT(ifs);
 		if (!ifs) {
 			MessageBox(L"UmaMusumeLibraryRevision.json の読み込みに失敗");
@@ -618,7 +631,7 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		}
 
 		// 保存
-		std::ofstream ofs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").string());
+		std::ofstream ofs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").wstring());
 		ATLASSERT(ofs);
 		if (!ofs) {
 			MessageBox(L"UmaMusumeLibraryRevision.json のオープンに失敗");

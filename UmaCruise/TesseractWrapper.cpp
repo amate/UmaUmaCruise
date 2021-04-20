@@ -41,7 +41,8 @@ namespace TesseractWrapper {
 		auto& ptess = s_threadTess[::GetCurrentThreadId()];
 		if (!ptess) {
 			ptess.reset(new tesseract::TessBaseAPI);
-			if (ptess->Init(NULL, "jpn")) {
+			auto dbFolderPath = GetExeDirectory() / L"tessdata";
+			if (ptess->Init(dbFolderPath.string().c_str(), "jpn")) {
 				ERROR_LOG << L"Could not initialize tesseract.";
 				return L"";
 			}

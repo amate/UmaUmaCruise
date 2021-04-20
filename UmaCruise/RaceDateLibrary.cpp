@@ -32,7 +32,7 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 	ATLASSERT(m_allTurnList.size());
 	m_turnOrderedRaceList.resize(m_allTurnList.size());
 
-	std::ifstream ifs((GetExeDirectory() / L"RaceDataLibrary.json").string());
+	std::ifstream ifs((GetExeDirectory() / L"RaceDataLibrary.json").wstring());
 	ATLASSERT(ifs);
 	if (!ifs) {
 		throw std::runtime_error("RaceDataLibrary.json ÇÃì«Ç›çûÇ›Ç…é∏îs");

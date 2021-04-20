@@ -12,6 +12,15 @@
 ・Windows10 home 64bit バージョン 20H2  
 ※64bit版でしか動作しません
 
+※注意  
+UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれていると強制終了します  
+例:  
+ C:\🐎🐎Cruise\UmaUmaCruise.exe  
+->unicode(絵文字🐎が含まれるので)ダメ  
+ C:\UmaUmaCruise\UmaUmaCruise.exe  
+-> OK!  
+日本語なら多分大丈夫ですが、難しい漢字が含まれていると強制終了する可能性があります
+
 ## ■使い方
 起動した後に、[スタート]ボタンを押せば、自動的にDMM版ウマ娘のウィンドウを探し出し、イベント画面ならば選択肢の効果を表示します
 
@@ -55,6 +64,10 @@ icon
 - ICON HOIHOI  
 http://iconhoihoi.oops.jp/
 
+## ■イベント選択肢データ(UmaMusumeLibrary.json)について
+
+‎Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています
+URL:https://gamerch.com/umamusume/
 
 ## ■著作権表示
 Copyright (C) 2021 amate

@@ -55,6 +55,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	TesseractWrapper::TesseractInit();
 	WinHTTPWrapper::InitWinHTTP();
 
+	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 
 	WinHTTPWrapper::TermWinHTTP();
