@@ -66,7 +66,7 @@ http://iconhoihoi.oops.jp/
 
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
-‎Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています
+‎Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
 URL:https://gamerch.com/umamusume/
 
 ## ■著作権表示
@@ -77,6 +77,17 @@ Copyright (C) 2021 amate
 ## ■更新履歴
 
 <pre>
+
+v1.2
+・readme.mdとAbout画面にイベントデータの取得元の出典を追加
+・std::ifstreamなどにwstringを渡すようにした
+・高DPI環境で動作しないのを修正 #5
+・UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれていると警告ダイアログを表示するようにした
+->readme.mdに詳細を記載
+・ptess->Initに tessdataフォルダへのパスを渡すようにした #5
+・起動時に::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);を実行するようにした
+->高DPI対応
+・根岸ステークス/Sの表記ゆれを修正 #1
 
 v1.1
 ・[add] 設定に"プレビューウィンドウの更新をトレーニング画面で止める"オプションを追加
