@@ -99,6 +99,7 @@ v1.3
 ・現在の日付検出を cutImage と thresImage に限定(CPU負荷対策)
 ・イベント名のアイコン検出でcv::thresholdに大津二値化からkEventNameIconThreshold指定のTHRES_BINARYへ変更
 ・リリースビルドではwarning以上のログのみ出力するようにした
+・初回起動時に設定画面でOKを押しても設定が保存されないバグを修正
 
 
 v1.2

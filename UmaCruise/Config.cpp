@@ -33,15 +33,12 @@ bool Config::LoadConfig()
 
 void Config::SaveConfig()
 {
-	std::ifstream ifs((GetExeDirectory() / "setting.json").wstring());
-	if (!ifs) {
-		ATLASSERT(FALSE);
-		ERROR_LOG << L"SaveConfig failed: !fs";
-		return ;
-	}
 	json jsonSetting;
-	ifs >> jsonSetting;
-	ifs.close();
+	std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
+	if (fs) {
+		fs >> jsonSetting;
+	}
+	fs.close();
 
 	jsonSetting["Config"]["RefreshInterval"] = refreshInterval;
 	jsonSetting["Config"]["AutoStart"] = autoStart;
