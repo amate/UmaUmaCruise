@@ -32,6 +32,12 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 ## ■アンインストールの方法
 レジストリも何もいじっていないので、UmaUmaCruiseフォルダ事削除すれば終わりです
 
+## ■イベント誤認識/無認識の報告
+もしイベントの誤認識を報告される場合は、本体の"スクリーンショット"機能を使って保存される画像を送ってもらえると助かります（できれば選択肢も写っているシーンで）  
+スクリーンショットは"UmaUmaCruise/screenshot" フォルダに保存されます
+
+<img src="https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss4.png" width=50%>
+
 ## ■免責
 作者は、このソフトによって生じた如何なる損害にも、  
 修正や更新も、責任を負わないこととします。  
