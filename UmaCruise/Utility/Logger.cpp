@@ -98,7 +98,7 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(my_logger, logger_t)
 #ifdef _DEBUG
 		logging::trivial::severity >= logging::trivial::info
 #else
-		logging::trivial::severity >= logging::trivial::info //logging::trivial::warning
+		logging::trivial::severity >= /*logging::trivial::info*/ logging::trivial::warning
 #endif
 		);
 

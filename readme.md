@@ -59,6 +59,8 @@ https://www.boost.org/
 - JSON for Modern C++  
 https://github.com/nlohmann/json
 
+- WTL  
+https://sourceforge.net/projects/wtl/
 
 icon
 - ICON HOIHOI  
@@ -77,6 +79,27 @@ Copyright (C) 2021 amate
 ## ■更新履歴
 
 <pre>
+
+v1.3
+・古いCPUでスタートを押すと強制終了するバグを修正(tesseractを適切にビルドするようにした)
+・イベント検索で、選択肢のテキストからも検索を行うようにした
+・イベント名のアイコン検出で、サポートカードイベントでもアイコン検出を行っていたのを修正
+・About画面でのdebugで 左エディットに1倍、右エディットに2倍リサイズ時の結果を表示するようにした
+・About画面でのdebugで、kEventNameBoundsの時アイコン検出を行うようにした
+・About画面でのdebugで、Altキーを押しながらのOCRは2倍拡大処理をスキップするようにした
+・About画面でのdebugで、Direct指定が機能していなかったのを修正
+・About画面でのdebugで、kEventNameIconBounds時はOCRではなく、アイコン検出を行うようにした
+・～.json系をUmaLibraryフォルダへ移動させた
+・ctrlを押しながらスクリーンショットボタンを押した場合、プレビュー画像からIRを行うようにした(デバッグ用)
+・自動検出時に OnEventNameChangedが呼ばれていたのを修正(イベント名エディットボックスにフォーカスがある時のみ処理を行うようにした)
+・windows7で起動に失敗するのをおそらく修正(環境がないのでテストできない)
+・ウマ娘名検出をTestBoundsが白背景の時に限定(CPU負荷対策)
+・イベント名の検出を "4 グレースケール反転 + 2倍"に限定(CPU負荷対策)
+・イベント名の検出のために、イベント選択肢の検出を追加("5 黒背景白文字(グレー閾値) + 2倍")
+・現在の日付検出を cutImage と thresImage に限定(CPU負荷対策)
+・イベント名のアイコン検出でcv::thresholdに大津二値化からkEventNameIconThreshold指定のTHRES_BINARYへ変更
+・リリースビルドではwarning以上のログのみ出力するようにした
+
 
 v1.2
 ・readme.mdとAbout画面にイベントデータの取得元の出典を追加

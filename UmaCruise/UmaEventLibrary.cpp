@@ -98,7 +98,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 		};
 
 		{	// UmaMusumeLibrary.json
-			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibrary.json").wstring());
+			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibrary.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				throw std::runtime_error("UmaMusumeLibrary.json の読み込みに失敗");
@@ -126,7 +126,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			funcLoad(jsonLibrary, "Support", m_supportEventList);
 		}
 		{	// UmaMusumeLibraryRevision.json
-			std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").wstring());
+			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				throw std::runtime_error("UmaMusumeLibraryRevision.json の読み込みに失敗");
@@ -167,7 +167,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			}
 		}
 		{
-			std::ifstream ifs((GetExeDirectory() / L"Common.json").wstring());
+			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / L"Common.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				throw std::runtime_error("Common.json の読み込みに失敗");
@@ -214,17 +214,45 @@ void UmaEventLibrary::AnbigiousChangeIkuseImaMusume(std::vector<std::wstring> am
 }
 
 
-boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent(std::vector<std::wstring> ambiguousEventNames)
+boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent(
+	const std::vector<std::wstring>& ambiguousEventNames,
+	const std::vector<std::wstring>& ambiguousEventBottomOptions )
 {
 	_DBInit();
 
-	// whilte space を取り除く
-	for (auto& name : ambiguousEventNames) {
-		boost::algorithm::trim(name);
-		boost::algorithm::replace_all(name, L" ", L"");
+	m_lastEventSource.clear();
+
+#ifdef _DEBUG
+
+	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 0.6, m_kMinThreshold);
+	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 0.6, m_kMinThreshold);
+
+	UmaEvent event1 = optResult ? _SearchEventOptions(optResult.get()) : UmaEvent();
+	UmaEvent event2 = optOptionResult ? _SearchEventOptionsFromBottomOption(optOptionResult.get()) : UmaEvent();
+	if (event1.eventName != event2.eventName) {
+		WARN_LOG << L"AmbiguousSearchEvent イベント名不一致\n"
+			<< L"・イベント名から 1: [" << event1.eventName << L"] (" << ambiguousEventNames.front() << L")\n"
+			<< L"・下部選択肢から 2: [" << event2.eventName << L"] (" << ambiguousEventBottomOptions.front() << L")";
 	}
 
-	// Output similar strings from Unicode queries.
+	if (optOptionResult) {	// 選択肢からの検索を優先する
+		INFO_LOG << L"AmbiguousSearchEvent result: " << event2.eventName;
+		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
+	}
+	if (optResult) {
+		INFO_LOG << L"AmbiguousSearchEvent result: " << event1.eventName;
+		return _SearchEventOptions(optResult.get());
+
+	} else {
+		INFO_LOG << L"AmbiguousSearchEvent: not found";
+		return boost::none;
+	}
+#else
+
+	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 0.6, m_kMinThreshold);
+	if (optOptionResult) {	// 選択肢からの検索を優先する
+		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
+	}
 	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 0.6, m_kMinThreshold);
 	if (optResult) {
 		return _SearchEventOptions(optResult.get());
@@ -232,6 +260,7 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 	} else {
 		return boost::none;
 	}
+#endif
 }
 
 void UmaEventLibrary::_DBUmaNameInit()
@@ -268,9 +297,13 @@ void UmaEventLibrary::_DBUmaNameInit()
 void UmaEventLibrary::_DBInit()
 {
 	if (!m_simstringDBInit) {
-		m_dbReader = std::make_unique<simstring::reader>();
 		auto dbFolder = GetExeDirectory() / L"simstringDB" / L"Event";
+
+		m_dbReader = std::make_unique<simstring::reader>();
 		auto dbPath = dbFolder / L"event_unicode.db";
+
+		m_dbOptionReader = std::make_unique<simstring::reader>();
+		auto dbOptionPath = dbFolder / L"eventOption_unicode.db";
 
 		// DBフォルダ内を消して初期化
 		if (boost::filesystem::is_directory(dbFolder)) {
@@ -284,7 +317,11 @@ void UmaEventLibrary::_DBInit()
 
 		// Open a SimString database for writing (with std::wstring).
 		simstring::ngram_generator gen(2, false);	// bi-gram
+		// イベント名DB
 		simstring::writer_base<std::wstring> dbw(gen, dbPath.string());
+		// イベント選択肢DB
+		simstring::writer_base<std::wstring> dbwOption(gen, dbOptionPath.string());
+
 
 		// 育成ウマ娘のイベントを追加
 		for (const auto& charaEvent : m_charaEventList) {
@@ -294,6 +331,14 @@ void UmaEventLibrary::_DBInit()
 
 			for (const auto& umaEvent : charaEvent->umaEventList) {
 				dbw.insert(umaEvent.eventName);
+
+				for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
+					if (it->option.empty()) {
+						continue;
+					}
+					dbwOption.insert(it->option);	// 最後の選択肢を追加
+					break;
+				}
 			}
 			break;
 		}
@@ -302,13 +347,23 @@ void UmaEventLibrary::_DBInit()
 		for (const auto& charaEvent : m_supportEventList) {
 			for (const auto& umaEvent : charaEvent->umaEventList) {
 				dbw.insert(umaEvent.eventName);
+
+				for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
+					if (it->option.empty()) {
+						continue;
+					}
+					dbwOption.insert(it->option);	// 最後の選択肢を追加
+					break;
+				}
 			}
 		}
 		
 		dbw.close();
+		dbwOption.close();
 
 		// Open the database for reading.
 		m_dbReader->open(dbPath.string());
+		m_dbOptionReader->open(dbOptionPath.string());
 
 		m_simstringDBInit = true;
 	}
@@ -316,8 +371,6 @@ void UmaEventLibrary::_DBInit()
 
 UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstring& eventName)
 {
-	m_lastEventSource.clear();
-
 	// 育成ウマ娘のイベントを探す
 	for (const auto& charaEvent : m_charaEventList) {
 		if (charaEvent->name.find(m_currentIkuseUmaMusume) == std::wstring::npos) {
@@ -339,6 +392,48 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstrin
 			if (umaEvent.eventName == eventName) {
 				m_lastEventSource = charaEvent->name;
 				return umaEvent;
+			}
+		}
+	}
+	ATLASSERT(FALSE);
+	return UmaEvent();
+}
+
+UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptionsFromBottomOption(const std::wstring& bottomOption)
+{
+	// 育成ウマ娘のイベントを探す
+	for (const auto& charaEvent : m_charaEventList) {
+		if (charaEvent->name.find(m_currentIkuseUmaMusume) == std::wstring::npos) {
+			continue;
+		}
+
+		for (const auto& umaEvent : charaEvent->umaEventList) {
+			for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
+				if (it->option.empty()) {
+					continue;
+				}
+				if (it->option == bottomOption) {	// 最後の選択肢を比較
+					m_lastEventSource = charaEvent->name;
+					return umaEvent;
+				}
+				break;
+			}
+		}
+		break;
+	}
+
+	// サポートカードのイベントを探す
+	for (const auto& charaEvent : m_supportEventList) {
+		for (const auto& umaEvent : charaEvent->umaEventList) {
+			for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
+				if (it->option.empty()) {
+					continue;
+				}
+				if (it->option == bottomOption) {	// 最後の選択肢を比較
+					m_lastEventSource = charaEvent->name;
+					return umaEvent;
+				}
+				break;
 			}
 		}
 	}

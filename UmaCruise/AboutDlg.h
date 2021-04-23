@@ -8,7 +8,13 @@ class PreviewWindow;
 
 #include "resource.h"
 
-constexpr LPCWSTR	kAppVersion = L"v1.2";
+#ifdef _DEBUG
+#define	DEBUG_STRING	L"_Debug"
+#else
+#define	DEBUG_STRING
+#endif
+
+constexpr LPCWSTR	kAppVersion = L"v1.3" DEBUG_STRING;
 
 class CAboutDlg : public CDialogImpl<CAboutDlg>
 {
@@ -41,14 +47,15 @@ private:
 	PreviewWindow& m_previewWindow;
 
 	enum TestBounds {
-		kDirect, kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kCurrentMenuBounds, kMaxCount
+		kDirect, kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"Direct", L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"CurrentMenuBounds"
+		L"Direct", L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds"
 	};
 
 
 	CComboBox	m_cmbTestBounds;
 	CEdit	m_editResult;
+	CEdit	m_editResult2;
 	CTrackBarCtrl	m_sliderThreshold;
 };

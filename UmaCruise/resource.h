@@ -19,6 +19,7 @@
 #define IDC_SLIDER_THRESHOLD            1014
 #define IDC_BUTTON_IR                   1015
 #define IDC_BUTTON_CONFIG               1015
+#define IDC_EDIT_RESULT2                1015
 #define IDC_CHECK_START                 1017
 #define IDC_CHECK11                     1031
 #define IDC_CHECK_SHOWRACE_AFTERCURRENTDATE 1031

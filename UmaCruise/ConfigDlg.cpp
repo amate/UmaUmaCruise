@@ -59,7 +59,7 @@ LRESULT ConfigDlg::OnCancel(WORD, WORD, HWND, BOOL&)
 void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	try {
-		std::ifstream ifs((GetExeDirectory() / "Common.json").wstring());
+		std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
 		ATLASSERT(ifs);
 		if (!ifs) {
 			MessageBox(L"Common.json の読み込みに失敗");
@@ -70,7 +70,7 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 		std::string libraryURL = jsonCommon["Common"]["UmaMusumeLibraryURL"];
 
 		// ファイルサイズ取得
-		auto umaLibraryPath = GetExeDirectory() / L"UmaMusumeLibrary.json";
+		auto umaLibraryPath = GetExeDirectory() / L"UmaLibrary" / L"UmaMusumeLibrary.json";
 		const DWORD umaLibraryFileSize = static_cast<DWORD>(fs::file_size(umaLibraryPath));
 
 		CUrl	downloadUrl(libraryURL.c_str());

@@ -34,7 +34,7 @@ BEGIN
     CTEXT           "UmaUmaCruise Application {version}\n\n(c) Copyright 2021 amate",IDC_STATIC_ABOUT,25,57,78,32
     ICON            IDR_MAINFRAME,IDC_STATIC,55,26,20,20
     GROUPBOX        "",IDC_STATIC,7,7,115,88
-    GROUPBOX        "debug",IDC_STATIC,6,102,180,120
+    GROUPBOX        "debug",IDC_STATIC,6,102,330,117
     COMBOBOX        IDC_COMBO_TESTBOUNDS,18,114,126,174,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_EDIT_RESULT,18,132,156,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
     PUSHBUTTON      "OCR",IDC_BUTTON_OCR,18,198,66,18
@@ -42,6 +42,7 @@ BEGIN
     LTEXT           "■イベント選択肢データ(UmaMusumeLibrary.json)について\n\nGamerch様運営の""ウマ娘攻略wiki""から\nイベントデータを加工して、自動生成しています",IDC_STATIC,132,12,180,33
     CONTROL         "URL:<a>https://gamerch.com/umamusume/</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,132,48,180,11
+    EDITTEXT        IDC_EDIT_RESULT2,174,132,156,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
 END
 
 IDD_MAINDLG DIALOGEX 0, 0, 570, 222

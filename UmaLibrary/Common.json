@@ -30,6 +30,9 @@
             "EventNameIconBounds": {
                 "x": 96, "y": 197, "width": 30, "height": 30
             },
+            "EventBottomOptionBounds": {
+                "x": 62, "y": 659, "width": 500, "height": 44
+            },
             "CurrentMenuBounds" : {
                 "x": 19, "y": 2, "width": 114, "height": 31
             },
@@ -47,6 +50,7 @@
         }
     },
     "TypoDictionary": [
-        {"Typo": "初語", "Corret": "初詣"}
+        {"Typo": "初語", "Corret": "初詣"},
+        {"Typo": "初議", "Corret": "初詣"}        
     ]
 }

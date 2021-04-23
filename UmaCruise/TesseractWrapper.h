@@ -10,5 +10,7 @@ void	TesseractTerm();
 
 std::wstring TextFromImage(cv::Mat targetImage);
 
+std::wstring TextFromImageBest(cv::Mat targetImage);
+
 }	// namespace TesseractWrapper
 

@@ -53,7 +53,9 @@ public:
 	void	AnbigiousChangeIkuseImaMusume(std::vector<std::wstring> ambiguousUmaMusumeNames);
 
 	// あいまい検索でイベント名を探す
-	boost::optional<UmaEvent>	AmbiguousSearchEvent(std::vector<std::wstring> ambiguousEventNames);
+	boost::optional<UmaEvent>	AmbiguousSearchEvent(
+		const std::vector<std::wstring>& ambiguousEventNames,
+		const std::vector<std::wstring>& ambiguousEventBottomOptions );
 
 	// イベントがどのキャラから発生したのかを返す
 	const std::wstring& GetLastEventSource() const {
@@ -64,6 +66,7 @@ private:
 	void		_DBUmaNameInit();
 	void		_DBInit();
 	UmaEvent	_SearchEventOptions(const std::wstring& eventName);
+	UmaEvent	_SearchEventOptionsFromBottomOption(const std::wstring& bottomOption);
 
 	// 現在選択中の育成ウマ娘の名前
 	std::wstring	m_currentIkuseUmaMusume;
@@ -79,6 +82,7 @@ private:
 	bool	m_simstringDBInit = false;
 	std::unique_ptr<simstring::reader>	m_dbUmaNameReader;
 	std::unique_ptr<simstring::reader>	m_dbReader;
+	std::unique_ptr<simstring::reader>	m_dbOptionReader;
 
 	double	m_kMinThreshold = 0.4;
 };

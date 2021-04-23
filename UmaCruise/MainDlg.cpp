@@ -10,6 +10,7 @@
 #include "Utility\CodeConvert.h"
 #include "Utility\CommonUtility.h"
 #include "Utility\json.hpp"
+#include "Utility\timer.h"
 
 #include "ConfigDlg.h"
 
@@ -18,44 +19,7 @@ using namespace CodeConvert;
 using namespace cv;
 
 
-bool	SaveWindowScreenShot(HWND hWndTarget, const std::wstring& filePath)
-{
-	CWindowDC dc(NULL/*hWndTarget*/);
-
-	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-
-	CRect rcWindow;
-	::GetWindowRect(hWndTarget, &rcWindow);
-
-	CRect rcClient;
-	::GetClientRect(hWndTarget, rcClient);
-
-	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
-
-	CRect rcAdjustClient = rcWindow;
-	const int topMargin = (rcWindow.Height() - rcClient.Height() - GetSystemMetrics(SM_CXFRAME) * 2 - GetSystemMetrics(SM_CYCAPTION)) / 2;
-	rcAdjustClient.top += GetSystemMetrics(SM_CXFRAME) + GetSystemMetrics(SM_CYCAPTION) + topMargin;
-	rcAdjustClient.left += (rcWindow.Width() - rcClient.Width()) / 2;
-	rcAdjustClient.right = rcAdjustClient.left + rcClient.right;
-	rcAdjustClient.bottom = rcAdjustClient.top + rcClient.bottom;
-
-	CDC dcMemory;
-	dcMemory.CreateCompatibleDC(dc);
-	CBitmap hbmp = ::CreateCompatibleBitmap(dc, rcAdjustClient.Width(), rcAdjustClient.Height());
-	auto prevhbmp = dcMemory.SelectBitmap(hbmp);
-
-	//dcMemory.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), dc, 0, 0, SRCCOPY);
-	dcMemory.BitBlt(0, 0, rcAdjustClient.Width(), rcAdjustClient.Height(), dc, rcAdjustClient.left, rcAdjustClient.top, SRCCOPY);
-	dcMemory.SelectBitmap(prevhbmp);
-
-	Gdiplus::Bitmap bmp(hbmp, NULL);
-	auto pngEncoder = GetEncoderByMimeType(L"image/png");
-	auto ret = bmp.Save(filePath.c_str(), &pngEncoder->Clsid);
-	bool success = ret == Gdiplus::Ok;
-	return success;
-}
-
-
+// android版
 bool SaveScreenShot(const std::wstring& device, const std::wstring& filePath)
 {
 	auto adbPath = GetExeDirectory() / L"platform-tools" / L"adb.exe";
@@ -211,7 +175,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	try {
 		{
-			std::ifstream ifs((GetExeDirectory() / "Common.json").wstring());
+			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
 				ERROR_LOG << L"Common.json が存在しません...";
@@ -408,31 +372,99 @@ HBRUSH CMainDlg::OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 
 void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
-	HWND hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
-	if (!hwndTarget) {
-		ChangeWindowTitle(L"ウマ娘のウィンドウが見つかりません。。。");
-		return ;
-	}
-	auto ssFolderPath = GetExeDirectory() / L"screenshot";
-	if (!fs::is_directory(ssFolderPath)) {
-		fs::create_directory(ssFolderPath);
-	}
+	if (::GetKeyState(VK_CONTROL) < 0) {	// Ctrl を押しながらだとプレビューからIRする
+		Utility::timer timer;
+		//auto ssImage = m_umaTextRecoginzer.ScreenShot();
+		auto image = m_previewWindow.GetImage();
+		if (!image) {
+			return;
+		}
+		Gdiplus::Bitmap bmp(image->GetWidth(), image->GetHeight(), PixelFormat24bppRGB);
+		Gdiplus::Graphics graphics(&bmp);
+		graphics.DrawImage(image, 0, 0);
 
-	auto ssPath = ssFolderPath / (L"screenshot_" + std::to_wstring(std::time(nullptr)) + L".png");
-	if (GetKeyState(VK_CONTROL) < 0) {
-		ssPath = ssFolderPath / L"screenshot.png";
-	}
-	// 
-	bool success = SaveWindowScreenShot(hwndTarget, ssPath.wstring());
-	//bool success = SaveScreenShot(L"", ssPath.wstring());
-	ATLASSERT(success);
+		bool success = m_umaTextRecoginzer.TextRecognizer(&bmp);
+		INFO_LOG << L"TextRecognizer processing time: " << timer.format();
 
-	m_previewWindow.UpdateImage(ssPath.wstring());
-	return;
+		// 育成ウマ娘名
+		std::wstring prevUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
+		m_umaEventLibrary.AnbigiousChangeIkuseImaMusume(m_umaTextRecoginzer.GetUmaMusumeName());
+		std::wstring nowUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
+		if (prevUmaName != nowUmaName) {
+			// コンボボックスを変更
+			const int count = m_cmbUmaMusume.GetCount();
+			for (int i = 0; i < count; ++i) {
+				CString name;
+				m_cmbUmaMusume.GetLBText(i, name);
+				if (name == nowUmaName.c_str()) {
+					m_cmbUmaMusume.SetCurSel(i);
+					break;
+				}
+			}
+		}
+
+		// イベント検索
+		auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
+			m_umaTextRecoginzer.GetEventName(), 
+			m_umaTextRecoginzer.GetEventBottomOption() );
+		if (optUmaEvent) {
+			m_eventName = optUmaEvent->eventName.c_str();
+			DoDataExchange(DDX_LOAD, IDC_EDIT_EVENTNAME);
+
+			_UpdateEventOptions(*optUmaEvent);
+
+			m_eventSource = m_umaEventLibrary.GetLastEventSource().c_str();
+			DoDataExchange(DDX_LOAD, IDC_EDIT_EVENT_SOURCE);
+		}
+
+
+		// 現在ターン
+		std::wstring currentTurn = m_raceDateLibrary.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
+		if (currentTurn.length() && m_currentTurn != currentTurn.c_str()) {
+			_UpdateRaceList(currentTurn);
+		}
+
+		//++count;
+		CString title;
+		title.Format(L"Processing time: %s", UTF16fromUTF8(timer.format()).c_str());
+		ChangeWindowTitle((LPCWSTR)title)
+			;
+	} else {
+		HWND hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
+		if (!hwndTarget) {
+			ChangeWindowTitle(L"ウマ娘のウィンドウが見つかりません。。。");
+			return;
+		}
+		auto ssFolderPath = GetExeDirectory() / L"screenshot";
+		if (!fs::is_directory(ssFolderPath)) {
+			fs::create_directory(ssFolderPath);
+		}
+
+		auto ssPath = ssFolderPath / (L"screenshot_" + std::to_wstring(std::time(nullptr)) + L".png");
+		if (GetKeyState(VK_SHIFT) < 0) {
+			ssPath = ssFolderPath / L"screenshot.png";
+		}
+		// 
+		auto image = m_umaTextRecoginzer.ScreenShot();
+		if (!image) {
+			ChangeWindowTitle(L"スクリーンショットに失敗...");
+			return;
+		}
+		auto pngEncoder = GetEncoderByMimeType(L"image/png");
+		auto ret = image->Save(ssPath.c_str(), &pngEncoder->Clsid);
+		bool success = ret == Gdiplus::Ok;
+		//bool success = SaveWindowScreenShot(hwndTarget, ssPath.wstring());
+		//bool success = SaveScreenShot(L"", ssPath.wstring());
+		ATLASSERT(success);
+
+		m_previewWindow.UpdateImage(ssPath.wstring());
+	}
 }
 
 void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
+	INFO_LOG << L"OnStart";
+
 	CButton btnStart = GetDlgItem(IDC_CHECK_START);
 	bool bChecked = btnStart.GetCheck() == BST_CHECKED;
 	if (bChecked) {
@@ -441,8 +473,12 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 		m_cancelAutoDetect = false;
 		m_threadAutoDetect = std::thread([this]()
 		{
+			INFO_LOG << L"thread begin";
+
 			int count = 0;
 			while (!m_cancelAutoDetect.load()) {
+				Utility::timer timer;
+
 				auto ssImage = m_umaTextRecoginzer.ScreenShot();
 				bool success = m_umaTextRecoginzer.TextRecognizer(ssImage.get());
 				if (success) {
@@ -472,12 +508,17 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 					}
 
 					// イベント検索
-					auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(m_umaTextRecoginzer.GetEventName());
+					auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
+						m_umaTextRecoginzer.GetEventName(), 
+						m_umaTextRecoginzer.GetEventBottomOption() );
 					if (optUmaEvent) {
 						m_eventName = optUmaEvent->eventName.c_str();
 						DoDataExchange(DDX_LOAD, IDC_EDIT_EVENTNAME);
 
 						_UpdateEventOptions(*optUmaEvent);
+
+						m_eventSource = m_umaEventLibrary.GetLastEventSource().c_str();
+						DoDataExchange(DDX_LOAD, IDC_EDIT_EVENT_SOURCE);
 					}
 
 
@@ -489,7 +530,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 					++count;
 					CString title;
-					title.Format(L"Scan count: %d", count);
+					title.Format(L"scan: %d %s", count, (LPCWSTR)CA2W(timer.format().c_str()));
 					ChangeWindowTitle((LPCWSTR)title);
 
 					for (int i = 0; i < m_config.refreshInterval; ++i) {
@@ -532,12 +573,12 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 void CMainDlg::OnEventNameChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	DoDataExchange(DDX_SAVE, IDC_EDIT_EVENTNAME);
-	if (m_eventName.IsEmpty()) {
+	if (m_eventName.IsEmpty() || GetFocus() != GetDlgItem(IDC_EDIT_EVENTNAME)) {
 		return;
 	}
 	std::vector<std::wstring> eventNames;
 	eventNames.emplace_back((LPCWSTR)m_eventName);
-	auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(eventNames);
+	auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(eventNames, std::vector<std::wstring>());
 	if (optUmaEvent) {
 		ChangeWindowTitle(optUmaEvent->eventName);
 		_UpdateEventOptions(*optUmaEvent);
@@ -594,7 +635,7 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		return;
 	}
 	{
-		std::ifstream ifs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").wstring());
+		std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
 		ATLASSERT(ifs);
 		if (!ifs) {
 			MessageBox(L"UmaMusumeLibraryRevision.json の読み込みに失敗");
@@ -631,7 +672,7 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		}
 
 		// 保存
-		std::ofstream ofs((GetExeDirectory() / "UmaMusumeLibraryRevision.json").wstring());
+		std::ofstream ofs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
 		ATLASSERT(ofs);
 		if (!ofs) {
 			MessageBox(L"UmaMusumeLibraryRevision.json のオープンに失敗");

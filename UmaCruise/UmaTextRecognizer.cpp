@@ -39,8 +39,11 @@ void	SavePointSizeFromJson(json& json, const std::string& key, const CPoint& pt,
 cv::Mat GdiPlusBitmapToOpenCvMat(Gdiplus::Bitmap* bmp)
 {
 	auto format = bmp->GetPixelFormat();
-	if (format != PixelFormat24bppRGB)
+	if (format != PixelFormat24bppRGB) {
+		ERROR_LOG << L"GdiPlusBitmapToOpenCvMat: format != PixelFormat24bppRGB";
+		ATLASSERT(FALSE);
 		return cv::Mat();
+	}
 
 	int wd = bmp->GetWidth();
 	int hgt = bmp->GetHeight();
@@ -60,6 +63,42 @@ cv::Rect	cvRectFromCRect(const CRect& rcBounds)
 {
 	return cv::Rect(rcBounds.left, rcBounds.top, rcBounds.Width(), rcBounds.Height());
 }
+
+bool	CheckCutBounds(const cv::Mat& img, const cv::Rect& rcCut, std::wstring comment)
+{
+	if (rcCut.x < 0 || rcCut.y < 0
+		|| img.size().width < rcCut.x + rcCut.width || img.size().height < rcCut.y + rcCut.height) {
+		ERROR_LOG << L"invalidate cute bounds: " << comment 
+			<< L"src width: " << img.size().width << L" height: " << img.size().height 
+			<< L" rcCut x: " << rcCut.x << L" y: " << rcCut.y << L" width: " << rcCut.width << L" height: " << rcCut.height;
+		ATLASSERT(FALSE);
+		return false;
+	}
+	return true;	
+}
+
+
+double ImageWhiteRatio(cv::Mat thresImage)
+{
+	int c = thresImage.channels();
+	ATLASSERT(c == 1);
+
+	// 画素中の白の数を数える
+	int whilteCount = cv::countNonZero(thresImage);
+	//int whilteCount = 0;
+	//for (int y = 0; y < thresImage.rows; y++) {
+	//	for (int x = 0; x < thresImage.cols; x++) {
+	//		uchar val = thresImage.at<uchar>(y, x);
+	//		if (val >= 255) {
+	//			++whilteCount;
+	//		}
+	//	}
+	//}
+	const int imagePixelCount = thresImage.rows * thresImage.cols;
+	const double whiteRatio = static_cast<double>(whilteCount) / imagePixelCount;
+	return whiteRatio;
+}
+
 
 // ===============================================================================
 
@@ -117,7 +156,11 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 
 bool UmaTextRecognizer::LoadSetting()
 {
-	std::ifstream ifs((GetExeDirectory() / L"Common.json").wstring());
+	HMODULE hModUser32 = ::LoadLibraryW(L"User32.dll");
+	ATLASSERT(hModUser32);	
+	m_funcSetThreadDpiAwarenessContext = (SetThreadDpiAwarenessContextFunc)::GetProcAddress(hModUser32, "SetThreadDpiAwarenessContext");
+
+	std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / L"Common.json").wstring());
 	ATLASSERT(ifs);
 	if (!ifs) {
 		ERROR_LOG << L"LoadSetting failed";
@@ -162,7 +205,9 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 
 	CWindowDC dc(NULL/*hWndTarget*/);	// desktop
 
-	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	if (m_funcSetThreadDpiAwarenessContext) {	// 高DPIモニターで取得ウィンドウの位置がずれるバグを回避するため
+		m_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	}
 
 	CRect rcWindow;
 	::GetWindowRect(hwndTarget, &rcWindow);
@@ -170,7 +215,9 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 	CRect rcClient;
 	::GetClientRect(hwndTarget, rcClient);
 
-	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+	if (m_funcSetThreadDpiAwarenessContext) {
+		m_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+	}
 
 	CRect rcAdjustClient = rcWindow;
 	const int topMargin = (rcWindow.Height() - rcClient.Height() - GetSystemMetrics(SM_CXFRAME) * 2 - GetSystemMetrics(SM_CYCAPTION)) / 2;
@@ -197,7 +244,7 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 
 	//dcMemory.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), dc, 0, 0, SRCCOPY);
 	dcMemory.BitBlt(0, 0, rcAdjustClient.Width(), rcAdjustClient.Height(), dc, rcAdjustClient.left, rcAdjustClient.top, SRCCOPY);
-	dcMemory.SelectBitmap(prevhbmp);	
+	dcMemory.SelectBitmap(prevhbmp);
 	return std::unique_ptr<Gdiplus::Bitmap>(Gdiplus::Bitmap::FromHBITMAP(hbmp, NULL));
 }
 
@@ -206,6 +253,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 	m_umaMusumeName.clear();
 	m_currentTurn.clear();
 	m_eventName.clear();
+	m_eventBottomOption.clear();
 
 	std::unique_ptr<Gdiplus::Bitmap> bmpHolder;
 	if (!image) {
@@ -222,8 +270,9 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		ERROR_LOG << L"GdiPlusBitmapToOpenCvMat failed";
 		return false;
 	}
-
+	INFO_LOG << L"TextRecognizer start!";
 	{	// 育成ウマ娘名
+		INFO_LOG << L"・育成ウマ娘";
 		CRect rcSubName = _AdjustBounds(srcImage, m_testBounds[kUmaMusumeSubNameBounds]);
 		CRect rcName = _AdjustBounds(srcImage, m_testBounds[kUmaMusumeNameBounds]);
 
@@ -232,41 +281,81 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 		auto funcImageToText = [this, &srcImage](int testBoundsIndex, std::vector<std::wstring>& list) {
 			CRect rcName = _AdjustBounds(srcImage, m_testBounds[testBoundsIndex]);
+			if (!CheckCutBounds(srcImage, cvRectFromCRect(rcName), L"rcName")) {
+				return;
+			}
+			//Utility::timer timer;
 			cv::Mat cutImage(srcImage, cvRectFromCRect(rcName));
 
-			cv::Mat resizedImage;
-			constexpr double scale = 4.0;
-			cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
+			//cv::Mat resizedImage;
+			//constexpr double scale = 4.0;
+			//cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
 
 			cv::Mat grayImage;
-			cv::cvtColor(resizedImage, grayImage, cv::COLOR_RGB2GRAY);
+			cv::cvtColor(cutImage/*resizedImage*/, grayImage, cv::COLOR_RGB2GRAY);
 
 			cv::Mat thresImage;
 			cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+			//INFO_LOG << L"Image processing1: " << timer.format();
+			
+			// 画像における白背景率を確認して、一定比率以下のときは無視する
+			const double whiteRatio = ImageWhiteRatio(thresImage);
+			constexpr double kMinWhiteRatioThreshold = 0.5;
+			if (whiteRatio < kMinWhiteRatioThreshold) {
+				return;
+			}
+
+			//INFO_LOG << L"Image processing2: " << timer.format() << L" whiteRatio: " << whiteRatio;
 
 			std::wstring thresImageText = TextFromImage(thresImage);
 			list.emplace_back(thresImageText);
 		};
-		funcImageToText(kUmaMusumeSubNameBounds, subNameList);
-		funcImageToText(kUmaMusumeNameBounds, nameList);
 
-		const size_t size = subNameList.size();
-		for (int i = 0; i < size; ++i) {
-			std::wstring umamusumeName = subNameList[i] + nameList[i];
-			m_umaMusumeName.emplace_back(umamusumeName);
+		funcImageToText(kUmaMusumeSubNameBounds, subNameList);
+		if (subNameList.size()) {
+			funcImageToText(kUmaMusumeNameBounds, nameList);
+			if (nameList.size()) {
+				const size_t size = subNameList.size();
+				for (int i = 0; i < size; ++i) {
+					std::wstring umamusumeName = subNameList[i] + nameList[i];
+					m_umaMusumeName.emplace_back(umamusumeName);
+				}
+			}
 		}
+
 	}
 	{	// イベント名
+		INFO_LOG << L"・イベント名";
 		CRect rcEventName = _AdjustBounds(srcImage, m_testBounds[kEventNameBounds]);
 		if (_IsEventNameIcon(srcImage)) {	// アイコンが存在した場合、認識範囲を右にずらす
 			enum { kIconTextMargin = 5 };
 			rcEventName.left = _AdjustBounds(srcImage, m_testBounds[kEventNameIconBounds]).right + kIconTextMargin;
 		}
 		// テキストを囲う範囲を見つける
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcEventName), L"rcEventName")) {
+			return false;
+		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcEventName));
 		CRect rcAdjustTextBounds = GetTextBounds(cutImage, rcEventName);
 
 		// テキストを正確に囲ったイメージを切り出す
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcAdjustTextBounds), L"rcAdjustTextBounds")) {
+			return false;
+		}
+
+		cv::Mat cutImage2(srcImage, cvRectFromCRect(rcAdjustTextBounds));
+
+		cv::Mat grayImage;
+		cv::cvtColor(cutImage2/*resizedImage*/, grayImage, cv::COLOR_RGB2GRAY);
+
+		cv::Mat invertedImage;
+		cv::bitwise_not(grayImage, invertedImage);
+
+		cv::Mat resizedImage;
+		constexpr double scale = 2.0;
+		cv::resize(invertedImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);	
+
+#if 0	// v1.2までの処理
 		cv::Mat cutImage2(srcImage, cvRectFromCRect(rcAdjustTextBounds));
 		//cv::imshow("cutImage2", cutImage2);
 		// 
@@ -282,6 +371,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 		cv::Mat thresImage;
 		cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+#endif
 #if 0
 		// 4倍
 		cv::Mat resizedImage;
@@ -294,7 +384,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat thresImage2;
 		cv::threshold(grayImage2, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);
 #endif
-		auto funcPushBackImageText = [this](cv::Mat& image) {
+		auto funcPushBackImageText = [this](cv::Mat& image, std::vector<std::wstring>& list) {
 			std::wstring text = TextFromImage(image);
 
 			// typo を正誤表で変換
@@ -305,20 +395,42 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			// '！' が '7' に誤認識されてしまうっぽいので置換して候補に追加しておく
 			if (text.find(L"7") != std::wstring::npos) {
 				std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"7", L"！");
-				m_eventName.emplace_back(replacedText);
+				list.emplace_back(replacedText);
 			}
-			m_eventName.emplace_back(text);
+			// '！' が '/' に誤認識されてしまうっぽいので置換して候補に追加しておく
+			if (text.find(L"/") != std::wstring::npos) {
+				std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"/", L"！");
+				list.emplace_back(replacedText);
+			}
+			list.emplace_back(text);
 		};
 
-		funcPushBackImageText(cutImage);
-		funcPushBackImageText(grayImage);
-		funcPushBackImageText(invertedImage);
-		funcPushBackImageText(thresImage);
-		//funcPushBackImageText(resizedImage);
-		//funcPushBackImageText(thresImage2);
+		funcPushBackImageText(resizedImage, m_eventName);	// 4 グレースケール反転 + 2倍
+
+		// イベント選択肢
+		{
+			CRect rcEventBottomOption = _AdjustBounds(srcImage, m_testBounds[kEventBottomOptionBounds]);
+			cv::Mat cutImage(srcImage, cvRectFromCRect(rcEventBottomOption));
+
+			cv::Mat grayImage;
+			cv::cvtColor(cutImage, grayImage, cv::COLOR_RGB2GRAY);
+
+			cv::Mat thresImage;
+			cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+
+			cv::Mat resizedImage;
+			constexpr double scale = 2.0;
+			cv::resize(thresImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
+
+			funcPushBackImageText(resizedImage, m_eventBottomOption);	// 5 黒背景白文字(グレー閾値) + 2倍
+		}
 	}
 	{	// 現在の日付
+		INFO_LOG << L"・現在の日付";
 		CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentTurnBounds]);
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcTurnBounds), L"rcTurnBounds")) {
+			return false;
+		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcTurnBounds));
 
 		//cv::Mat resizedImage;
@@ -331,11 +443,11 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat thresImage;
 		cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
 		
-		cv::Mat manualThresholdImage;
-		cv::threshold(grayImage, manualThresholdImage, m_kCurrentTurnThreshold, 255.0, cv::THRESH_BINARY);
+		//cv::Mat manualThresholdImage;
+		//cv::threshold(grayImage, manualThresholdImage, m_kCurrentTurnThreshold, 255.0, cv::THRESH_BINARY);
 
-		std::wstring manualThresImageText = TextFromImage(manualThresholdImage);
-		m_currentTurn.emplace_back(manualThresImageText);	// 優先
+		//std::wstring manualThresImageText = TextFromImage(manualThresholdImage);
+		//m_currentTurn.emplace_back(manualThresImageText);	// 優先
 
 		std::wstring cutImageText = TextFromImage(cutImage);
 		m_currentTurn.emplace_back(cutImageText);
@@ -346,14 +458,21 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
 	}
 	{	// 現在メニュー[トレーニング]
+		INFO_LOG << L"・トレーニング";
 		m_bTrainingMenu = false;
 
 		CRect rcCurrentMenuBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentMenuBounds]);
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcCurrentMenuBounds), L"rcCurrentMenuBounds")) {
+			return false;
+		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcCurrentMenuBounds));
 
 		std::wstring cutImageText = TextFromImage(cutImage);
 		if (cutImageText == L"トレーニング") {
 			CRect rcBackButtonBounds = _AdjustBounds(srcImage, m_testBounds[kBackButtonBounds]);
+			if (!CheckCutBounds(srcImage, cvRectFromCRect(rcBackButtonBounds), L"rcBackButtonBounds")) {
+				return false;
+			}
 			cv::Mat cutImage2(srcImage, cvRectFromCRect(rcBackButtonBounds));
 
 			std::wstring cutImage2Text = TextFromImage(cutImage2);
@@ -388,27 +507,30 @@ bool UmaTextRecognizer::_IsEventNameIcon(cv::Mat srcImage)
 
 	cv::Mat cutImage(srcImage, cvRectFromCRect(rcIcon));
 
+	ATLASSERT(cutImage.channels() == 3);	// must color image
+	std::vector<cv::Mat> splitColors(3);	// 予め確保していないと落ちる
+	cv::split(cutImage, splitColors);
+	//cv::imshow("Blue", splitColors[0]);	// [0] -> Blue
+	//cv::imshow("Green", splitColors[1]);// [1] -> Green
+	//cv::imshow("Red", splitColors[2]);	// [2] -> Red
+
+	cv::Mat blueThresImage;
+	enum { kBlueThreshold = 230 };
+	cv::threshold(splitColors[0], blueThresImage, kBlueThreshold, 255.0, cv::THRESH_BINARY);
+	//cv::imshow("Blue thres", blueThresImage);
+	const double blueRatio = ImageWhiteRatio(blueThresImage);
+	constexpr double kBlueBackgroundThreshold = 0.9;	// 青背景率の閾値
+	if (kBlueBackgroundThreshold < blueRatio) {
+		return false;	// サポートカードイベント
+	}
+
 	cv::Mat grayImage;
 	cv::cvtColor(cutImage, grayImage, cv::COLOR_RGB2GRAY);
 
 	cv::Mat thresImage;
-	cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+	cv::threshold(grayImage, thresImage, kEventNameIconThreshold, 255.0, cv::THRESH_BINARY);
 
-	int c = grayImage.channels();
-	ATLASSERT(c == 1);
-
-	// 画素中の白の数を数える
-	int whilteCount = 0;
-	for (int y = 0; y < thresImage.rows; y++) {
-		for (int x = 0; x < thresImage.cols; x++) {
-			uchar val = thresImage.at<uchar>(y, x);
-			if (val >= 255) {
-				++whilteCount;
-			}
-		}
-	}
-	const int imagePixelCount = thresImage.rows * thresImage.cols;
-	const double whiteRatio = static_cast<double>(whilteCount) / imagePixelCount;
-	bool isIcon = whiteRatio > kEventNameIconThreshold;	// 白の比率が一定以上ならアイコンとみなす
+	const double whiteRatio = ImageWhiteRatio(thresImage);
+	bool isIcon = whiteRatio > kEventNameIconWhiteRatioThreshold;	// 白の比率が一定以上ならアイコンとみなす
 	return isIcon;
 }

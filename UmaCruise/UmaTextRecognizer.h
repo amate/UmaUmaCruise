@@ -10,7 +10,8 @@
 
 class UmaTextRecognizer
 {
-	static constexpr double kEventNameIconThreshold = 0.5;
+	static constexpr double kEventNameIconThreshold = 155.0;
+	static constexpr double kEventNameIconWhiteRatioThreshold = 0.5;
 
 public:
 	bool	LoadSetting();
@@ -28,6 +29,9 @@ public:
 	const std::vector<std::wstring>&	GetEventName() const {
 		return m_eventName;
 	}
+	const std::vector<std::wstring>& GetEventBottomOption() const {
+		return m_eventBottomOption;
+	}
 	bool	IsTrainingMenu() const {
 		return m_bTrainingMenu;
 	}
@@ -44,10 +48,10 @@ private:
 	CSize	m_baseClientSize;
 
 	enum TestBounds {
-		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kCurrentMenuBounds, kBackButtonBounds, kMaxCount
+		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kBackButtonBounds, kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"CurrentMenuBounds", L"BackButtonBounds", 
+		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"BackButtonBounds", 
 	};
 	std::array<CRect, kMaxCount>	m_testBounds;
 	int		m_kCurrentTurnThreshold = 111;
@@ -56,6 +60,10 @@ private:
 	std::vector<std::wstring>	m_umaMusumeName;
 	std::vector<std::wstring>	m_currentTurn;
 	std::vector<std::wstring>	m_eventName;
+	std::vector<std::wstring>	m_eventBottomOption;
 	bool						m_bTrainingMenu = false;
+
+	using SetThreadDpiAwarenessContextFunc = DPI_AWARENESS_CONTEXT (*)(DPI_AWARENESS_CONTEXT );
+	SetThreadDpiAwarenessContextFunc	m_funcSetThreadDpiAwarenessContext = nullptr;
 };
 
