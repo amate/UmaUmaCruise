@@ -5,7 +5,7 @@
 #include <functional>
 #include <vector>
 
-#include <atlmisc.h>
+#include <wtl\atlmisc.h>
 
 #include "Utility\GdiplusUtil.h"
 #include <opencv2\opencv.hpp>

@@ -12,7 +12,7 @@
 //#define _RICHEDIT_VER	0x0500
 
 #include <atlbase.h>
-#include <atlapp.h>
+#include <wtl/atlapp.h>
 
 extern CAppModule _Module;
 
@@ -31,12 +31,12 @@ extern CAppModule _Module;
 #endif
 
 #include <atlstr.h>
-#include <atlframe.h>
-#include <atlctrls.h>
-#include <atldlgs.h>
-#include <atlcrack.h>
-#include <atlddx.h>
-#include <atlmisc.h>
+#include <wtl\atlframe.h>
+#include <wtl\atlctrls.h>
+#include <wtl\atldlgs.h>
+#include <wtl\atlcrack.h>
+#include <wtl\atlddx.h>
+#include <wtl\atlmisc.h>
 
 #include <algorithm>
 #include <vector>

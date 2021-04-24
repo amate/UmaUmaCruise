@@ -7,12 +7,12 @@
 #include <thread>
 #include <atomic>
 
-#include <atlframe.h>
-#include <atlctrls.h>
-#include <atldlgs.h>
-#include <atlcrack.h>
+#include <wtl\atlframe.h>
+#include <wtl\atlctrls.h>
+#include <wtl\atldlgs.h>
+#include <wtl\atlcrack.h>
 #include <atlstr.h>
-#include <atlddx.h>
+#include <wtl\atlddx.h>
 
 #include "UmaEventLibrary.h"
 #include "RaceDateLibrary.h"
