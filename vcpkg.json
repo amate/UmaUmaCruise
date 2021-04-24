@@ -1,0 +1,26 @@
+{
+    "name": "umaumacrusepackage",
+    "version-string": "0.0.1",
+    "dependencies": [
+        {
+            "name": "wtl",
+            "version>=": "10.0.10320"
+        },
+        {
+            "name": "opencv4",
+            "features": [
+                "world"
+            ],
+            "version>=": "4.5.1"
+        },
+        {
+            "name": "tesseract",
+            "version>=": "4.1.1#7"
+        },
+        {
+            "name": "boost",
+            "version>=": "1.75.0"
+        }
+    ],
+    "builtin-baseline": "6ebcd4e443efe26a32cc13465b85627f8f148ce1"
+}
