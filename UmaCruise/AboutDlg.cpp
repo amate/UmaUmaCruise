@@ -3,6 +3,9 @@
 #include "AboutDlg.h"
 #include "PreviewWindow.h"
 
+#include <future>
+#include <vector>
+
 #include <tesseract\baseapi.h>
 #include <leptonica\allheaders.h>
 
@@ -252,6 +255,8 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 			//funcTextFromImage = TextFromImageBest;
 		}
 
+		//cv::imwrite((GetExeDirectory() / L"test.png").string().c_str(), cutImage);
+
 		cv::imshow("1", cutImage);
 		cv::imshow("2", resizedImage);
 		cv::imshow("3", grayImage);
@@ -259,14 +264,34 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		cv::imshow("5", thresImage);
 		cv::imshow("6", thresImage2);
 
+		// asyncに渡す関数オブジェクト
+		auto asyncTextFromImage = [this](cv::Mat& image, std::shared_ptr<TextFromImageFunc> funcTextFromImage) -> std::wstring {
+			std::wstring text = (*funcTextFromImage)(image);
+			return text;
+		};
+		std::vector<std::future<std::wstring>> TextFromImageFutureList;
+		
+		TextFromImageFutureList.emplace_back(
+			std::async(std::launch::async, asyncTextFromImage, cutImage, GetOCRFunction()));
+		TextFromImageFutureList.emplace_back(
+			std::async(std::launch::async, asyncTextFromImage, resizedImage, GetOCRFunction()));
+		TextFromImageFutureList.emplace_back(
+			std::async(std::launch::async, asyncTextFromImage, grayImage, GetOCRFunction()));
+		TextFromImageFutureList.emplace_back(
+			std::async(std::launch::async, asyncTextFromImage, invertedImage, GetOCRFunction()));
+		TextFromImageFutureList.emplace_back(
+			std::async(std::launch::async, asyncTextFromImage, thresImage, GetOCRFunction()));
+		TextFromImageFutureList.emplace_back(
+			std::async(std::launch::async, asyncTextFromImage, thresImage2, GetOCRFunction()));
+
 		CString result;
 		if (!bManualThresOnly) {
-			result += L"1: " + CString(funcTextFromImage(cutImage).c_str()) + L"\r\n";
-			result += L"2: " + CString(funcTextFromImage(resizedImage).c_str()) + L"\r\n";
-			result += L"3: " + CString(funcTextFromImage(grayImage).c_str()) + L"\r\n";
-			result += L"4: " + CString(funcTextFromImage(invertedImage).c_str()) + L"\r\n";
-			result += L"5: " + CString(funcTextFromImage(thresImage).c_str()) + L"\r\n";
-			result += L"6: " + CString(funcTextFromImage(thresImage2).c_str()) + L"\r\n";
+			result += L"1: " + CString(TextFromImageFutureList[0].get().c_str()) + L"\r\n";
+			result += L"2: " + CString(TextFromImageFutureList[1].get().c_str()) + L"\r\n";
+			result += L"3: " + CString(TextFromImageFutureList[2].get().c_str()) + L"\r\n";
+			result += L"4: " + CString(TextFromImageFutureList[3].get().c_str()) + L"\r\n";
+			result += L"5: " + CString(TextFromImageFutureList[4].get().c_str()) + L"\r\n";
+			result += L"6: " + CString(TextFromImageFutureList[5].get().c_str()) + L"\r\n";
 		}
 
 		const int threshold = m_sliderThreshold.GetPos();

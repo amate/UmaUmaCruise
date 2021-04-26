@@ -41,10 +41,7 @@ public:
 		kAutoOCRTimerInterval = 1000,
 	};
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg)
-	{
-		return CWindow::IsDialogMessage(pMsg);
-	}
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	virtual BOOL OnIdle()
 	{

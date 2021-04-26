@@ -12,6 +12,7 @@ class UmaTextRecognizer
 {
 	static constexpr double kEventNameIconThreshold = 155.0;
 	static constexpr double kEventNameIconWhiteRatioThreshold = 0.5;
+	static constexpr double kMinWhiteRatioThreshold = 0.5;	// ”’”wŒi‚©Œˆ‚ß‚éè‡’l
 
 public:
 	bool	LoadSetting();
@@ -63,7 +64,5 @@ private:
 	std::vector<std::wstring>	m_eventBottomOption;
 	bool						m_bTrainingMenu = false;
 
-	using SetThreadDpiAwarenessContextFunc = DPI_AWARENESS_CONTEXT (*)(DPI_AWARENESS_CONTEXT );
-	SetThreadDpiAwarenessContextFunc	m_funcSetThreadDpiAwarenessContext = nullptr;
 };
 

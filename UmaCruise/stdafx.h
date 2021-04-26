@@ -40,13 +40,16 @@ extern CAppModule _Module;
 
 #include <algorithm>
 #include <vector>
+#include <list>
 #include <memory>
 #include <string>
 #include <fstream>
-#include <thread>
-#include <atomic>
 #include <unordered_map>
 #include <mutex>
+#include <thread>
+#include <atomic>
+#include <future>
+#include <chrono>
 
 #include <boost\filesystem.hpp>
 #include <boost\optional.hpp>

@@ -96,6 +96,22 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 				}
 			}
 		};
+		auto funcLoad = [=](const json& jsonLibrary, const std::string& keyName, CharaEventList& charaEventList) {
+			for (const auto& propElm : jsonLibrary[keyName].items()) {
+				std::wstring prop = UTF16fromUTF8(propElm.key());	// hosi or rare
+
+				for (const auto& umaElm : propElm.value().items()) {
+					std::wstring umaName = UTF16fromUTF8(umaElm.key());
+
+					charaEventList.emplace_back(std::make_unique<CharaEvent>());
+					CharaEvent& charaEvent = *charaEventList.back();
+					charaEvent.name = umaName;
+					charaEvent.property = prop;
+
+					funcAddjsonEventToUmaEvent(umaElm.value()["Event"], charaEvent);
+				}
+			}
+		};
 
 		{	// UmaMusumeLibrary.json
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibrary.json").wstring());
@@ -106,62 +122,55 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			json jsonLibrary;
 			ifs >> jsonLibrary;
 
-			auto funcLoad = [=](const json& jsonLibrary, const std::string& keyName, CharaEventList& charaEventList) {
-				for (const auto& propElm : jsonLibrary[keyName].items()) {
-					std::wstring prop = UTF16fromUTF8(propElm.key());	// hosi or rare
-
-					for (const auto& umaElm : propElm.value().items()) {
-						std::wstring umaName = UTF16fromUTF8(umaElm.key());
-
-						charaEventList.emplace_back(std::make_unique<CharaEvent>());
-						CharaEvent& charaEvent = *charaEventList.back();
-						charaEvent.name = umaName;
-						charaEvent.property = prop;
-
-						funcAddjsonEventToUmaEvent(umaElm.value()["Event"], charaEvent);
-					}
-				}
-			};
 			funcLoad(jsonLibrary, "Charactor", m_charaEventList);
 			funcLoad(jsonLibrary, "Support", m_supportEventList);
 		}
-		{	// UmaMusumeLibraryRevision.json
-			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
+		{	// UmaMusumeLibraryMainStory.json
+			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryMainStory.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
-				throw std::runtime_error("UmaMusumeLibraryRevision.json の読み込みに失敗");
+				throw std::runtime_error("UmaMusumeLibraryMainStory.json の読み込みに失敗");
 			}
-			json jsonRevisionLibrary;
-			ifs >> jsonRevisionLibrary;
-			for (const auto& keyVal : jsonRevisionLibrary.items()) {
-				std::wstring sourceName = UTF16fromUTF8(keyVal.key());
-				CharaEvent charaEvent;
-				charaEvent.name = sourceName;
-				funcAddjsonEventToUmaEvent(keyVal.value()["Event"], charaEvent);
+			json jsonLibrary;
+			ifs >> jsonLibrary;
 
-				auto funcUpdateEventOptions = [](const CharaEvent& charaEvent, CharaEventList& charaEventList) -> bool {
-					for (auto& anotherCharaEventList : charaEventList) {
-						if (anotherCharaEventList->name == charaEvent.name) {	// ソース一致
-							bool update = false;
-							for (auto& anotherUmaEventList : anotherCharaEventList->umaEventList) {
-								for (const auto& umaEventList : charaEvent.umaEventList) {
-									if (anotherUmaEventList.eventName == umaEventList.eventName) {	// イベント名一致
-										anotherUmaEventList.eventOptions = umaEventList.eventOptions;	// 選択肢を上書き
-										update = true;
+			funcLoad(jsonLibrary, "MainStory", m_supportEventList);
+		}
+		{	// UmaMusumeLibraryRevision.json
+			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
+			if (ifs) {
+				json jsonRevisionLibrary;
+				ifs >> jsonRevisionLibrary;
+				for (const auto& keyVal : jsonRevisionLibrary.items()) {
+					std::wstring sourceName = UTF16fromUTF8(keyVal.key());
+					CharaEvent charaEvent;
+					charaEvent.name = sourceName;
+					funcAddjsonEventToUmaEvent(keyVal.value()["Event"], charaEvent);
+
+					auto funcUpdateEventOptions = [](const CharaEvent& charaEvent, CharaEventList& charaEventList) -> bool {
+						for (auto& anotherCharaEventList : charaEventList) {
+							if (anotherCharaEventList->name == charaEvent.name) {	// ソース一致
+								bool update = false;
+								for (auto& anotherUmaEventList : anotherCharaEventList->umaEventList) {
+									for (const auto& umaEventList : charaEvent.umaEventList) {
+										if (anotherUmaEventList.eventName == umaEventList.eventName) {	// イベント名一致
+											anotherUmaEventList.eventOptions = umaEventList.eventOptions;	// 選択肢を上書き
+											update = true;
+										}
 									}
 								}
+								ATLASSERT(update);
+								return true;
 							}
-							ATLASSERT(update);
-							return true;
 						}
-					}
-					return false;
-				};
-				// chara/supportEventList へ上書きする
-				if (!funcUpdateEventOptions(charaEvent, m_charaEventList)) {
-					if (!funcUpdateEventOptions(charaEvent, m_supportEventList)) {
-						// イベントリストにイベント名がなかったので、m_supportEventListへ追加しておく
-						m_supportEventList.emplace_back(std::make_unique<CharaEvent>(charaEvent));
+						return false;
+					};
+					// chara/supportEventList へ上書きする
+					if (!funcUpdateEventOptions(charaEvent, m_charaEventList)) {
+						if (!funcUpdateEventOptions(charaEvent, m_supportEventList)) {
+							// イベントリストにイベント名がなかったので、m_supportEventListへ追加しておく
+							m_supportEventList.emplace_back(std::make_unique<CharaEvent>(charaEvent));
+						}
 					}
 				}
 			}

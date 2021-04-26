@@ -14,7 +14,7 @@ class PreviewWindow;
 #define	DEBUG_STRING
 #endif
 
-constexpr LPCWSTR	kAppVersion = L"v1.3" DEBUG_STRING;
+constexpr LPCWSTR	kAppVersion = L"v1.4" DEBUG_STRING;
 
 class CAboutDlg : public CDialogImpl<CAboutDlg>
 {

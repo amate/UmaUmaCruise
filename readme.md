@@ -72,6 +72,67 @@ icon
 - ICON HOIHOI  
 http://iconhoihoi.oops.jp/
 
+## ■How to build
+ビルドには、Visual Studio 2019が必要です  
+
+$(SolutionDir)は、UmaCruise.sln があるフォルダのことです
+
+・opencvの準備  
+https://github.com/opencv/opencv/releases  
+上記リンク先から opencv-4.x.x-vc14_vc15.exe をダウンロードして、適当なディレクトリにファイルを解凍してください
+
+$(SolutionDir)opencv\x64\lib に  
+opencv_world451.lib  
+opencv_world451d.lib  
+
+$(SolutionDir)opencv\include に  
+opencv2 フォルダが存在する状態にしてください
+
+・tesseractの準備  
+https://qiita.com/lilac0011/items/9fe6e061c3a036689a36  
+基本上記の記事通りで、vcpkgから導入します  
+
+>vcpkg install tesseract:x64-windows-static
+
+一部コマンドを変更して x64-windows-static と指定してください  
+vcpkg installが終了すると  
+vcpkg.exeがあるフォルダ\installed\x64-windows-static  フォルダ以下に、libやincludeディレクトリが生成されているはずです  
+
+x64-windows-staticフォルダをコピーして $(SolutionDir) へペースト  
+コピペしたフォルダ名を "tesseract" へ変更すれば完了です  
+$(SolutionDir)tesseract\lib に各種ライブラリが入ってるかどうかを確認してください
+
+・boostの準備  
+boost::log filesystem timer を使っているので、それぞれビルドが必要です  
+-Boostライブラリのビルド方法  
+https://boostjp.github.io/howtobuild.html  
+上記URLを参考にビルドしてください  
+
+コマンドライン
+>b2.exe install --prefix=lib64 toolset=msvc-14.2 runtime-link=static address-model=64 --with-filesystem --with-date_time --with-timer --with-log
+
+ビルドが終了すると
+boostフォルダ\lib64\lib にライブラリが生成されているはずです  
+UmaCruiseプロパティページの VC++ ディレクトリにパスを設定します
+インクルードディレクトリに  
+boostフォルダ\lib64\include\boost-1_xx  
+ライブラリディレクトリに  
+boostフォルダ\lib64\lib  
+を追加してください
+
+・WTLの準備  
+https://sourceforge.net/projects/wtl/files/latest/download  
+上記URLからファイルをダウンロードして、適当なフォルダに解凍してください  
+boostの時と同じように VC++ディレクトリのインクルードディレクトリに  
+WTL10のフォルダ\Include  
+のパスを追加してください
+
+インクルードディレクトリやライブラリディレクトリはDebug/Releaseそれぞれ設定してください
+
+以上で、ビルドの前準備は完了です  
+あとはビルドが正常に終わることを祈りましょう
+
+
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
 ‎Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
@@ -85,6 +146,23 @@ Copyright (C) 2021 amate
 ## ■更新履歴
 
 <pre>
+
+v1.4
+・[fix] 古いOSで起動に失敗するバグを多分修正(テストできないので直ったかどうかは分からない) #23
+・[fix] 高DPI環境でスクリーンショットの取り込み範囲がずれるのを修正 #20
+・[change] About画面でのdebugでのTextFromImageをAsync化した
+・[change] 選択肢/効果エディットボックスの更新はイベント名変更時のみとした
+・[change] 更新間隔に処理時間も含めるようにした
+・[fix] "修正"ボタンで変更した選択肢効果の改行に\r\nが入るのを\nだけが入るようにした
+・[add] Async用にTesseractWrapperにGetOCRFunctionを追加(キャッシュ化したTessBaseAPIを返す)
+・[change] UmaMusumeLibraryRevision.jsonに入ってた"メインストーリーイベント"をUmaMusumeLibraryMainStory.jsonへ移動させた
+(本体更新時UmaMusumeLibraryRevision.jsonの上書き対策)
+・[change] TextRecognizerでイベント名関連の処理をAsync化した(CPUに余裕があれば処理速度が倍ほど早くなった)
+・[fix] "ウマ娘詳細"画面で、"ナイスネイチャ"が認識されなかったのを修正
+・[change] 現在の日付も白背景か確認するようにした
+・[fix] グラスワンダー：「譲れないこと」の選択肢が逆なのを修正 #21
+・[fix] ナイスネイチャの"初詣"イベントが抜けていたのを修正
+・[add] readme.md に How to buildを追加
 
 v1.3
 ・古いCPUでスタートを押すと強制終了するバグを修正(tesseractを適切にビルドするようにした)

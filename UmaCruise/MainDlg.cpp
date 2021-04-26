@@ -54,6 +54,11 @@ bool SaveScreenShot(const std::wstring& device, const std::wstring& filePath)
 
 /////////////////////////////////////////////////////////////////////////////
 
+BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
+{
+	return CWindow::IsDialogMessage(pMsg);
+}
+
 void CMainDlg::ChangeWindowTitle(const std::wstring& title)
 {
 	CString str = L"UmaUmaCruise - ";
@@ -407,7 +412,7 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
 			m_umaTextRecoginzer.GetEventName(), 
 			m_umaTextRecoginzer.GetEventBottomOption() );
-		if (optUmaEvent) {
+		if (optUmaEvent && m_eventName != optUmaEvent->eventName.c_str()) {
 			m_eventName = optUmaEvent->eventName.c_str();
 			DoDataExchange(DDX_LOAD, IDC_EDIT_EVENTNAME);
 
@@ -479,6 +484,8 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 			while (!m_cancelAutoDetect.load()) {
 				Utility::timer timer;
 
+				const auto begin = std::chrono::steady_clock::now();
+
 				auto ssImage = m_umaTextRecoginzer.ScreenShot();
 				bool success = m_umaTextRecoginzer.TextRecognizer(ssImage.get());
 				if (success) {
@@ -511,7 +518,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 					auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
 						m_umaTextRecoginzer.GetEventName(), 
 						m_umaTextRecoginzer.GetEventBottomOption() );
-					if (optUmaEvent) {
+					if (optUmaEvent && m_eventName != optUmaEvent->eventName.c_str()) {
 						m_eventName = optUmaEvent->eventName.c_str();
 						DoDataExchange(DDX_LOAD, IDC_EDIT_EVENTNAME);
 
@@ -533,9 +540,16 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 					title.Format(L"scan: %d %s", count, (LPCWSTR)CA2W(timer.format().c_str()));
 					ChangeWindowTitle((LPCWSTR)title);
 
-					for (int i = 0; i < m_config.refreshInterval; ++i) {
-						::Sleep(1000);	// wait
-					}
+					// wait
+					const auto milisecInterval = m_config.refreshInterval * 1000;
+					auto end = std::chrono::steady_clock::now();
+					auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+					do {
+						::Sleep(50);
+						end = std::chrono::steady_clock::now();
+						elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+					} while (elapsed < milisecInterval);
+
 				} else {
 					if (!ssImage) {
 						ChangeWindowTitle(L"ウマ娘のウィンドウが見つかりません...");
@@ -614,6 +628,7 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		umaEvent.eventOptions[i].option = (LPCWSTR)text;
 		GetDlgItem(IDC_EFFECT).GetWindowText(text);
 		umaEvent.eventOptions[i].effect = (LPCWSTR)text;
+		boost::algorithm::replace_all(umaEvent.eventOptions[i].effect, L"\r\n", L"\n");
 
 		if (umaEvent.eventOptions[i].option.empty()) {
 			break;
@@ -635,15 +650,12 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		return;
 	}
 	{
-		std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
-		ATLASSERT(ifs);
-		if (!ifs) {
-			MessageBox(L"UmaMusumeLibraryRevision.json の読み込みに失敗");
-			return;
-		}
 		json jsonRevisionLibrary;
-		ifs >> jsonRevisionLibrary;
-		ifs.close();
+		std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
+		if (ifs) {
+			ifs >> jsonRevisionLibrary;
+			ifs.close();
+		}
 
 		std::string source = UTF8fromUTF16((LPCWSTR)m_eventSource);
 		std::string eventName = UTF8fromUTF16((LPCWSTR)m_eventName);
