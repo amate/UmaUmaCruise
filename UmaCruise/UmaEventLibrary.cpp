@@ -233,8 +233,8 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 
 #ifdef _DEBUG
 
-	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 0.6, m_kMinThreshold);
-	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 0.6, m_kMinThreshold);
+	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
+	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 1.0, m_kMinThreshold);
 
 	UmaEvent event1 = optResult ? _SearchEventOptions(optResult.get()) : UmaEvent();
 	UmaEvent event2 = optOptionResult ? _SearchEventOptionsFromBottomOption(optOptionResult.get()) : UmaEvent();
@@ -258,11 +258,11 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 	}
 #else
 
-	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 0.6, m_kMinThreshold);
+	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
 	if (optOptionResult) {	// ëIëéàÇ©ÇÁÇÃåüçıÇóDêÊÇ∑ÇÈ
 		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
 	}
-	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 0.6, m_kMinThreshold);
+	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 1.0, m_kMinThreshold);
 	if (optResult) {
 		return _SearchEventOptions(optResult.get());
 
