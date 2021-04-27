@@ -22,6 +22,8 @@ namespace TesseractWrapper {
 	std::unordered_map<DWORD, std::unique_ptr<tesseract::TessBaseAPI>> s_threadTessBest;
 	std::mutex	s_mtx;
 
+	std::vector<std::shared_ptr<TextFromImageFunc>> s_cacheOCRFunction;
+
 
 	bool TesseractInit()
 	{
@@ -33,11 +35,60 @@ namespace TesseractWrapper {
 		std::unique_lock<std::mutex> lock(s_mtx);
 		s_threadTess.clear();
 		s_threadTessBest.clear();
+
+		s_cacheOCRFunction.clear();
+	}
+
+	std::shared_ptr<TextFromImageFunc> GetOCRFunction()
+	{
+		std::unique_lock<std::mutex> lock(s_mtx);
+		// キャッシュを返す
+		for (auto& cacheFunc : s_cacheOCRFunction) {
+			if (cacheFunc.unique()) {
+				return cacheFunc;
+			}
+		}
+
+		// 新たに作成して返す
+
+		// tesseract init
+		auto ptess = std::make_shared<tesseract::TessBaseAPI>();
+
+		auto dbFolderPath = GetExeDirectory() / L"tessdata";
+		if (ptess->Init(dbFolderPath.string().c_str(), "jpn")) {
+			ERROR_LOG << L"Could not initialize tesseract.";
+			ATLASSERT(FALSE);
+			throw std::runtime_error("Could not initialize tesseract.");
+		}
+		INFO_LOG << L"ptess->Init success!";
+		ptess->SetPageSegMode(tesseract::/*PSM_SINGLE_BLOCK*/PSM_SINGLE_LINE);
+
+		// OCR関数作成
+		auto OCRFunc = std::make_shared<TextFromImageFunc>([ptess](cv::Mat targetImage) -> std::wstring {
+			Utility::timer timer;
+
+			ptess->SetImage((uchar*)targetImage.data, targetImage.size().width, targetImage.size().height, targetImage.channels(), targetImage.step);
+
+			ptess->Recognize(0);
+			std::wstring text = UTF16fromUTF8(ptess->GetUTF8Text()).c_str();
+
+			// whilte space を取り除く
+			boost::algorithm::trim(text);
+			boost::algorithm::replace_all(text, L" ", L"");
+			boost::algorithm::replace_all(text, L"\n", L"");
+
+			INFO_LOG << L"TextFromImage result: [" << text << L"] processing time: " << UTF16fromUTF8(timer.format());
+			return text;
+		});
+
+		s_cacheOCRFunction.emplace_back(OCRFunc);
+		lock.unlock();
+		return OCRFunc;
 	}
 
 	std::wstring TextFromImage(cv::Mat targetImage)
 	{
-		INFO_LOG << L"TextFromImage start";
+		//INFO_LOG << L"TextFromImage start";
 		Utility::timer timer;
 
 		std::unique_lock<std::mutex> lock(s_mtx);
