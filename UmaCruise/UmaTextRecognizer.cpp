@@ -210,7 +210,14 @@ bool UmaTextRecognizer::LoadSetting()
 
 std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 {
-	CWindow hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
+	CWindow hwndTarget = NULL;
+
+	if (m_targetClassName == "") {
+		hwndTarget = ::FindWindow(NULL, m_targetWindowName);
+	} else {
+		hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
+	}
+
 	if (!hwndTarget) {
 		return nullptr;
 	}

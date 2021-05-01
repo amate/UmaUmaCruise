@@ -456,7 +456,14 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		ChangeWindowTitle((LPCWSTR)title)
 			;
 	} else {
-		HWND hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
+		HWND hwndTarget = NULL;
+
+		if (m_targetClassName == "") {
+			hwndTarget = ::FindWindow(NULL, m_targetWindowName);
+		} else {
+			hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
+		}
+
 		if (!hwndTarget) {
 			ChangeWindowTitle(L"ウマ娘のウィンドウが見つかりません。。。");
 			return;
