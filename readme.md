@@ -29,6 +29,15 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 
 ![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png)
 
+### ・URA予想機能について
+
+>短距離: 1/4
+
+と表示されるとき、  
+"1"は実際にその距離で出場した回数  
+"4"は現在の日付以降に予約されているレースの回数  
+となります
+
 ## ■アンインストールの方法
 レジストリも何もいじっていないので、UmaUmaCruiseフォルダ事削除すれば終わりです
 
@@ -143,9 +152,34 @@ Copyright (C) 2021 amate
 
 一連のソースコードを、個人的な利用以外に使用することを禁止します
 
+## ■開発支援
+https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
+
 ## ■更新履歴
 
 <pre>
+
+v1.5
+・[add] レース一覧をウィンドウ化するオプションを追加
+・[add] レース一覧でレース予約機能を追加 (レースをCtrl+クリック or 右クリックメニューから"レース予約を切り替え")
+・[add] 出場レースの距離からURAファイナルズの距離を推定する機能を追加
+・[add] 設定に、"現在の日付が予約レースの開催日になったときに、音とウィンドウの振動で通知する"機能の追加
+・[add] 設定で、"UmaMusumeLibrary.jsonの更新確認"実行時にエラー発生した時、詳細なログを記録するようにした(info.logに記録されます)
+・[add] メインウィンドウのタイトルバーにソフトのバージョンを表記するようにした
+・[fix] プレビューウィンドウに画像をドロップした時に、画像ファイルをロックしないようにした
+・[fix] 現在の日付が巻き戻ることがあるのを修正
+・[change] サポートカードからイベント検索する時の優先度を R->SR->SSR　から SSR->SR->R へ変更
+・[change] TextRecognizerで、イベント選択肢は、画像を2倍化するように変更
+・[change] TextRecognizerで、育成ウマ娘名は、文字色抜き出しを利用するように変更
+・[change] TextRecognizerで、現在の日付は、文字色抜き出しと2倍化を利用するように変更
+・[add] TextRecognizerで、レース詳細からレース距離を抜き出す機能を追加
+・[add] TextRecognizerで、イベント名とイベント選択肢に'?'が含まれていた場合、'？(全角)'も候補に追加するようにした
+・[change] _IsEventNameIconで kBlueBackgroundThresholdの閾値を変更(緩い方へ)
+・[change] kMinWhiteTextRatioThresholdの閾値を変更(緩い方へ)
+・[change] RaceDataLibrary.json の　"スプリンターズステークス"と"フェブラリーステークス"の表記修正
+・[fix] UmaMusumeLibrary.json の "レース入賞"を"レース入着"に変更
+・[fix] UmaMusumeLibrary.json でメジロマックイーンの"エキサイティングお嬢様"のイベントが抜けていたのを修正
+・[add] About画面でのdebugで、kCurrentTurnBoundsと右Winキー押しながらのOCRでは、文字色抜き出し化を行うようにした
 
 v1.4
 ・[fix] 古いOSで起動に失敗するバグを多分修正(テストできないので直ったかどうかは分からない) #23
