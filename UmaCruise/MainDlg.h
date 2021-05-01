@@ -22,6 +22,7 @@
 
 #include "aboutdlg.h"
 #include "PreviewWindow.h"
+#include "RaceListWindow.h"
 #include "Config.h"
 
 
@@ -30,8 +31,7 @@ class CMainDlg :
 	public CUpdateUI<CMainDlg>,
 	public CMessageFilter, 
 	public CIdleHandler,
-	public CWinDataExchange<CMainDlg>,
-	public CCustomDraw<CMainDlg>
+	public CWinDataExchange<CMainDlg>
 {
 public:
 	enum { IDD = IDD_MAINDLG };
@@ -40,6 +40,8 @@ public:
 		kAutoOCRTimerID = 1,
 		kAutoOCRTimerInterval = 1000,
 	};
+
+	CMainDlg();
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -51,10 +53,6 @@ public:
 
 	void	ChangeWindowTitle(const std::wstring& title);
 
-	// overrides
-	DWORD OnPrePaint(int /*idCtrl*/, LPNMCUSTOMDRAW /*lpNMCustomDraw*/);
-	DWORD OnItemPrePaint(int /*idCtrl*/, LPNMCUSTOMDRAW /*lpNMCustomDraw*/);
-
 	BEGIN_UPDATE_UI_MAP(CMainDlg)
 	END_UPDATE_UI_MAP()
 
@@ -62,29 +60,6 @@ public:
 		DDX_CONTROL_HANDLE(IDC_COMBO_UMAMUSUME, m_cmbUmaMusume)
 		DDX_TEXT(IDC_EDIT_EVENTNAME, m_eventName)
 		DDX_TEXT(IDC_EDIT_EVENT_SOURCE, m_eventSource)
-
-		// Race
-		DDX_TEXT(IDC_EDIT_NOWDATE, m_currentTurn)
-		DDX_CHECK(IDC_CHECK_SHOWRACE_AFTERCURRENTDATE, m_showRaceAfterCurrentDate)
-
-		DDX_CHECK(IDC_CHECK_G1, m_gradeG1)
-		DDX_CHECK(IDC_CHECK_G2, m_gradeG2)
-		DDX_CHECK(IDC_CHECK_G3, m_gradeG3)
-
-		DDX_CHECK(IDC_CHECK_SPRINT, m_sprint)
-		DDX_CHECK(IDC_CHECK_MILE, m_mile)
-		DDX_CHECK(IDC_CHECK_MIDDLE, m_middle)
-		DDX_CHECK(IDC_CHECK_LONG, m_long)
-
-		DDX_CHECK(IDC_CHECK_GRASS, m_grass)
-		DDX_CHECK(IDC_CHECK_DART, m_dart)
-
-		DDX_CHECK(IDC_CHECK_RIGHT, m_right)
-		DDX_CHECK(IDC_CHECK_LEFT, m_left)
-		DDX_CHECK(IDC_CHECK_LINE, m_line)
-
-		DDX_CONTROL_HANDLE(IDC_LIST_RACE, m_raceListView)
-
 	END_DDX_MAP()
 
 
@@ -99,6 +74,10 @@ public:
 		MSG_WM_TIMER(OnTimer)
 		COMMAND_HANDLER_EX(IDC_COMBO_UMAMUSUME, CBN_SELCHANGE, OnSelChangeUmaMusume)
 
+		MESSAGE_HANDLER_EX(WM_ENTERSIZEMOVE, OnDockingProcess)
+		MESSAGE_HANDLER_EX(WM_MOVING, OnDockingProcess)
+		MESSAGE_HANDLER_EX(WM_EXITSIZEMOVE, OnDockingProcess)
+
 		MSG_WM_CTLCOLORDLG(OnCtlColorDlg)
 		MSG_WM_CTLCOLORSTATIC(OnCtlColorDlg)
 		MSG_WM_CTLCOLORBTN(OnCtlColorDlg)
@@ -109,13 +88,8 @@ public:
 
 		COMMAND_HANDLER_EX(IDC_EDIT_EVENTNAME, EN_CHANGE, OnEventNameChanged)
 
-		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REVISION, OnEventRevision)
+		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REVISION, OnEventRevision)	
 		
-		// Race List
-		COMMAND_ID_HANDLER_EX(IDC_CHECK_SHOWRACE_AFTERCURRENTDATE, OnShowRaceAfterCurrentDate)
-		COMMAND_RANGE_HANDLER_EX(IDC_CHECK_G1, IDC_CHECK_LOCATION_OOI, OnRaceFilterChanged)
-		
-		CHAIN_MSG_MAP(CCustomDraw<CMainDlg>)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -135,6 +109,8 @@ public:
 	void	OnTimer(UINT_PTR nIDEvent);
 	void	OnSelChangeUmaMusume(UINT uNotifyCode, int nID, CWindow wndCtl);
 
+	LRESULT OnDockingProcess(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 	HBRUSH OnCtlColorDlg(CDCHandle dc, CWindow wnd);
 
 	void OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl);
@@ -144,23 +120,20 @@ public:
 
 	void OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl);
 
-	void OnShowRaceAfterCurrentDate(UINT uNotifyCode, int nID, CWindow wndCtl);
-	void OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndCtl);
-
 private:
+	void	_DockOrPopupRaceListWindow();
+	void	_ExtentOrShrinkWindow(bool bExtent);
+
 	void	_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent);
-	int32_t	_GetRaceMatchState();
-	void	_SetRaceMatchState(int32_t state);
-	void	_UpdateRaceList(const std::wstring& turn);
 
 	Config	m_config;
 	bool	m_bShowRaceList = true;
 
 	UmaEventLibrary	m_umaEventLibrary;
-	RaceDateLibrary	m_raceDateLibrary;
 	UmaTextRecognizer	m_umaTextRecoginzer;
 
 	PreviewWindow	m_previewWindow;
+	RaceListWindow	m_raceListWindow;
 
 	CString	m_targetWindowName;
 	CString m_targetClassName;
@@ -173,31 +146,9 @@ private:
 	CString	m_eventSource;
 	CRect	m_rcBounds;
 
-	// Race
-	CString	m_currentTurn;
-
-	bool	m_showRaceAfterCurrentDate = true;
-	
-	bool	m_gradeG1 = true;
-	bool	m_gradeG2 = true;
-	bool	m_gradeG3 = true;
-
-	bool	m_sprint = true;
-	bool	m_mile = true;
-	bool	m_middle = true;
-	bool	m_long = true;
-
-	bool	m_grass = true;
-	bool	m_dart = true;
-
-	bool	m_right = true;
-	bool	m_left = true;
-	bool	m_line = true;
-
-	bool	m_raceLocation[RaceDateLibrary::Race::Location::kMaxLocationCount];
-
-	CListViewCtrl	m_raceListView;
-
 	std::thread	m_threadAutoDetect;
 	std::atomic_bool	m_cancelAutoDetect;
+
+	bool	m_bDockingMove = false;
+	CPoint	m_ptRelativeDockingPos;
 };

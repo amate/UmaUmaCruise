@@ -27,7 +27,9 @@ bool Config::LoadConfig()
 	refreshInterval = jsonSetting["Config"].value("RefreshInterval", refreshInterval);
 	autoStart = jsonSetting["Config"].value("AutoStart", autoStart);
 	stopUpdatePreviewOnTraining = jsonSetting["Config"].value("StopUpdatePreviewOnTraining", stopUpdatePreviewOnTraining);
-
+	popupRaceListWindow = jsonSetting["Config"].value("PopupRaceListWindow", popupRaceListWindow);
+	notifyFavoriteRaceHold = jsonSetting["Config"].value("NotifyFavoriteRaceHold", notifyFavoriteRaceHold);
+	
     return true;
 }
 
@@ -43,6 +45,8 @@ void Config::SaveConfig()
 	jsonSetting["Config"]["RefreshInterval"] = refreshInterval;
 	jsonSetting["Config"]["AutoStart"] = autoStart;
 	jsonSetting["Config"]["StopUpdatePreviewOnTraining"] = stopUpdatePreviewOnTraining;
+	jsonSetting["Config"]["PopupRaceListWindow"] = popupRaceListWindow;
+	jsonSetting["Config"]["NotifyFavoriteRaceHold"] = notifyFavoriteRaceHold;
 
 	std::ofstream ofs((GetExeDirectory() / "setting.json").wstring());
 	ofs << jsonSetting.dump(4);

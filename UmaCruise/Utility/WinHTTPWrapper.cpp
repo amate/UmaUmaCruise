@@ -1,6 +1,9 @@
 
 #include "stdafx.h"
+#include "..\stdafx.h"
 #include "WinHTTPWrapper.h"
+
+#include "Logger.h"
 
 #pragma comment (lib, "winhttp.lib")
 
@@ -97,7 +100,11 @@ bool	HttpSendRequestAndReceiveResponse(const INetHandle& hRequest, const std::st
 		if (bRet == 0) {
 			DWORD dwError = GetLastError();
 			ATLTRACE(_T("HttpSendRequestAndReceiveResponse - WinHttpReceiveResponse Error!:%d"), dwError);
+			ERROR_LOG << L"HttpSendRequestAndReceiveResponse - WinHttpReceiveResponse Error!: " << dwError;
 		}
+	} else {
+		DWORD dwError = GetLastError();
+		ERROR_LOG << L"HttpSendRequestAndReceiveResponse - WinHttpSendRequest Error!: " << dwError;
 	}
 	return bRet != 0;
 }

@@ -40,8 +40,8 @@ CSize	CalcActualSize(Gdiplus::Image* image, CSize maxImageSize)
 
 void PreviewWindow::UpdateImage(const std::wstring& imagePath)
 {
-	CComPtr<IStream> spFileStream;
-	::SHCreateStreamOnFileW(imagePath.c_str(), STGM_READ, &spFileStream);
+	CComPtr<IStream> spFileStream = LoadFileToMemoryStream(imagePath);
+	//::SHCreateStreamOnFileW(imagePath.c_str(), STGM_READ, &spFileStream);
 	ATLASSERT(spFileStream);
 	m_pImage.reset(Gdiplus::Image::FromStream(spFileStream));
 

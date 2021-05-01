@@ -38,15 +38,23 @@
             },
             "BackButtonBounds" : {
                 "x": 43, "y": 993, "width": 58, "height": 32
+            },
+            "RaceDetailBounds": {
+                "x": 30, "y": 451, "width": 316, "height": 29
             }
         },
 
         "ImageProcess": {
-            "CurrentTurnThreshold": 111
+            "CurrentTurnThreshold": 111,
+            "HSV_TextColorBounds": [
+                [12, 13],
+                [75, 255],
+                [100, 180]
+            ]
         },
 
         "Simstring": {
-            "MinThreshold": 0.4
+            "MinThreshold": 0.40
         }
     },
     "TypoDictionary": [

@@ -18,6 +18,8 @@ public:
 		DDX_CONTROL_HANDLE(IDC_COMBO_REFRESHINTERVAL, m_cmbRefreshInterval)
 		DDX_CHECK(IDC_CHECK_AUTOSTART, m_autoStart)
 		DDX_CHECK(IDC_CHECK_STOPUPDATEPREVIEWONTRAINING, m_stopUpdatePreviewOnTraining)
+		DDX_CHECK(IDC_CHECK_POPUP_RACELISTWINDOW, m_popupRaceListWindow)
+		DDX_CHECK(IDC_CHECK_NOTIFY_FAVORITERACEHOLD, m_notifyFavoriteRaceHold)
 	END_DDX_MAP()
 
 	BEGIN_MSG_MAP_EX(ConfigDlg)
@@ -45,5 +47,7 @@ private:
 	CComboBox	m_cmbRefreshInterval;
 	bool	m_autoStart = false;
 	bool	m_stopUpdatePreviewOnTraining = false;
+	bool	m_popupRaceListWindow = false;
+	bool	m_notifyFavoriteRaceHold = true;
 
 };

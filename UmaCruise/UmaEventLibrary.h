@@ -62,6 +62,11 @@ public:
 		return m_lastEventSource;
 	}
 
+	// 育成ウマ娘の変更を通知する関数を登録する
+	void	RegisterNotifyChangeIkuseiUmaMusume(std::function<void(std::wstring)> func) {
+		m_funcNotifyChangeIkuseiUmaMusume = func;
+	}
+
 private:
 	void		_DBUmaNameInit();
 	void		_DBInit();
@@ -70,6 +75,7 @@ private:
 
 	// 現在選択中の育成ウマ娘の名前
 	std::wstring	m_currentIkuseUmaMusume;
+	CharaEvent*		m_currentIkuseiUmaEvent = nullptr;
 	std::mutex		m_mtxName;
 
 	// 育成ウマ娘
@@ -85,5 +91,7 @@ private:
 	std::unique_ptr<simstring::reader>	m_dbOptionReader;
 
 	double	m_kMinThreshold = 0.4;
+
+	std::function<void (std::wstring)> m_funcNotifyChangeIkuseiUmaMusume;
 };
 

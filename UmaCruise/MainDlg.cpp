@@ -54,6 +54,10 @@ bool SaveScreenShot(const std::wstring& device, const std::wstring& filePath)
 
 /////////////////////////////////////////////////////////////////////////////
 
+CMainDlg::CMainDlg() : m_raceListWindow(m_config)
+{
+}
+
 BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
 {
 	return CWindow::IsDialogMessage(pMsg);
@@ -62,31 +66,8 @@ BOOL CMainDlg::PreTranslateMessage(MSG* pMsg)
 void CMainDlg::ChangeWindowTitle(const std::wstring& title)
 {
 	CString str = L"UmaUmaCruise - ";
-	str += title.c_str();
+	str.Format(L"UmaUmaCruise %s - %s", kAppVersion, title.c_str());
 	SetWindowText(str);
-}
-
-DWORD CMainDlg::OnPrePaint(int idCtrl, LPNMCUSTOMDRAW)
-{
-	if (idCtrl == IDC_LIST_RACE) {
-		return CDRF_NOTIFYITEMDRAW;
-	}
-	return CDRF_DODEFAULT;
-}
-
-DWORD CMainDlg::OnItemPrePaint(int, LPNMCUSTOMDRAW lpNMCustomDraw)
-{
-	// 前半と後半でカラムの色を色分けする
-	auto pCustomDraw = (LPNMLVCUSTOMDRAW)lpNMCustomDraw;
-#if 0
-	CString date;
-	m_raceListView.GetItemText(static_cast<int>(pCustomDraw->nmcd.dwItemSpec), 0, date);
-	const bool first = date.Right(2) == L"前半";
-#endif
-	const bool first = pCustomDraw->nmcd.lItemlParam != 0;
-	
-	pCustomDraw->clrTextBk = first ? RGB(230, 231, 255) : RGB(252, 228, 214);// : RGB(241, 246, 252);
-	return 0;
 }
 
 LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
@@ -129,11 +110,13 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		m_brsOptions[i].CreateSolidBrush(m_optionBkColor[i]);
 	}
 
+	// プレビューウィンドウ作成
 	m_previewWindow.Create(m_hWnd);
 	m_previewWindow.SetNotifyDragdropBounds([this](const CRect& rcBounds) {
 		m_rcBounds = rcBounds;
 	});
 
+	// UmaMusumeLibraryを読み込み
 	if (!m_umaEventLibrary.LoadUmaMusumeLibrary()) {
 		ERROR_LOG << L"LoadUmaMusumeLibrary failed";
 		ATLASSERT(FALSE);
@@ -149,34 +132,16 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		}
 	}
 
-	if (!m_raceDateLibrary.LoadRaceDataLibrary()) {
-		ERROR_LOG << L"LoadRaceDataLibrary failed";
-		ATLASSERT(FALSE);
-	}
-
 	if (!m_umaTextRecoginzer.LoadSetting()) {
 		ERROR_LOG << L"m_umaTextRecoginzer.LoadSetting failed";
 		ATLASSERT(FALSE);
 	}
 
-	// Race List
-	m_raceListView.SetExtendedListViewStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
-
-	auto funcAddColumn = [this](LPCWSTR columnName, int nItem, int columnWidth) {
-		LVCOLUMN lvc = {};
-		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		lvc.fmt = LVCFMT_LEFT;
-		lvc.pszText = (LPTSTR)columnName;
-		lvc.cx = columnWidth;
-		lvc.iSubItem = nItem;
-		m_raceListView.InsertColumn(nItem, &lvc);
-	};
-	funcAddColumn(L"開催日", 0, 120);
-	funcAddColumn(L"レース名", 1, 144);
-	funcAddColumn(L"距離", 2, 110);
-	funcAddColumn(L"コース", 3, 42);
-	funcAddColumn(L"方向", 4, 38);
-	funcAddColumn(L"レース場", 5, 58);
+	// レース一覧ウィンドウ作成
+	m_raceListWindow.Create(m_hWnd);
+	m_umaEventLibrary.RegisterNotifyChangeIkuseiUmaMusume([this](const std::wstring& umaName) {
+		m_raceListWindow.ChangeIkuseiUmaMusume(umaName);
+	});
 
 	try {
 		{
@@ -206,8 +171,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 					SetWindowPos(NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER);
 				}
 
-				m_bShowRaceList = !jsonSetting["MainDlg"].value<bool>("ShowRaceList", m_bShowRaceList);
-				OnShowHideRaceList(0, 0, NULL);
+				m_bShowRaceList = jsonSetting["MainDlg"].value<bool>("ShowRaceList", m_bShowRaceList);
 			}
 
 			{
@@ -221,14 +185,8 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 					m_previewWindow.ShowWindow(SW_NORMAL);
 				}
 			}
-			// Race
-			m_showRaceAfterCurrentDate = jsonSetting["MainDlg"].value<bool>("ShowRaceAfterCurrentDate", m_showRaceAfterCurrentDate);
-			const int32_t state = jsonSetting["MainDlg"].value<int32_t>("RaceMatchState", -1);
-			_SetRaceMatchState(state);
-		} else {
-			_SetRaceMatchState(-1);
 		}
-		_UpdateRaceList(L"");
+		_DockOrPopupRaceListWindow();
 
 		DoDataExchange(DDX_LOAD);
 
@@ -274,25 +232,21 @@ LRESULT CMainDlg::OnAppAbout(WORD, WORD, HWND, BOOL&)
 // レースリストの表示を切り替え
 void CMainDlg::OnShowHideRaceList(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
-	CRect rcWindow;
-	GetWindowRect(&rcWindow);
-
-	enum { kRightMargin = 23 };
-
-	const int targetID = m_bShowRaceList ? IDC_BUTTON_SHOWHIDE_RACELIST : IDC_STATIC_RACELIST_GROUP;
-	CRect rcCtrl;
-	GetDlgItem(targetID).GetClientRect(&rcCtrl);
-	GetDlgItem(targetID).MapWindowPoints(m_hWnd, &rcCtrl);
-	//AdjustWindowRectEx(&rcCtrl, GetStyle(), FALSE, GetExStyle());
-	rcCtrl.right += kRightMargin;
-	SetWindowPos(NULL, 0, 0, rcCtrl.right, rcWindow.Height(), SWP_NOMOVE | SWP_NOZORDER);
-
 	m_bShowRaceList = !m_bShowRaceList;
+
+	if (m_config.popupRaceListWindow) {
+		m_raceListWindow.ShowWindow(m_bShowRaceList);
+
+	} else {
+		_ExtentOrShrinkWindow(m_bShowRaceList);	
+	}
 }
 
 LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 {
 	DoDataExchange(DDX_SAVE);
+
+	m_raceListWindow.ShowWindow(false);	// ウィンドウ位置保存
 
 	json jsonSetting;
 	std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
@@ -319,12 +273,10 @@ LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 			jsonSetting["PreviewWindow"]["ShowWindow"] = showWindow;
 		}
 	}
-	// Race
-	jsonSetting["MainDlg"]["ShowRaceAfterCurrentDate"] = m_showRaceAfterCurrentDate;
-	jsonSetting["MainDlg"]["RaceMatchState"] = _GetRaceMatchState();
 
 	std::ofstream ofs((GetExeDirectory() / "setting.json").wstring());
 	ofs << jsonSetting.dump(4);
+	ofs.close();
 
 	DestroyWindow();
 	::PostQuitMessage(0);
@@ -333,8 +285,14 @@ LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 
 void CMainDlg::OnShowConfigDlg(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
+	const bool prevPopupRaceListWindow = m_config.popupRaceListWindow;
 	ConfigDlg dlg(m_config);
-	dlg.DoModal(m_hWnd);
+	auto ret = dlg.DoModal(m_hWnd);
+	if (ret == IDOK) {
+		if (prevPopupRaceListWindow != m_config.popupRaceListWindow) {
+			_DockOrPopupRaceListWindow();
+		}
+	}
 }
 
 void CMainDlg::OnShowPreviewWindow(UINT uNotifyCode, int nID, CWindow wndCtl)
@@ -346,6 +304,7 @@ void CMainDlg::OnTimer(UINT_PTR nIDEvent)
 {
 }
 
+// コンボボックスから育成ウマ娘が変更された場合
 void CMainDlg::OnSelChangeUmaMusume(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	const int index = m_cmbUmaMusume.GetCurSel();
@@ -355,9 +314,71 @@ void CMainDlg::OnSelChangeUmaMusume(UINT uNotifyCode, int nID, CWindow wndCtl)
 	CString umaName;
 	m_cmbUmaMusume.GetLBText(index, umaName);
 	if (umaName.Left(1) == L"☆") {
+		m_umaEventLibrary.ChangeIkuseiUmaMusume(L"");
 		return;
 	}
 	m_umaEventLibrary.ChangeIkuseiUmaMusume((LPCWSTR)umaName);
+}
+
+// ドッキング状態ならレース一覧ウィンドウを同時に動かす
+LRESULT CMainDlg::OnDockingProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	auto funcDockingMove = [this]() -> bool {
+		CRect rcParentWindow;
+		GetWindowRect(&rcParentWindow);
+
+		CRect rcWindow;
+		m_raceListWindow.GetWindowRect(&rcWindow);
+		CRect rcClient;
+		m_raceListWindow.GetClientRect(&rcClient);
+
+		const int cxPadding = (rcWindow.Width() - rcClient.Width()) - (GetSystemMetrics(SM_CXBORDER) * 2);//GetSystemMetrics(SM_CXSIZEFRAME) * 2;
+		const int cyPadding = GetSystemMetrics(SM_CYSIZEFRAME) * 2;
+
+		bool bDocking = false;
+		// メインの右にある
+		if (std::abs(rcParentWindow.right - rcWindow.left) <= RaceListWindow::kDockingMargin) {
+			rcWindow.MoveToX(rcParentWindow.right - cxPadding);
+			bDocking = true;
+
+			// メインの左にある
+		} else if (std::abs(rcParentWindow.left - rcWindow.right) <= RaceListWindow::kDockingMargin) {
+			rcWindow.MoveToX(rcParentWindow.left - rcWindow.Width() + cxPadding);
+			bDocking = true;
+
+			// メインの上にある
+		} else if (std::abs(rcParentWindow.top - rcWindow.bottom) <= RaceListWindow::kDockingMargin) {
+			rcWindow.MoveToY(rcParentWindow.top - rcWindow.Height() + cyPadding);
+			bDocking = true;
+
+			// メインの下にある
+		} else if (std::abs(rcParentWindow.bottom - rcWindow.top) <= RaceListWindow::kDockingMargin) {
+			rcWindow.MoveToY(rcParentWindow.bottom - cyPadding);
+			bDocking = true;
+		}
+		if (bDocking) {
+			m_raceListWindow.MoveWindow(&rcWindow);
+
+			m_ptRelativeDockingPos.x = rcWindow.left - rcParentWindow.left;
+			m_ptRelativeDockingPos.y = rcWindow.top - rcParentWindow.top;
+		}
+		return bDocking;
+	};
+	if (uMsg == WM_ENTERSIZEMOVE) {
+		m_bDockingMove = false;
+		if (m_config.popupRaceListWindow) {
+			m_bDockingMove = funcDockingMove();
+		}
+	} else if (m_bDockingMove) {
+		CRect rcWindow;
+		GetWindowRect(&rcWindow);
+
+		CPoint ptActualPos = m_ptRelativeDockingPos;
+		ptActualPos.x += rcWindow.left;
+		ptActualPos.y += rcWindow.top;
+		m_raceListWindow.SetWindowPos(NULL, ptActualPos.x, ptActualPos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+	return TRUE;
 }
 
 // ダイアログの背景色を白に変更
@@ -424,10 +445,10 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 
 		// 現在ターン
-		std::wstring currentTurn = m_raceDateLibrary.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
-		if (currentTurn.length() && m_currentTurn != currentTurn.c_str()) {
-			_UpdateRaceList(currentTurn);
-		}
+		m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
+
+		// レース距離
+		m_raceListWindow.EntryRaceDistance(m_umaTextRecoginzer.GetEntryRaceDistance());
 
 		//++count;
 		CString title;
@@ -530,14 +551,14 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 
 					// 現在ターン
-					std::wstring currentTurn = m_raceDateLibrary.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
-					if (currentTurn.length() && m_currentTurn != currentTurn.c_str()) {
-						_UpdateRaceList(currentTurn);
-					}
+					m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
+
+					// レース距離
+					m_raceListWindow.EntryRaceDistance(m_umaTextRecoginzer.GetEntryRaceDistance());
 
 					++count;
 					CString title;
-					title.Format(L"scan: %d %s", count, (LPCWSTR)CA2W(timer.format().c_str()));
+					title.Format(L"scan: %d %s", count, (LPCWSTR)CA2W(timer.format(3, "[%ws]").c_str()));
 					ChangeWindowTitle((LPCWSTR)title);
 
 					// wait
@@ -592,7 +613,7 @@ void CMainDlg::OnEventNameChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	std::vector<std::wstring> eventNames;
 	eventNames.emplace_back((LPCWSTR)m_eventName);
-	auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(eventNames, std::vector<std::wstring>());
+	auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(eventNames, { L"" });
 	if (optUmaEvent) {
 		ChangeWindowTitle(optUmaEvent->eventName);
 		_UpdateEventOptions(*optUmaEvent);
@@ -698,16 +719,70 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 }
 
-void CMainDlg::OnShowRaceAfterCurrentDate(UINT uNotifyCode, int nID, CWindow wndCtl)
+
+// レース一覧をメインダイアログにドッキングさせるか、ポップアップウィンドウ化させる
+void CMainDlg::_DockOrPopupRaceListWindow()
 {
-	DoDataExchange(DDX_SAVE);
-	_UpdateRaceList((LPCWSTR)m_currentTurn);
+	if (!m_config.popupRaceListWindow) {
+		// docking
+		INFO_LOG << L"docking";
+
+		// レース一覧ウィンドウの位置を保存しておく＆非表示化
+		m_raceListWindow.ShowWindow(false);
+
+		// 子ウィンドウ化
+		m_raceListWindow.ModifyStyle(WS_POPUPWINDOW | WS_CAPTION, WS_CHILD);
+		m_raceListWindow.SetParent(m_hWnd);
+
+		// RaceListWindowの位置を調節
+		CRect rcShowHideButton;
+		GetDlgItem(IDC_BUTTON_SHOWHIDE_RACELIST).GetClientRect(&rcShowHideButton);
+		GetDlgItem(IDC_BUTTON_SHOWHIDE_RACELIST).MapWindowPoints(m_hWnd, &rcShowHideButton);
+		m_raceListWindow.SetWindowPos(NULL, rcShowHideButton.right, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	} else {	
+		// popup
+		INFO_LOG << L"popup";
+
+		// ポップアップウィンドウ化
+		m_raceListWindow.ModifyStyle(WS_CHILD, WS_POPUPWINDOW | WS_CAPTION);
+		m_raceListWindow.SetParent(NULL);
+
+		// メインダイアログの幅を縮小させる
+		_ExtentOrShrinkWindow(false);
+	}
+	// レース一覧の表示/非表示を復元
+	m_bShowRaceList = !m_bShowRaceList;
+	OnShowHideRaceList(0, 0, NULL);
 }
 
-void CMainDlg::OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
+// レース一覧のためにウィンドウの幅を伸ばしたり縮めたりする
+void CMainDlg::_ExtentOrShrinkWindow(bool bExtent)
 {
-	DoDataExchange(DDX_SAVE);
-	_UpdateRaceList((LPCWSTR)m_currentTurn);
+	CRect rcWindow;
+	GetWindowRect(&rcWindow);
+
+	int windowWidth = 0;
+	if (bExtent) {
+		ATLASSERT(IsChild(m_raceListWindow));
+		CRect rcClientGroup;
+		CWindow wndRaceListGroup = m_raceListWindow.GetDlgItem(IDC_STATIC_RACELIST_GROUP);
+		wndRaceListGroup.GetClientRect(&rcClientGroup);
+		wndRaceListGroup.MapWindowPoints(m_hWnd, &rcClientGroup);
+		windowWidth = rcClientGroup.right;
+
+		m_raceListWindow.SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+	} else {
+		CRect rcCtrl;
+		GetDlgItem(IDC_BUTTON_SHOWHIDE_RACELIST).GetClientRect(&rcCtrl);
+		GetDlgItem(IDC_BUTTON_SHOWHIDE_RACELIST).MapWindowPoints(m_hWnd, &rcCtrl);
+		windowWidth = rcCtrl.right;
+
+		m_raceListWindow.SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+	}
+	//AdjustWindowRectEx(&rcCtrl, GetStyle(), FALSE, GetExStyle());
+	enum { kRightMargin = 23 };
+	windowWidth += kRightMargin;
+	SetWindowPos(NULL, 0, 0, windowWidth, rcWindow.Height(), SWP_NOMOVE | SWP_NOZORDER);
 }
 
 void CMainDlg::_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent)
@@ -721,103 +796,4 @@ void CMainDlg::_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent)
 	}
 }
 
-int32_t CMainDlg::_GetRaceMatchState()
-{
-	int32_t state = 0;
-	state |= m_gradeG1 ? RaceDateLibrary::Race::Grade::kG1 : 0;
-	state |= m_gradeG2 ? RaceDateLibrary::Race::Grade::kG2 : 0;
-	state |= m_gradeG3 ? RaceDateLibrary::Race::Grade::kG3 : 0;
 
-	state |= m_sprint ? RaceDateLibrary::Race::DistanceClass::kSprint : 0;
-	state |= m_mile ? RaceDateLibrary::Race::DistanceClass::kMile : 0;
-	state |= m_middle ? RaceDateLibrary::Race::DistanceClass::kMiddle : 0;
-	state |= m_long ? RaceDateLibrary::Race::DistanceClass::kLong : 0;
-
-	state |= m_grass ? RaceDateLibrary::Race::GroundCondition::kGrass : 0;
-	state |= m_dart ? RaceDateLibrary::Race::GroundCondition::kDart : 0;
-
-	state |= m_right ? RaceDateLibrary::Race::Rotation::kRight : 0;
-	state |= m_left ? RaceDateLibrary::Race::Rotation::kLeft : 0;
-	state |= m_line ? RaceDateLibrary::Race::Rotation::kLine : 0;
-
-	for (int i = 0; i < RaceDateLibrary::Race::Location::kMaxLocationCount; ++i) {
-		const int checkBoxID = IDC_CHECK_LOCATION_SAPPORO + i;
-		bool check = CButton(GetDlgItem(checkBoxID)).GetCheck() == BST_CHECKED;
-		if (check) {
-			state |= RaceDateLibrary::Race::Location::kSapporo << i;
-		}
-	}
-	return state;
-}
-
-void CMainDlg::_SetRaceMatchState(int32_t state)
-{
-	m_gradeG1 = (state & RaceDateLibrary::Race::kG1) != 0;
-	m_gradeG2 = (state & RaceDateLibrary::Race::kG2) != 0;
-	m_gradeG3 = (state & RaceDateLibrary::Race::kG3) != 0;
-
-	m_sprint = (state & RaceDateLibrary::Race::kSprint) != 0;
-	m_mile = (state & RaceDateLibrary::Race::kMile) != 0;
-	m_middle = (state & RaceDateLibrary::Race::kMiddle) != 0;
-	m_long = (state & RaceDateLibrary::Race::kLong) != 0;
-
-	m_grass = (state & RaceDateLibrary::Race::kGrass) != 0;
-	m_dart = (state & RaceDateLibrary::Race::kDart) != 0;
-
-	m_right = (state & RaceDateLibrary::Race::kRight) != 0;
-	m_left = (state & RaceDateLibrary::Race::kLeft) != 0;
-	m_line = (state & RaceDateLibrary::Race::kLine) != 0;
-
-	for (int i = 0; i < RaceDateLibrary::Race::Location::kMaxLocationCount; ++i) {
-		RaceDateLibrary::Race::Location location = 
-			static_cast<RaceDateLibrary::Race::Location>(RaceDateLibrary::Race::Location::kSapporo << i);
-		bool check = (state & location) != 0;
-		const int checkBoxID = IDC_CHECK_LOCATION_SAPPORO + i;
-		CButton(GetDlgItem(checkBoxID)).SetCheck(check);
-	}
-}
-
-void CMainDlg::_UpdateRaceList(const std::wstring& turn)
-{
-	m_currentTurn = turn.c_str();
-	DoDataExchange(DDX_LOAD, IDC_EDIT_NOWDATE);
-
-	m_raceListView.SetRedraw(FALSE);
-	m_raceListView.DeleteAllItems();
-
-	size_t i = 0;
-	if (turn.length() && m_showRaceAfterCurrentDate) {
-		i = m_raceDateLibrary.GetTurnNumberFromTurnName(turn);
-	}
-	const int32_t state = _GetRaceMatchState();
-
-	const auto& turnOrderedRaceList = m_raceDateLibrary.GetTurnOrderedRaceList();
-	const auto& allTurnList = m_raceDateLibrary.GetAllTurnList();
-	const size_t turnLength = allTurnList.size();
-	bool	alter = false;
-	for (; i < turnLength; ++i) {
-		if (turnOrderedRaceList[i].empty()) {
-			continue;
-		}
-		std::wstring date = allTurnList[i];	// 開催日
-		bool insert = false;
-		for (const auto& race : turnOrderedRaceList[i]) {
-			if (race->IsMatchState(state)) {
-				if (!insert) {
-					insert = !insert;
-					alter = !alter;
-				}
-				int pos = m_raceListView.GetItemCount();
-				m_raceListView.InsertItem(pos, date.c_str());
-				m_raceListView.SetItemText(pos, 1, race->RaceName().c_str());
-				m_raceListView.SetItemText(pos, 2, race->DistanceText().c_str());
-				m_raceListView.SetItemText(pos, 3, race->GroundConditionText().c_str());
-				m_raceListView.SetItemText(pos, 4, race->RotationText().c_str());
-				m_raceListView.SetItemText(pos, 5, race->location.c_str());
-				m_raceListView.SetItemData(pos, alter);
-
-			}
-		}
-	}
-	m_raceListView.SetRedraw(TRUE);
-}

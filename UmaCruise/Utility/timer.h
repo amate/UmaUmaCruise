@@ -18,6 +18,7 @@ namespace Utility {
 		}
 
 		std::string format() { return __super::format(6, m_format); }
+		std::string format(short places, const std::string& format) { return __super::format(places, format); }
 
 	private:
 		std::string m_format;

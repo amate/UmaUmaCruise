@@ -124,6 +124,8 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 
 			funcLoad(jsonLibrary, "Charactor", m_charaEventList);
 			funcLoad(jsonLibrary, "Support", m_supportEventList);
+			// R->SR->SSRと読み込まれるので SSR->SR->R順に逆転しておく
+			std::reverse(m_supportEventList.begin(), m_supportEventList.end());			
 		}
 		{	// UmaMusumeLibraryMainStory.json
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryMainStory.json").wstring());
@@ -187,6 +189,12 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 		}
 
 		_DBUmaNameInit();
+
+		// もう一度呼ばれたときのために m_currentIkuseiUmaEvent を初期化しておく
+		m_currentIkuseiUmaEvent = nullptr;
+		std::wstring ikuseiUmaName = m_currentIkuseUmaMusume;
+		m_currentIkuseUmaMusume.clear();
+		ChangeIkuseiUmaMusume(ikuseiUmaName);
 		return true;
 	}
 	catch (std::exception& e) {
@@ -202,6 +210,23 @@ void UmaEventLibrary::ChangeIkuseiUmaMusume(const std::wstring& umaName)
 	if (m_currentIkuseUmaMusume != umaName) {
 		INFO_LOG << L"ChangeIkuseiUmaMusume: " << umaName;
 		m_currentIkuseUmaMusume = umaName;
+
+		m_currentIkuseiUmaEvent = nullptr;
+		if (m_currentIkuseUmaMusume.length()) {
+			for (const auto& charaEvent : m_charaEventList) {
+				if (charaEvent->name == m_currentIkuseUmaMusume) {
+					m_currentIkuseiUmaEvent = charaEvent.get();
+					break;
+				}
+			}
+			ATLASSERT(m_currentIkuseiUmaEvent);
+			if (!m_currentIkuseiUmaEvent) {
+				ERROR_LOG << L"m_charaEventList から育成ウマ娘が見つかりません: " << umaName;
+			}
+		}
+		if (m_funcNotifyChangeIkuseiUmaMusume) {
+			m_funcNotifyChangeIkuseiUmaMusume(umaName);
+		}
 		m_simstringDBInit = false;
 	}
 }
@@ -211,8 +236,8 @@ void UmaEventLibrary::AnbigiousChangeIkuseImaMusume(std::vector<std::wstring> am
 	// whilte space を取り除く
 	for (auto& name : ambiguousUmaMusumeNames) {
 		boost::algorithm::trim(name);
-		boost::algorithm::replace_all(name, L" ", L"");
-		boost::algorithm::replace_all(name, L"\n", L"");
+		boost::algorithm::replace_all(name, L"[", L"【");
+		boost::algorithm::replace_all(name, L"]",  L"】");
 	}
 
 	// Output similar strings from Unicode queries.
@@ -381,18 +406,13 @@ void UmaEventLibrary::_DBInit()
 UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstring& eventName)
 {
 	// 育成ウマ娘のイベントを探す
-	for (const auto& charaEvent : m_charaEventList) {
-		if (charaEvent->name.find(m_currentIkuseUmaMusume) == std::wstring::npos) {
-			continue;
-		}
-
-		for (const auto& umaEvent : charaEvent->umaEventList) {
+	if (m_currentIkuseiUmaEvent) {
+		for (const auto& umaEvent : m_currentIkuseiUmaEvent->umaEventList) {
 			if (umaEvent.eventName == eventName) {
-				m_lastEventSource = charaEvent->name;
+				m_lastEventSource = m_currentIkuseiUmaEvent->name;
 				return umaEvent;
 			}
 		}
-		break;
 	}
 
 	// サポートカードのイベントを探す
@@ -411,24 +431,19 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstrin
 UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptionsFromBottomOption(const std::wstring& bottomOption)
 {
 	// 育成ウマ娘のイベントを探す
-	for (const auto& charaEvent : m_charaEventList) {
-		if (charaEvent->name.find(m_currentIkuseUmaMusume) == std::wstring::npos) {
-			continue;
-		}
-
-		for (const auto& umaEvent : charaEvent->umaEventList) {
+	if (m_currentIkuseiUmaEvent) {
+		for (const auto& umaEvent : m_currentIkuseiUmaEvent->umaEventList) {
 			for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
 				if (it->option.empty()) {
 					continue;
 				}
 				if (it->option == bottomOption) {	// 最後の選択肢を比較
-					m_lastEventSource = charaEvent->name;
+					m_lastEventSource = m_currentIkuseiUmaEvent->name;
 					return umaEvent;
 				}
 				break;
 			}
 		}
-		break;
 	}
 
 	// サポートカードのイベントを探す

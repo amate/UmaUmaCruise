@@ -63,7 +63,7 @@ bool IsEventNameIcon(cv::Mat srcImage, const CRect& rcIconBounds)
 	cv::threshold(splitColors[0], blueThresImage, kBlueThreshold, 255.0, cv::THRESH_BINARY);
 	//cv::imshow("Blue thres", blueThresImage);
 	const double blueRatio = ImageWhiteRatio(blueThresImage);
-	constexpr double kBlueBackgroundThreshold = 0.9;	// 青背景率の閾値
+	constexpr double kBlueBackgroundThreshold = 0.7;	// 青背景率の閾値
 	if (kBlueBackgroundThreshold < blueRatio) {
 		return false;	// サポートカードイベント
 	}
@@ -188,7 +188,6 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 	}
 
 	cv::Mat cutImage(srcImage, cvRectFromCRect(rcBounds));
-	//cv::imwrite((GetExeDirectory() / L"cutImage.bmp").string().c_str(), cutImage);
 
 	if (index == kEventNameBounds /*|| index == kCurrentMenuBounds*/) {
 		if (!bNoAdjustBounds) {	// テキストを正確囲む
@@ -212,6 +211,42 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		return 0;
 	}
 	m_previewWindow.ChangeDragdropBounds(rcBounds);
+
+	cv::imwrite((GetExeDirectory() / L"cutImage.png").string().c_str(), cutImage);
+
+	if (index == kCurrentTurnBounds || ::GetKeyState(VK_RWIN) < 0) {
+		//cv::imwrite((GetExeDirectory() / L"test.png").string().c_str(), cutImage);
+		//cv::Mat cutImage;
+		//cutImage = cv::imread((GetExeDirectory() / L"test.png").string().c_str());
+		cv::Mat hsvImage;
+		cv::cvtColor(cutImage, hsvImage, cv::COLOR_BGR2HSV);
+
+		const double scale = 2.0;
+		cv::Mat resizedImage;
+		cv::resize(hsvImage, resizedImage, cv::Size(), scale, scale, cv::INTER_LINEAR/*INTER_CUBIC*/);
+
+		int h_min = 12;
+		int h_max = 13;
+		int s_min = 75;
+		int s_max = 255;
+		int v_min = 100;
+		int v_max = 180;
+		cv::Mat textImage;
+		cv::inRange(resizedImage, cv::Scalar(h_min, s_min, v_min), cv::Scalar(h_max, s_max, v_max), textImage);
+
+		cv::Mat invertedTextImage;
+		cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
+
+		cv::imshow("1", invertedTextImage);
+		cv::imshow("2", resizedImage);
+		cv::imshow("3", textImage);
+
+		CString result;
+		result.AppendFormat(L"1: %s", TextFromImage(invertedTextImage).c_str());
+
+		m_editResult.SetWindowTextW(result);
+		return 0;
+	}
 
 	for (int i = 0; i < 2; ++i) {
 		CEdit edit = m_editResult;
@@ -245,7 +280,6 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		cv::Mat thresImage2;
 		//cv::threshold(grayImage, thresImage, 190.0, 255.0, cv::THRESH_BINARY_INV);
 		cv::threshold(invertedImage, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);
-
 		// ==================================================
 
 		ATLTRACE(L"切り抜き変換 %s\n", UTF16fromUTF8(timer.format()).c_str());

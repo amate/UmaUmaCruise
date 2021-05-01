@@ -25,6 +25,8 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	m_autoStart = m_config.autoStart;
 	m_stopUpdatePreviewOnTraining = m_config.stopUpdatePreviewOnTraining;
+	m_popupRaceListWindow = m_config.popupRaceListWindow;
+	m_notifyFavoriteRaceHold = m_config.notifyFavoriteRaceHold;
 	DoDataExchange(DDX_LOAD);
 
 	return 0;
@@ -43,6 +45,8 @@ LRESULT ConfigDlg::OnOK(WORD, WORD wID, HWND, BOOL&)
 	}
 	m_config.autoStart = m_autoStart;
 	m_config.stopUpdatePreviewOnTraining = m_stopUpdatePreviewOnTraining;
+	m_config.popupRaceListWindow = m_popupRaceListWindow;
+	m_config.notifyFavoriteRaceHold = m_notifyFavoriteRaceHold;
 
 	m_config.SaveConfig();
 
@@ -77,7 +81,8 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 		auto hConnect = HttpConnect(downloadUrl);
 		auto hRequest = HttpOpenRequest(downloadUrl, hConnect, L"HEAD");
 		if (HttpSendRequestAndReceiveResponse(hRequest)) {
-			if (HttpQueryStatusCode(hRequest) == 200) {
+			int statusCode = HttpQueryStatusCode(hRequest);
+			if (statusCode == 200) {
 				DWORD contentLength = 0;
 				HttpQueryHeaders(hRequest, WINHTTP_QUERY_CONTENT_LENGTH, contentLength);
 				if (umaLibraryFileSize != contentLength) {	// ファイルサイズ比較
@@ -89,15 +94,23 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 						GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
 						return;
 					} else {
-						MessageBox(L"ダウンロードに失敗しました...", L"エラー");
+						MessageBox(L"ダウンロードに失敗しました...", L"エラー", MB_ICONERROR);
 						return;
 					}
 				} else {
-					MessageBox(L"更新は必要ありません");
+					MessageBox(L"更新は必要ありません", L"成功");
 					GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
 					return;
 				}
+			} else {
+				CString errorText;
+				errorText.Format(L"サーバーからエラーが返されました。\nステータスコード: %d", statusCode);
+				MessageBox(errorText, L"エラー", MB_ICONERROR);
+				return;
 			}
+		} else {
+			MessageBox(L"リクエストの送信に失敗しました。\n詳細は info.log を参照してください。", L"エラー", MB_ICONERROR);
+			return;
 		}
 	} catch (boost::exception& e) {
 		std::string expText = boost::diagnostic_information(e);
@@ -105,5 +118,5 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 		int a = 0;
 	}
 	ATLASSERT(FALSE);
-	MessageBox(L"何かしらのエラーが発生しました...", L"エラー");
+	MessageBox(L"何かしらのエラーが発生しました...", L"エラー", MB_ICONERROR);
 }

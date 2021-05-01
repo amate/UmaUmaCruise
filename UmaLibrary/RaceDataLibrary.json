@@ -146,7 +146,7 @@
         ]
       },
       {
-        "Name": "スプリンターズステークス",
+        "Name": "スプリンターズS",
         "Location": "中山",
         "GroundCondition": "芝",
         "DistanceClass": "短距離",
@@ -246,7 +246,7 @@
         ]
       },
       {
-        "Name": "フェブラリーステークス",
+        "Name": "フェブラリーS",
         "Location": "東京",
         "GroundCondition": "ダート",
         "DistanceClass": "マイル",

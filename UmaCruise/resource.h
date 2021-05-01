@@ -7,6 +7,7 @@
 #define IDD_MAINDLG                     129
 #define IDD_PREVIEW                     202
 #define IDD_CONFIG                      205
+#define IDD_RACELIST                    207
 #define IDC_BUTTON_SCREENSHOT           1000
 #define IDC_EDIT_EVENTNAME              1001
 #define IDC_EDIT_EVENT_SOURCE           1002
@@ -34,7 +35,11 @@
 #define IDC_BUTTON1                     1038
 #define IDC_BUTTON_CHECK_UMALIBRARY     1038
 #define IDC_STATIC_ABOUT                1039
+#define IDC_CHECK_POPUP_RACELISTWINDOW  1039
 #define IDC_SYSLINK1                    1040
+#define IDC_CHECK_NOTIFY_FAVORITERACEHOLD 1040
+#define IDC_EDIT1                       1041
+#define IDC_EDIT_EXPECT_URA             1041
 #define IDC_EDIT_OPTION1                1500
 #define IDC_EDIT_OPTION2                1501
 #define IDC_EDIT_OPTION3                1502
@@ -69,9 +74,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        207
+#define _APS_NEXT_RESOURCE_VALUE        209
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1041
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

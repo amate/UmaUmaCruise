@@ -148,8 +148,10 @@ std::wstring RaceDateLibrary::AnbigiousChangeCurrentTurn(std::vector<std::wstrin
 				enum { kWrongTurnElapsedCount = 12 };
 				const int turnNumber = GetTurnNumberFromTurnName(turn);
 				const int prevTurnNumber = GetTurnNumberFromTurnName(m_currentTurn);
-				if (std::abs(turnNumber - prevTurnNumber) >= kWrongTurnElapsedCount) {
-					enum { kPassCount = 3 };
+				if (std::abs(turnNumber - prevTurnNumber) >= kWrongTurnElapsedCount ||	// 時間経過が異常
+					turnNumber < prevTurnNumber	// ターンが巻き戻ってる
+					) {
+					enum { kPassCount = 5 };
 					++m_searchCount;
 					if (m_searchCount < kPassCount) {
 						// 前回検索から kPassCount以内なら、経過ターン数が異常なので、前回のターン数を返すようにする
