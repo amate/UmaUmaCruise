@@ -10,16 +10,16 @@
 
 namespace fs = boost::filesystem;
 
-/// 現在実行中の exeのあるフォルダのパスを返す
+/// 迴ｾ蝨ｨ螳溯｡御ｸｭ縺ｮ exe縺ｮ縺ゅｋ繝輔か繝ｫ繝縺ｮ繝代せ繧定ｿ斐☆
 fs::path GetExeDirectory();
 
-/// 例外を発生させる
+/// 萓句､悶ｒ逋ｺ逕溘＆縺帙ｋ
 #define THROWEXCEPTION(error)	FatalErrorOccur(error, __FILE__,__LINE__)
 
 void	FatalErrorOccur(const std::string& error, const char* fileName, const int line);
 void	FatalErrorOccur(const std::wstring& error, const char* fileName, const int line);
 
-/// プロセスを起動し、終了まで待つ
+/// 繝励Ο繧ｻ繧ｹ繧定ｵｷ蜍輔＠縲∫ｵゆｺ�縺ｾ縺ｧ蠕�縺､
 DWORD	StartProcess(const fs::path& exePath, const std::wstring& commandLine);
 
 DWORD	StartProcessGetStdOut(const fs::path& exePath, const std::wstring& commandLine, std::string& stdoutText);

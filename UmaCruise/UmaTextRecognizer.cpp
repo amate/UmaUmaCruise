@@ -91,7 +91,7 @@ double ImageWhiteRatio(cv::Mat thresImage)
 	int c = thresImage.channels();
 	ATLASSERT(c == 1);
 
-	// ‰æ‘f’†‚Ì”’‚Ì”‚ğ”‚¦‚é
+	// ç”»ç´ ä¸­ã®ç™½ã®æ•°ã‚’æ•°ãˆã‚‹
 	int whilteCount = cv::countNonZero(thresImage);
 	//int whilteCount = 0;
 	//for (int y = 0; y < thresImage.rows; y++) {
@@ -111,9 +111,9 @@ double ImageWhiteRatio(cv::Mat thresImage)
 // ===============================================================================
 
 
-// cutImage ‚É‚ ‚éƒeƒLƒXƒg‚ğˆÍ‚¤”ÍˆÍ‚ğ’²‚×‚Ä•Ô‚·
-// cutImage‚Í•”wŒi‚É”’•¶š‚Å‚ ‚é•K—v‚ª‚ ‚é
-// ¡‚Ì‚Æ‚±‚ëƒCƒxƒ“ƒg–¼‚Ì‚¾‚¯g‚Á‚Ä‚é
+// cutImage ã«ã‚ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚’å›²ã†ç¯„å›²ã‚’èª¿ã¹ã¦è¿”ã™
+// cutImageã¯é»’èƒŒæ™¯ã«ç™½æ–‡å­—ã§ã‚ã‚‹å¿…è¦ãŒã‚ã‚‹
+// ä»Šã®ã¨ã“ã‚ã‚¤ãƒ™ãƒ³ãƒˆåã®æ™‚ã ã‘ä½¿ã£ã¦ã‚‹
 CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 {
 	//cv::Mat resizedImage;
@@ -135,10 +135,10 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 		for (int x = 0; x < thresImage.cols; x++) {
 			uchar val = thresImage.at<uchar>(y, x);
 			if (val >= 255) {
-				// ”’‚ªŒ©‚Â‚©‚Á‚½“_‚Åˆê”Ô¬‚³‚¢’n“_‚ğ’T‚·
+				// ç™½ãŒè¦‹ã¤ã‹ã£ãŸæ™‚ç‚¹ã§ä¸€ç•ªå°ã•ã„åœ°ç‚¹ã‚’æ¢ã™
 				ptLT.y = std::min(ptLT.y, (LONG)y);
 				ptLT.x = std::min(ptLT.x, (LONG)x);
-				// ”’‚ªŒ©‚Â‚©‚Á‚½“_‚Åˆê”Ô‘å‚«‚¢’n“_‚ğ’T‚·
+				// ç™½ãŒè¦‹ã¤ã‹ã£ãŸæ™‚ç‚¹ã§ä¸€ç•ªå¤§ãã„åœ°ç‚¹ã‚’æ¢ã™
 				ptRB.y = std::max(ptRB.y, (LONG)y);
 				ptRB.x = std::max(ptRB.x, (LONG)x);
 			}
@@ -154,7 +154,7 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 	//rcAdjustTextBounds.bottom /= scale;
 	rcAdjustTextBounds.MoveToXY(rcBounds.left + rcAdjustTextBounds.left, rcBounds.top + rcAdjustTextBounds.top);
 
-	rcAdjustTextBounds.InflateRect(kTextMargin, kTextMargin, kTextMargin, kTextMargin);	// –c‚ç‚Ü‚¹‚é
+	rcAdjustTextBounds.InflateRect(kTextMargin, kTextMargin, kTextMargin, kTextMargin);	// è†¨ã‚‰ã¾ã›ã‚‹
 	//ATLASSERT(rcAdjustTextBounds.Width() > 0 && rcAdjustTextBounds.Height() > 0);
 	rcAdjustTextBounds.NormalizeRect();
 	return rcAdjustTextBounds;
@@ -217,7 +217,7 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 
 	CWindowDC dc(NULL/*hWndTarget*/);	// desktop
 
-	if (g_funcSetThreadDpiAwarenessContext) {	// ‚DPIƒ‚ƒjƒ^[‚Åæ“¾ƒEƒBƒ“ƒhƒE‚ÌˆÊ’u‚ª‚¸‚ê‚éƒoƒO‚ğ‰ñ”ğ‚·‚é‚½‚ß
+	if (g_funcSetThreadDpiAwarenessContext) {	// é«˜DPIãƒ¢ãƒ‹ã‚¿ãƒ¼ã§å–å¾—ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½ç½®ãŒãšã‚Œã‚‹ãƒã‚°ã‚’å›é¿ã™ã‚‹ãŸã‚
 		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	}
 
@@ -283,28 +283,28 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 	std::list<std::future<std::wstring>> TextFromImageFutureList;
 	std::future<std::wstring>	futureEventBottomOption;
 
-	{	// ƒCƒxƒ“ƒg–¼
-		INFO_LOG << L"EƒCƒxƒ“ƒg–¼";
+	{	// ã‚¤ãƒ™ãƒ³ãƒˆå
+		INFO_LOG << L"ãƒ»ã‚¤ãƒ™ãƒ³ãƒˆå";
 
-		// async‚É“n‚·ŠÖ”ƒIƒuƒWƒFƒNƒg
+		// asyncã«æ¸¡ã™é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 		auto asyncTextFromImage = [this](cv::Mat& image, std::shared_ptr<TextFromImageFunc> funcTextFromImage) -> std::wstring {
 			std::wstring text = (*funcTextFromImage)(image);
 			return text;
 		};
 
 		CRect rcEventName = _AdjustBounds(srcImage, m_testBounds[kEventNameBounds]);
-		if (_IsEventNameIcon(srcImage)) {	// ƒAƒCƒRƒ“‚ª‘¶İ‚µ‚½ê‡A”F¯”ÍˆÍ‚ğ‰E‚É‚¸‚ç‚·
+		if (_IsEventNameIcon(srcImage)) {	// ã‚¢ã‚¤ã‚³ãƒ³ãŒå­˜åœ¨ã—ãŸå ´åˆã€èªè­˜ç¯„å›²ã‚’å³ã«ãšã‚‰ã™
 			enum { kIconTextMargin = 5 };
 			rcEventName.left = _AdjustBounds(srcImage, m_testBounds[kEventNameIconBounds]).right + kIconTextMargin;
 		}
-		// ƒeƒLƒXƒg‚ğˆÍ‚¤”ÍˆÍ‚ğŒ©‚Â‚¯‚é
+		// ãƒ†ã‚­ã‚¹ãƒˆã‚’å›²ã†ç¯„å›²ã‚’è¦‹ã¤ã‘ã‚‹
 		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcEventName), L"rcEventName")) {
 			return false;
 		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcEventName));
 		CRect rcAdjustTextBounds = GetTextBounds(cutImage, rcEventName);
 
-		// ƒeƒLƒXƒg‚ğ³Šm‚ÉˆÍ‚Á‚½ƒCƒ[ƒW‚ğØ‚èo‚·
+		// ãƒ†ã‚­ã‚¹ãƒˆã‚’æ­£ç¢ºã«å›²ã£ãŸã‚¤ãƒ¡ãƒ¼ã‚¸ã‚’åˆ‡ã‚Šå‡ºã™
 		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcAdjustTextBounds), L"rcAdjustTextBounds")) {
 			return false;
 		}
@@ -312,17 +312,17 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat cutImage2(srcImage, cvRectFromCRect(rcAdjustTextBounds));
 		//cv::imshow("test", cutImage2);
 
-		cv::Mat grayImage;		// ƒOƒŒ[ƒXƒP[ƒ‹
+		cv::Mat grayImage;		// ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«
 		cv::cvtColor(cutImage2/*resizedImage*/, grayImage, cv::COLOR_RGB2GRAY);
 
-		cv::Mat invertedImage;	// ”½“]
+		cv::Mat invertedImage;	// åè»¢
 		cv::bitwise_not(grayImage, invertedImage);
 
-		cv::Mat resizedImage;	// Šg‘å
+		cv::Mat resizedImage;	// æ‹¡å¤§
 		constexpr double scale = 2.0;
 		cv::resize(invertedImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);	// 4
 
-		cv::Mat thresImage2;	// è‡’l
+		cv::Mat thresImage2;	// é–¾å€¤
 		//cv::threshold(grayImage, thresImage, 190.0, 255.0, cv::THRESH_BINARY_INV);
 		cv::threshold(resizedImage, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);			// 6
 
@@ -331,14 +331,14 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		TextFromImageFutureList.emplace_back(
 			std::async(std::launch::async, asyncTextFromImage, thresImage2, GetOCRFunction()));
 
-		//funcPushBackImageText(resizedImage, m_eventName);	// 4 ƒOƒŒ[ƒXƒP[ƒ‹”½“] + 2”{
-		//funcPushBackImageText(thresImage2, m_eventName);	// 6 ”’”wŒi••¶š(ƒOƒŒ[”½“]è‡’l) + 2”{
+		//funcPushBackImageText(resizedImage, m_eventName);	// 4 ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«åè»¢ + 2å€
+		//funcPushBackImageText(thresImage2, m_eventName);	// 6 ç™½èƒŒæ™¯é»’æ–‡å­—(ã‚°ãƒ¬ãƒ¼åè»¢é–¾å€¤) + 2å€
 		//cv::imshow("test1", resizedImage);
 		//cv::imshow("test2", thresImage2);
 
-		// ƒCƒxƒ“ƒg‘I‘ğˆ
+		// ã‚¤ãƒ™ãƒ³ãƒˆé¸æŠè‚¢
 		{
-			INFO_LOG << L"EƒCƒxƒ“ƒg‘I‘ğˆ";
+			INFO_LOG << L"ãƒ»ã‚¤ãƒ™ãƒ³ãƒˆé¸æŠè‚¢";
 			CRect rcEventBottomOption = _AdjustBounds(srcImage, m_testBounds[kEventBottomOptionBounds]);
 			cv::Mat cutImage(srcImage, cvRectFromCRect(rcEventBottomOption));
 
@@ -354,7 +354,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 			futureEventBottomOption =
 				std::async(std::launch::async, asyncTextFromImage, resizedImage, GetOCRFunction());
-			//funcPushBackImageText(resizedImage, m_eventBottomOption);	// 5 •”wŒi”’•¶š(ƒOƒŒ[è‡’l) + 2”{
+			//funcPushBackImageText(resizedImage, m_eventBottomOption);	// 5 é»’èƒŒæ™¯ç™½æ–‡å­—(ã‚°ãƒ¬ãƒ¼é–¾å€¤) + 2å€
 		}
 	}
 
@@ -366,14 +366,14 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat resizedImage;
 		cv::resize(hsvImage, resizedImage, cv::Size(), scale, scale, cv::INTER_LINEAR/*INTER_CUBIC*/);
 
-		// F‚É‚æ‚é“ñ’l‰»
+		// è‰²ã«ã‚ˆã‚‹äºŒå€¤åŒ–
 		cv::Mat textImage;
 		cv::inRange(resizedImage,
 			cv::Scalar(m_kHSVTextBounds.h_min, m_kHSVTextBounds.s_min, m_kHSVTextBounds.v_min),
 			cv::Scalar(m_kHSVTextBounds.h_max, m_kHSVTextBounds.s_max, m_kHSVTextBounds.v_max), textImage);
 		return textImage;
 	};
-	{	// ˆç¬ƒEƒ}–º–¼
+	{	// è‚²æˆã‚¦ãƒå¨˜å
 		Utility::timer timer;
 		CRect rcSubName = _AdjustBounds(srcImage, m_testBounds[kUmaMusumeSubNameBounds]);
 		CRect rcName = _AdjustBounds(srcImage, m_testBounds[kUmaMusumeNameBounds]);
@@ -390,11 +390,11 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			cv::Mat cutImage(srcImage, cvRectFromCRect(rcName));
 			cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
 
-			// ‰æ‘œ‚É‚¨‚¯‚é”’•¶š—¦‚ğŠm”F‚µ‚ÄAˆê’è”ä—¦ˆÈ‰º‚Ì‚Æ‚«‚Í–³‹‚·‚é
+			// ç”»åƒã«ãŠã‘ã‚‹ç™½æ–‡å­—ç‡ã‚’ç¢ºèªã—ã¦ã€ä¸€å®šæ¯”ç‡ä»¥ä¸‹ã®ã¨ãã¯ç„¡è¦–ã™ã‚‹
 			const double whiteRatio = ImageWhiteRatio(textImage);
 			if (whiteRatio > kMinWhiteTextRatioThreshold || !whiteCheckPass) {
 				cv::Mat invertedTextImage;
-				cv::bitwise_not(textImage, invertedTextImage);	// ”’”wŒi‰»
+				cv::bitwise_not(textImage, invertedTextImage);	// ç™½èƒŒæ™¯åŒ–
 
 				std::wstring invertedText = TextFromImage(invertedTextImage);
 				list.emplace_back(invertedText);
@@ -408,11 +408,11 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			cv::resize(grayImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
 
 			cv::Mat thresImage;
-			cv::threshold(resizedImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);	// 5: 2”{ƒOƒŒ[è‡’l
+			cv::threshold(resizedImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);	// 5: 2å€ã‚°ãƒ¬ãƒ¼é–¾å€¤
 			//INFO_LOG << L"Image processing1: " << timer.format();
 			
 			if (!whiteCheckPass) {
-				// ‰æ‘œ‚É‚¨‚¯‚é”’”wŒi—¦‚ğŠm”F‚µ‚ÄAˆê’è”ä—¦ˆÈ‰º‚Ì‚Æ‚«‚Í–³‹‚·‚é
+				// ç”»åƒã«ãŠã‘ã‚‹ç™½èƒŒæ™¯ç‡ã‚’ç¢ºèªã—ã¦ã€ä¸€å®šæ¯”ç‡ä»¥ä¸‹ã®ã¨ãã¯ç„¡è¦–ã™ã‚‹
 				const double whiteRatio = ImageWhiteRatio(thresImage);
 				if (whiteRatio < kMinWhiteRatioThreshold) {
 					return;
@@ -437,9 +437,9 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			}
 		}
 
-		INFO_LOG << L"Eˆç¬ƒEƒ}–º " << timer.format();
+		INFO_LOG << L"ãƒ»è‚²æˆã‚¦ãƒå¨˜ " << timer.format();
 	}
-	{	// Œ»İ‚Ì“ú•t
+	{	// ç¾åœ¨ã®æ—¥ä»˜
 		Utility::timer timer;
 		CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentTurnBounds]);
 		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcTurnBounds), L"rcTurnBounds")) {
@@ -449,11 +449,11 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
 
 		std::wstring invertedText;
-		// ‰æ‘œ‚É‚¨‚¯‚é”’•¶š—¦‚ğŠm”F‚µ‚ÄAˆê’è”ä—¦ˆÈ‰º‚Ì‚Æ‚«‚Í–³‹‚·‚é
+		// ç”»åƒã«ãŠã‘ã‚‹ç™½æ–‡å­—ç‡ã‚’ç¢ºèªã—ã¦ã€ä¸€å®šæ¯”ç‡ä»¥ä¸‹ã®ã¨ãã¯ç„¡è¦–ã™ã‚‹
 		const double whiteRatio = ImageWhiteRatio(textImage);
 		if (whiteRatio > kMinWhiteTextRatioThreshold) {
 			cv::Mat invertedTextImage;
-			cv::bitwise_not(textImage, invertedTextImage);	// ”’”wŒi‰»
+			cv::bitwise_not(textImage, invertedTextImage);	// ç™½èƒŒæ™¯åŒ–
 
 			invertedText = TextFromImage(invertedTextImage);
 			m_currentTurn.emplace_back(invertedText);
@@ -467,7 +467,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 			//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
 		}
-		INFO_LOG << L"EŒ»İ‚Ì“ú•t " << timer.format() << L" (" << invertedText << L")";
+		INFO_LOG << L"ãƒ»ç¾åœ¨ã®æ—¥ä»˜ " << timer.format() << L" (" << invertedText << L")";
 
 #if 0
 		//cv::Mat resizedImage;
@@ -481,7 +481,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
 		//cv::imshow("date", thresImage);	// test
 
-		// ‰æ‘œ‚É‚¨‚¯‚é”’”wŒi—¦‚ğŠm”F‚µ‚ÄAˆê’è”ä—¦ˆÈ‰º‚Ì‚Æ‚«‚Í–³‹‚·‚é
+		// ç”»åƒã«ãŠã‘ã‚‹ç™½èƒŒæ™¯ç‡ã‚’ç¢ºèªã—ã¦ã€ä¸€å®šæ¯”ç‡ä»¥ä¸‹ã®ã¨ãã¯ç„¡è¦–ã™ã‚‹
 		const double whiteRatio = ImageWhiteRatio(thresImage);
 		if (whiteRatio > kMinWhiteRatioThreshold) {
 			std::wstring cutImageText = TextFromImage(cutImage);
@@ -491,11 +491,11 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			m_currentTurn.emplace_back(thresImageText);
 
 			//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
-			INFO_LOG << L"EŒ»İ‚Ì“ú•t " << timer.format();
+			INFO_LOG << L"ãƒ»ç¾åœ¨ã®æ—¥ä»˜ " << timer.format();
 		}
 #endif
 	}
-	{	// Œ»İƒƒjƒ…[[ƒgƒŒ[ƒjƒ“ƒO]
+	{	// ç¾åœ¨ãƒ¡ãƒ‹ãƒ¥ãƒ¼[ãƒˆãƒ¬ãƒ¼ãƒ‹ãƒ³ã‚°]
 		Utility::timer timer;
 		m_bTrainingMenu = false;
 
@@ -506,7 +506,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcCurrentMenuBounds));
 
 		std::wstring cutImageText = TextFromImage(cutImage);
-		if (cutImageText == L"ƒgƒŒ[ƒjƒ“ƒO") {
+		if (cutImageText == L"ãƒˆãƒ¬ãƒ¼ãƒ‹ãƒ³ã‚°") {
 			CRect rcBackButtonBounds = _AdjustBounds(srcImage, m_testBounds[kBackButtonBounds]);
 			if (!CheckCutBounds(srcImage, cvRectFromCRect(rcBackButtonBounds), L"rcBackButtonBounds")) {
 				return false;
@@ -514,14 +514,14 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			cv::Mat cutImage2(srcImage, cvRectFromCRect(rcBackButtonBounds));
 
 			std::wstring cutImage2Text = TextFromImage(cutImage2);
-			if (cutImage2Text == L"–ß‚é") {
+			if (cutImage2Text == L"æˆ»ã‚‹") {
 				m_bTrainingMenu = true;
 			}
 		}
-		INFO_LOG << L"EƒgƒŒ[ƒjƒ“ƒO " << timer.format();;
+		INFO_LOG << L"ãƒ»ãƒˆãƒ¬ãƒ¼ãƒ‹ãƒ³ã‚° " << timer.format();;
 	}
 	{
-		// ƒŒ[ƒXÚ×
+		// ãƒ¬ãƒ¼ã‚¹è©³ç´°
 		Utility::timer timer;
 		m_entryRaceDistance = 0;
 		CRect rcRaceDetailBounds = _AdjustBounds(srcImage, m_testBounds[kRaceDetailBounds]);
@@ -532,11 +532,11 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
 
 		std::wstring invertedText;
-		// ‰æ‘œ‚É‚¨‚¯‚é”’•¶š—¦‚ğŠm”F‚µ‚ÄAˆê’è”ä—¦ˆÈ‰º‚Ì‚Æ‚«‚Í–³‹‚·‚é
+		// ç”»åƒã«ãŠã‘ã‚‹ç™½æ–‡å­—ç‡ã‚’ç¢ºèªã—ã¦ã€ä¸€å®šæ¯”ç‡ä»¥ä¸‹ã®ã¨ãã¯ç„¡è¦–ã™ã‚‹
 		const double whiteRatio = ImageWhiteRatio(textImage);
 		if (whiteRatio > kMinWhiteTextRatioThreshold) {
 			cv::Mat invertedTextImage;
-			cv::bitwise_not(textImage, invertedTextImage);	// ”’”wŒi‰»
+			cv::bitwise_not(textImage, invertedTextImage);	// ç™½èƒŒæ™¯åŒ–
 
 			invertedText = TextFromImage(invertedTextImage);
 			//m_currentTurn.emplace_back(invertedText);
@@ -544,7 +544,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
 		}
 		if (invertedText.length()) {
-			INFO_LOG << L"EƒŒ[ƒXÚ× " << timer.format() << L" (" << invertedText << L")";
+			INFO_LOG << L"ãƒ»ãƒ¬ãƒ¼ã‚¹è©³ç´° " << timer.format() << L" (" << invertedText << L")";
 
 			std::wregex rx(LR"((\d+)m)");
 			std::wsmatch result;
@@ -554,32 +554,32 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		}		
 	}
 
-	// text ‚ğ“K“–‚É•ÏŠ·‚µ‚Ä‚©‚ç list‚Ö’Ç‰Á‚·‚é
+	// text ã‚’é©å½“ã«å¤‰æ›ã—ã¦ã‹ã‚‰ listã¸è¿½åŠ ã™ã‚‹
 	auto funcPushBackImageText = [this](std::wstring text, std::vector<std::wstring>& list) {
 
-		// typo ‚ğ³Œë•\‚Å•ÏŠ·
+		// typo ã‚’æ­£èª¤è¡¨ã§å¤‰æ›
 		auto itFound = m_typoDictionary.find(text);
 		if (itFound != m_typoDictionary.end()) {
 			text = itFound->second;
 		}
-		// 'I' ‚ª '7' ‚ÉŒë”F¯‚³‚ê‚Ä‚µ‚Ü‚¤‚Á‚Û‚¢‚Ì‚Å’uŠ·‚µ‚ÄŒó•â‚É’Ç‰Á‚µ‚Ä‚¨‚­
+		// 'ï¼' ãŒ '7' ã«èª¤èªè­˜ã•ã‚Œã¦ã—ã¾ã†ã£ã½ã„ã®ã§ç½®æ›ã—ã¦å€™è£œã«è¿½åŠ ã—ã¦ãŠã
 		if (text.find(L"7") != std::wstring::npos) {
-			std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"7", L"I");
+			std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"7", L"ï¼");
 			list.emplace_back(replacedText);
 		}
-		// 'I' ‚ª '/' ‚ÉŒë”F¯‚³‚ê‚Ä‚µ‚Ü‚¤‚Á‚Û‚¢‚Ì‚Å’uŠ·‚µ‚ÄŒó•â‚É’Ç‰Á‚µ‚Ä‚¨‚­
+		// 'ï¼' ãŒ '/' ã«èª¤èªè­˜ã•ã‚Œã¦ã—ã¾ã†ã£ã½ã„ã®ã§ç½®æ›ã—ã¦å€™è£œã«è¿½åŠ ã—ã¦ãŠã
 		if (text.find(L"/") != std::wstring::npos) {
-			std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"/", L"I");
+			std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"/", L"ï¼");
 			list.emplace_back(replacedText);
 		}
-		// '?'‚ğ³‹K‰»
+		// '?'ã‚’æ­£è¦åŒ–
 		if (text.find(L"?") != std::wstring::npos) {
-			std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"?", L"H");
+			std::wstring replacedText = boost::algorithm::replace_all_copy(text, L"?", L"ï¼Ÿ");
 			list.emplace_back(replacedText);
 		}
 		list.emplace_back(text);
 	};
-	// async ‚©‚ç–ß‚Á‚Ä‚«‚½’l‚ğæ“¾‚·‚é
+	// async ã‹ã‚‰æˆ»ã£ã¦ããŸå€¤ã‚’å–å¾—ã™ã‚‹
 	for (auto& future : TextFromImageFutureList) {
 		funcPushBackImageText(future.get(), m_eventName);
 	}
@@ -611,7 +611,7 @@ bool UmaTextRecognizer::_IsEventNameIcon(cv::Mat srcImage)
 	cv::Mat cutImage(srcImage, cvRectFromCRect(rcIcon));
 
 	ATLASSERT(cutImage.channels() == 3);	// must color image
-	std::vector<cv::Mat> splitColors(3);	// —\‚ßŠm•Û‚µ‚Ä‚¢‚È‚¢‚Æ—‚¿‚é
+	std::vector<cv::Mat> splitColors(3);	// äºˆã‚ç¢ºä¿ã—ã¦ã„ãªã„ã¨è½ã¡ã‚‹
 	cv::split(cutImage, splitColors);
 	//cv::imshow("Blue", splitColors[0]);	// [0] -> Blue
 	//cv::imshow("Green", splitColors[1]);// [1] -> Green
@@ -623,7 +623,7 @@ bool UmaTextRecognizer::_IsEventNameIcon(cv::Mat srcImage)
 	//cv::imshow("Blue thres", blueThresImage);
 	const double blueRatio = ImageWhiteRatio(blueThresImage);
 	if (kBlueBackgroundThreshold < blueRatio) {
-		return false;	// ƒTƒ|[ƒgƒJ[ƒhƒCƒxƒ“ƒg
+		return false;	// ã‚µãƒãƒ¼ãƒˆã‚«ãƒ¼ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆ
 	}
 
 	cv::Mat grayImage;
@@ -633,6 +633,6 @@ bool UmaTextRecognizer::_IsEventNameIcon(cv::Mat srcImage)
 	cv::threshold(grayImage, thresImage, kEventNameIconThreshold, 255.0, cv::THRESH_BINARY);
 
 	const double whiteRatio = ImageWhiteRatio(thresImage);
-	bool isIcon = whiteRatio > kEventNameIconWhiteRatioThreshold;	// ”’‚Ì”ä—¦‚ªˆê’èˆÈã‚È‚çƒAƒCƒRƒ“‚Æ‚İ‚È‚·
+	bool isIcon = whiteRatio > kEventNameIconWhiteRatioThreshold;	// ç™½ã®æ¯”ç‡ãŒä¸€å®šä»¥ä¸Šãªã‚‰ã‚¢ã‚¤ã‚³ãƒ³ã¨ã¿ãªã™
 	return isIcon;
 }

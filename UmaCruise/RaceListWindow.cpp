@@ -29,7 +29,7 @@ void RaceListWindow::ShowWindow(bool bShow)
 	fs.close();
 
 	if (bShow) {
-		// •\¦ˆÊ’u•œŒ³
+		// è¡¨ç¤ºä½ç½®å¾©å…ƒ
 		auto& windowRect = jsonSetting["RaceListWindow"]["WindowRect"];
 		if (windowRect.is_null() == false && !(::GetKeyState(VK_CONTROL) < 0)) {
 			CRect rc(windowRect[0], windowRect[1], windowRect[2], windowRect[3]);
@@ -38,7 +38,7 @@ void RaceListWindow::ShowWindow(bool bShow)
 			CenterWindow(GetParent());
 		}
 	} else {	
-		// •\¦ˆÊ’u•Û‘¶
+		// è¡¨ç¤ºä½ç½®ä¿å­˜
 		if (IsWindowVisible()) {
 			CRect rcWindow;
 			GetWindowRect(&rcWindow);
@@ -59,8 +59,8 @@ void RaceListWindow::AnbigiousChangeCurrentTurn(const std::vector<std::wstring>&
 	std::wstring currentTurn = m_raceDateLibrary.AnbigiousChangeCurrentTurn(ambiguousCurrentTurn);
 	if (currentTurn.length() && m_currentTurn != currentTurn.c_str()) {
 
-		if (m_config.notifyFavoriteRaceHold && _IsFavoriteRaceTurn(currentTurn)) {	// ’Ê’m‚·‚é
-			// ƒEƒBƒ“ƒhƒE‚ğU“®‚³‚¹‚é
+		if (m_config.notifyFavoriteRaceHold && _IsFavoriteRaceTurn(currentTurn)) {	// é€šçŸ¥ã™ã‚‹
+			// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æŒ¯å‹•ã•ã›ã‚‹
 			std::thread([this]() {
 				auto sePath = GetExeDirectory() / L"se" / L"se.wav";
 				if (fs::exists(sePath)) {
@@ -85,7 +85,7 @@ void RaceListWindow::AnbigiousChangeCurrentTurn(const std::vector<std::wstring>&
 					::Sleep(kShakeInterval);
 				}
 
-				// Œ³‚ÌˆÊ’u‚É–ß‚·
+				// å…ƒã®ä½ç½®ã«æˆ»ã™
 				wndTop.SetWindowPos(NULL, rcOriginal.left, rcOriginal.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_ASYNCWINDOWPOS);
 
 			}).detach();
@@ -97,16 +97,16 @@ void RaceListWindow::AnbigiousChangeCurrentTurn(const std::vector<std::wstring>&
 
 void RaceListWindow::EntryRaceDistance(int distance)
 {
-	if (distance == 0 || m_currentTurn.IsEmpty() || m_currentTurn == L"ƒtƒ@ƒCƒiƒ‹ƒYŠJÃ’†") {
+	if (distance == 0 || m_currentTurn.IsEmpty() || m_currentTurn == L"ãƒ•ã‚¡ã‚¤ãƒŠãƒ«ã‚ºé–‹å‚¬ä¸­") {
 		return;
 	}
 	
 	const int currentTurn = m_raceDateLibrary.GetTurnNumberFromTurnName((LPCWSTR)m_currentTurn);
 	ATLASSERT(currentTurn != -1);
 
-	// distance == -1 ‚Ì‚Í URA—\‘z‚ÌXV‚¾‚¯‚·‚é
+	// distance == -1 ã®æ™‚ã¯ URAäºˆæƒ³ã®æ›´æ–°ã ã‘ã™ã‚‹
 	if (distance != -1) {
-		// distance ‚©‚ç‹——£‚ğ•ª—Ş‚·‚é
+		// distance ã‹ã‚‰è·é›¢ã‚’åˆ†é¡ã™ã‚‹
 		RaceDateLibrary::Race::DistanceClass distanceClass;
 		if (kMinSprint <= distance && distance <= kMaxSprint) {
 			distanceClass = RaceDateLibrary::Race::DistanceClass::kSprint;
@@ -123,9 +123,9 @@ void RaceListWindow::EntryRaceDistance(int distance)
 
 		if (m_entryRaceDistanceList.size()) {
 			if (m_entryRaceDistanceList.back().turn == currentTurn) {
-				return;	// “¯ƒ^[ƒ“”‚È‚çXV‚È‚µ
+				return;	// åŒã‚¿ãƒ¼ãƒ³æ•°ãªã‚‰æ›´æ–°ãªã—
 			}
-			// ÅŒã‚É“o˜^‚³‚ê‚½ƒ^[ƒ“‚æ‚èá‚¢ƒ^[ƒ“‚ğ“o˜^‚µ‚æ‚¤‚Æ‚µ‚½‚Æ‚«‚ÍAV‹Kü‰ñ‚³‚ê‚½‚Æ”»’f‚·‚é
+			// æœ€å¾Œã«ç™»éŒ²ã•ã‚ŒãŸã‚¿ãƒ¼ãƒ³ã‚ˆã‚Šè‹¥ã„ã‚¿ãƒ¼ãƒ³ã‚’ç™»éŒ²ã—ã‚ˆã†ã¨ã—ãŸã¨ãã¯ã€æ–°è¦å‘¨å›ã•ã‚ŒãŸã¨åˆ¤æ–­ã™ã‚‹
 			if (currentTurn < m_entryRaceDistanceList.back().turn) {
 				m_entryRaceDistanceList.clear();
 			}
@@ -149,13 +149,13 @@ void RaceListWindow::EntryRaceDistance(int distance)
 		}
 	};
 
-	// oêƒŒ[ƒX‚Ì‹——£‚²‚Æ‚ÉƒJƒEƒ“ƒg‚·‚é
+	// å‡ºå ´ãƒ¬ãƒ¼ã‚¹ã®è·é›¢ã”ã¨ã«ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
 	std::array<int, 4>	entryRaceClassCount = {};
 	for (const auto& raceData : m_entryRaceDistanceList) {
 		entryRaceClassCount[funcIndexFromDistanceClass(raceData.distanceClass)]++;
 	}
 
-	// ‚¨‹C‚É“ü‚èƒŒ[ƒX‚Ì‹——£‚²‚Æ‚ÉƒJƒEƒ“ƒg‚·‚é
+	// ãŠæ°—ã«å…¥ã‚Šãƒ¬ãƒ¼ã‚¹ã®è·é›¢ã”ã¨ã«ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
 	std::array<int, 4>	favoriteRaceClassCount = {};
 	for (const std::string& favoriteRace : m_currentFavoriteRaceList) {
 		auto sepPos = favoriteRace.find('_');
@@ -168,7 +168,7 @@ void RaceListWindow::EntryRaceDistance(int distance)
 			continue;
 		}
 
-		// ƒŒ[ƒX–¼‚©‚çƒŒ[ƒX•ª—Ş‚ğ‹tˆø‚«
+		// ãƒ¬ãƒ¼ã‚¹åã‹ã‚‰ãƒ¬ãƒ¼ã‚¹åˆ†é¡ã‚’é€†å¼•ã
 		const auto& turnOrderedRaceList = m_raceDateLibrary.GetTurnOrderedRaceList();
 		for (const auto& race : turnOrderedRaceList[raceTurn]) {
 			if (race->RaceName() == raceName) {
@@ -178,7 +178,7 @@ void RaceListWindow::EntryRaceDistance(int distance)
 	}
 	CString text;
 	std::pair<int, CString> expectURA;
-	LPCWSTR kDisntanceClassNames[4] = { L"’Z‹——£", L"ƒ}ƒCƒ‹", L"’†‹——£", L"’·‹——£" };
+	LPCWSTR kDisntanceClassNames[4] = { L"çŸ­è·é›¢", L"ãƒã‚¤ãƒ«", L"ä¸­è·é›¢", L"é•·è·é›¢" };
 	int appendCount = 0;
 	for (int i = 0; i < 4; ++i) {
 		int a = entryRaceClassCount[i];
@@ -191,16 +191,16 @@ void RaceListWindow::EntryRaceDistance(int distance)
 			text.AppendFormat(L"%s: %d/%d ", kDisntanceClassNames[i], a, b);
 
 			int ab = a + b;
-			if (expectURA.first < ab) {	// ’´‚¦‚½‚çã‘‚«
+			if (expectURA.first < ab) {	// è¶…ãˆãŸã‚‰ä¸Šæ›¸ã
 				expectURA.first = ab;
 				expectURA.second = kDisntanceClassNames[i];
-			} else if (expectURA.first == ab) {	// “¯’l‚È‚ç’Ç‰Á
+			} else if (expectURA.first == ab) {	// åŒå€¤ãªã‚‰è¿½åŠ 
 				expectURA.second.AppendFormat(L"/%s", kDisntanceClassNames[i]);
 			}
 		}
 	}
 	if (text.GetLength()) {
-		text += L"\r\nURA—\‘z: " + expectURA.second;
+		text += L"\r\nURAäºˆæƒ³: " + expectURA.second;
 		m_editExpectURA.SetWindowText(text);
 	}
 }
@@ -210,7 +210,7 @@ void RaceListWindow::ChangeIkuseiUmaMusume(const std::wstring& umaName)
 	if (m_currentIkuseUmaMusume != umaName) {
 		m_currentFavoriteRaceList.clear();
 		if (umaName.length()) {
-			// ‚¨‹C‚É“ü‚èƒŒ[ƒX‚ğØ‚è‘Ö‚¦
+			// ãŠæ°—ã«å…¥ã‚Šãƒ¬ãƒ¼ã‚¹ã‚’åˆ‡ã‚Šæ›¿ãˆ
 			const json& jCharaFavoriteRaceList = m_jsonCharaFavoriteRaceList[UTF8fromUTF16(umaName)];
 			if (jCharaFavoriteRaceList.is_array()) {
 				m_currentFavoriteRaceList = jCharaFavoriteRaceList.get<std::unordered_set<std::string>>();
@@ -233,12 +233,12 @@ DWORD RaceListWindow::OnPrePaint(int idCtrl, LPNMCUSTOMDRAW)
 
 DWORD RaceListWindow::OnItemPrePaint(int, LPNMCUSTOMDRAW lpNMCustomDraw)
 {
-	// ‘O”¼‚ÆŒã”¼‚ÅƒJƒ‰ƒ€‚ÌF‚ğF•ª‚¯‚·‚é
+	// å‰åŠã¨å¾ŒåŠã§ã‚«ãƒ©ãƒ ã®è‰²ã‚’è‰²åˆ†ã‘ã™ã‚‹
 	auto pCustomDraw = (LPNMLVCUSTOMDRAW)lpNMCustomDraw;
 #if 0
 	CString date;
 	m_raceListView.GetItemText(static_cast<int>(pCustomDraw->nmcd.dwItemSpec), 0, date);
-	const bool first = date.Right(2) == L"‘O”¼";
+	const bool first = date.Right(2) == L"å‰åŠ";
 #endif
 	const bool alter = (pCustomDraw->nmcd.lItemlParam & kAlter) != 0;
 	const bool favorite = (pCustomDraw->nmcd.lItemlParam & kFavorite) != 0;
@@ -260,7 +260,7 @@ LRESULT RaceListWindow::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	DoDataExchange(DDX_LOAD);
 
-	// ‘SƒŒ[ƒXƒf[ƒ^‚ğ“Ç‚İ‚İ
+	// å…¨ãƒ¬ãƒ¼ã‚¹ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã¿
 	if (!m_raceDateLibrary.LoadRaceDataLibrary()) {
 		ERROR_LOG << L"LoadRaceDataLibrary failed";
 		ATLASSERT(FALSE);
@@ -278,14 +278,14 @@ LRESULT RaceListWindow::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		lvc.iSubItem = nItem;
 		m_raceListView.InsertColumn(nItem, &lvc);
 	};
-	funcAddColumn(L"ŠJÃ“ú", 0, 120);
-	funcAddColumn(L"ƒŒ[ƒX–¼", 1, 144);
-	funcAddColumn(L"‹——£", 2, 110);
-	funcAddColumn(L"ƒR[ƒX", 3, 42);
-	funcAddColumn(L"•ûŒü", 4, 38);
-	funcAddColumn(L"ƒŒ[ƒXê", 5, 58);
+	funcAddColumn(L"é–‹å‚¬æ—¥", 0, 120);
+	funcAddColumn(L"ãƒ¬ãƒ¼ã‚¹å", 1, 144);
+	funcAddColumn(L"è·é›¢", 2, 110);
+	funcAddColumn(L"ã‚³ãƒ¼ã‚¹", 3, 42);
+	funcAddColumn(L"æ–¹å‘", 4, 38);
+	funcAddColumn(L"ãƒ¬ãƒ¼ã‚¹å ´", 5, 58);
 
-	// İ’è“Ç‚İ‚İ
+	// è¨­å®šèª­ã¿è¾¼ã¿
 	{
 		std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
 		if (fs) {
@@ -322,7 +322,7 @@ LRESULT RaceListWindow::OnDestroy(UINT, WPARAM, LPARAM, BOOL&)
 {
 	DoDataExchange(DDX_SAVE);
 
-	// İ’è•Û‘¶
+	// è¨­å®šä¿å­˜
 	{
 		json jsonSetting;
 		std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
@@ -354,13 +354,13 @@ LRESULT RaceListWindow::OnCancel(WORD, WORD wID, HWND, BOOL&)
 	//DoDataExchange(DDX_SAVE);
 	//ShowWindow(false);
 
-	// ƒƒCƒ“ƒ_ƒCƒAƒƒO’Ê’m‚µ‚Ä‰B‚µ‚Ä‚à‚ç‚¤
+	// ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°é€šçŸ¥ã—ã¦éš ã—ã¦ã‚‚ã‚‰ã†
 	GetParent().PostMessage(WM_COMMAND, IDC_BUTTON_SHOWHIDE_RACELIST);
 	return 0;
 }
 
-// ƒEƒBƒ“ƒhƒE‚ÌˆÊ’uˆÚ“®I—¹‚ÉŒÄ‚Î‚ê‚é
-// ƒƒCƒ“ƒEƒBƒ“ƒhƒE‚Æ‚ÌƒhƒbƒLƒ“ƒO“®ì‚ğs‚¤
+// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½ç½®ç§»å‹•çµ‚äº†æ™‚ã«å‘¼ã°ã‚Œã‚‹
+// ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¨ã®ãƒ‰ãƒƒã‚­ãƒ³ã‚°å‹•ä½œã‚’è¡Œã†
 void RaceListWindow::OnExitSizeMove()
 {
 	CRect rcParentWindow;
@@ -374,44 +374,44 @@ void RaceListWindow::OnExitSizeMove()
 	const int cxPadding = (rcWindow.Width() - rcClient.Width()) - (GetSystemMetrics(SM_CXBORDER) * 2);//GetSystemMetrics(SM_CXSIZEFRAME) * 2;
 	const int cyPadding = GetSystemMetrics(SM_CYSIZEFRAME) * 2;
 
-	// ƒƒCƒ“‚Ì‰E‚É‚ ‚é
+	// ãƒ¡ã‚¤ãƒ³ã®å³ã«ã‚ã‚‹
 	if (std::abs(rcParentWindow.right - rcWindow.left) <= kDockingMargin) {
 		rcWindow.MoveToX(rcParentWindow.right - cxPadding);
 
-		// ƒƒCƒ“‚Ì¶‚É‚ ‚é
+		// ãƒ¡ã‚¤ãƒ³ã®å·¦ã«ã‚ã‚‹
 	} else if (std::abs(rcParentWindow.left - rcWindow.right) <= kDockingMargin) {
 		rcWindow.MoveToX(rcParentWindow.left - rcWindow.Width() + cxPadding);
 
-		// ƒƒCƒ“‚Ìã‚É‚ ‚é
+		// ãƒ¡ã‚¤ãƒ³ã®ä¸Šã«ã‚ã‚‹
 	} else if (std::abs(rcParentWindow.top - rcWindow.bottom) <= kDockingMargin) {
 		rcWindow.MoveToY(rcParentWindow.top - rcWindow.Height() + cyPadding);
 
-		// ƒƒCƒ“‚Ì‰º‚É‚ ‚é
+		// ãƒ¡ã‚¤ãƒ³ã®ä¸‹ã«ã‚ã‚‹
 	} else if (std::abs(rcParentWindow.bottom - rcWindow.top) <= kDockingMargin) {
 		rcWindow.MoveToY(rcParentWindow.bottom - cyPadding);
 	}
 	MoveWindow(&rcWindow);
 }
 
-// ƒ_ƒCƒAƒƒO‚Ì”wŒiF‚ğ”’‚É•ÏX
+// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®èƒŒæ™¯è‰²ã‚’ç™½ã«å¤‰æ›´
 HBRUSH RaceListWindow::OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 {
 	return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 }
 
-// ƒŒ[ƒXƒŠƒXƒgƒNƒŠƒbƒN
+// ãƒ¬ãƒ¼ã‚¹ãƒªã‚¹ãƒˆã‚¯ãƒªãƒƒã‚¯
 LRESULT RaceListWindow::OnRaceListClick(LPNMHDR pnmh)
 {
 	auto pnmitem = (LPNMITEMACTIVATE)pnmh;
 	if (!(pnmitem->uKeyFlags == LVKF_CONTROL)) {
-		return 0;	// CtrlƒL[‚ğ‰Ÿ‚µ‚Ä‚¢‚È‚¯‚ê‚Î–³‹
+		return 0;	// Ctrlã‚­ãƒ¼ã‚’æŠ¼ã—ã¦ã„ãªã‘ã‚Œã°ç„¡è¦–
 	}	
 	
 	_SwitchFavoriteRace(pnmitem->iItem);
 	return LRESULT();
 }
 
-// ƒŒ[ƒXƒŠƒXƒg‰EƒNƒŠƒbƒN
+// ãƒ¬ãƒ¼ã‚¹ãƒªã‚¹ãƒˆå³ã‚¯ãƒªãƒƒã‚¯
 LRESULT RaceListWindow::OnRaceListRClick(LPNMHDR pnmh)
 {
 	auto pnmitem = (LPNMITEMACTIVATE)pnmh;
@@ -422,7 +422,7 @@ LRESULT RaceListWindow::OnRaceListRClick(LPNMHDR pnmh)
 	CMenu menu;
 	menu.CreatePopupMenu();
 	enum { kSwitchFavorite = 1 };
-	menu.AppendMenuW(MF_STRING, kSwitchFavorite, L"ƒŒ[ƒX—\–ñ‚ğØ‚è‘Ö‚¦");
+	menu.AppendMenuW(MF_STRING, kSwitchFavorite, L"ãƒ¬ãƒ¼ã‚¹äºˆç´„ã‚’åˆ‡ã‚Šæ›¿ãˆ");
 
 	CPoint pt;
 	::GetCursorPos(&pt);
@@ -478,7 +478,7 @@ void RaceListWindow::_UpdateRaceList(const std::wstring& turn)
 		if (turnOrderedRaceList[i].empty()) {
 			continue;
 		}
-		std::wstring date = allTurnList[i];	// ŠJÃ“ú
+		std::wstring date = allTurnList[i];	// é–‹å‚¬æ—¥
 		bool insert = false;
 		for (const auto& race : turnOrderedRaceList[i]) {
 			const bool bFavoriteRace = funcIsFavoriteRace(date, race->RaceName());
@@ -490,7 +490,7 @@ void RaceListWindow::_UpdateRaceList(const std::wstring& turn)
 				int flags = alter;
 				std::wstring raceName;
 				if (bFavoriteRace) {
-					raceName = L"š";
+					raceName = L"â˜…";
 					flags |= kFavorite;
 				}
 				raceName += race->RaceName();
@@ -577,28 +577,28 @@ void RaceListWindow::_SwitchFavoriteRace(int index)
 	m_raceListView.GetItemText(index, 0, date);
 	m_raceListView.GetItemText(index, 1, raceName);
 	if (nowFavorite) {
-		raceName = raceName.Mid(1);	// ‘O‚Ì'™'‚ğØ‚èÌ‚Ä‚é
+		raceName = raceName.Mid(1);	// å‰ã®'â˜†'ã‚’åˆ‡ã‚Šæ¨ã¦ã‚‹
 	}
 	std::string date_race = UTF8fromUTF16(static_cast<LPCWSTR>(date + L"_" + raceName));
 
-	// ‚¨‹C‚É“ü‚è“o˜^‚ğƒXƒCƒbƒ`‚³‚¹‚é
+	// ãŠæ°—ã«å…¥ã‚Šç™»éŒ²ã‚’ã‚¹ã‚¤ãƒƒãƒã•ã›ã‚‹
 	if (nowFavorite) {
 		m_currentFavoriteRaceList.erase(date_race);
 	} else {
 		m_currentFavoriteRaceList.insert(date_race);
 	}
 	if (m_currentIkuseUmaMusume.length()) {
-		// json‚Ö•Û‘¶
+		// jsonã¸ä¿å­˜
 		m_jsonCharaFavoriteRaceList[UTF8fromUTF16(m_currentIkuseUmaMusume)] = m_currentFavoriteRaceList;
 	}
 
 	const int top = m_raceListView.GetTopIndex();
-	_UpdateRaceList((LPCWSTR)m_currentTurn);	// XV
+	_UpdateRaceList((LPCWSTR)m_currentTurn);	// æ›´æ–°
 	const int page = m_raceListView.GetCountPerPage();
-	// ƒXƒNƒ[ƒ‹ˆÊ’u‚Ì•œŒ³
+	// ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ä½ç½®ã®å¾©å…ƒ
 	m_raceListView.EnsureVisible(top + page - 1, FALSE);
 
-	// URA—\‘zXV
+	// URAäºˆæƒ³æ›´æ–°
 	EntryRaceDistance(-1);
 }
 
@@ -622,16 +622,16 @@ bool RaceListWindow::_IsFavoriteRaceTurn(const std::wstring& turn)
 
 	const auto& turnOrderedRaceList = m_raceDateLibrary.GetTurnOrderedRaceList();
 	if (turnOrderedRaceList[i].empty()) {
-		return false;	// ‚±‚Ìƒ^[ƒ“‚ÉƒŒ[ƒX‚Í‚È‚¢
+		return false;	// ã“ã®ã‚¿ãƒ¼ãƒ³ã«ãƒ¬ãƒ¼ã‚¹ã¯ãªã„
 	}
 
 	const auto& allTurnList = m_raceDateLibrary.GetAllTurnList();
-	std::wstring date = allTurnList[i];	// ŠJÃ“ú
+	std::wstring date = allTurnList[i];	// é–‹å‚¬æ—¥
 	bool insert = false;
 	for (const auto& race : turnOrderedRaceList[i]) {
 		const bool bFavoriteRace = funcIsFavoriteRace(date, race->RaceName());
 		if (bFavoriteRace) {
-			return true;	// Œ©‚Â‚©‚Á‚½
+			return true;	// è¦‹ã¤ã‹ã£ãŸ
 		}
 	}
 	return false;

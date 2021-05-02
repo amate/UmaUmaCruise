@@ -1,0 +1,28 @@
+{
+    "name": "umaumacrusepackage",
+    "version-string": "1.0",
+    "dependencies": [
+        {
+            "name": "opencv4",
+            "default-features": false,
+            "features": [
+                "jpeg",
+                "png",
+                "world"
+            ]
+        },
+        {
+            "name": "tesseract",
+            "features": [
+                "cpu-independed"
+            ]
+        },
+        "wtl",
+        "boost-algorithm",
+        "boost-exception",
+        "boost-filesystem", 
+        "boost-timer", 
+        "boost-log",
+        "boost-optional"
+    ]
+}

@@ -1,6 +1,6 @@
 /**
 *	@file	GdiplusUtil.cpp
-*	@brief	Gdi+‚ğg‚¤‚Ì‚ğ•Ö—˜‚É‚·‚é
+*	@brief	Gdi+ã‚’ä½¿ã†ã®ã‚’ä¾¿åˆ©ã«ã™ã‚‹
 */
 
 #include "stdafx.h"
@@ -87,7 +87,7 @@ void	GdiplusTerm()
 
 
 //---------------------------------------
-/// Šg’£q‚ğw’è‚µ‚ÄƒGƒ“ƒR[ƒ_[‚ğæ“¾‚·‚é
+/// æ‹¡å¼µå­ã‚’æŒ‡å®šã—ã¦ã‚¨ãƒ³ã‚³ãƒ¼ãƒ€ãƒ¼ã‚’å–å¾—ã™ã‚‹
 Gdiplus::ImageCodecInfo*	GetEncoderByExtension(LPCWSTR extension)
 {
 	return GdiplusUtil.GetEncoderByExtension(extension);
@@ -95,7 +95,7 @@ Gdiplus::ImageCodecInfo*	GetEncoderByExtension(LPCWSTR extension)
 
 
 //--------------------------------------
-/// MIMEƒ^ƒCƒv‚ğw’è‚µ‚ÄƒGƒ“ƒR[ƒ_‚ğæ“¾‚·‚é
+/// MIMEã‚¿ã‚¤ãƒ—ã‚’æŒ‡å®šã—ã¦ã‚¨ãƒ³ã‚³ãƒ¼ãƒ€ã‚’å–å¾—ã™ã‚‹
 Gdiplus::ImageCodecInfo*	GetEncoderByMimeType(LPCWSTR mimetype)
 {
 	return GdiplusUtil.GetEncoderByMimeType(mimetype);

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <unordered_set>
-#include <atldlgs.h>
-#include <atlddx.h>
+#include <wtl\atldlgs.h>
+#include <wtl\atlddx.h>
 
 #include "RaceDateLibrary.h"
 #include "Config.h"

@@ -11,7 +11,7 @@
 
 using json = nlohmann::json;
 
-/// Å‘åƒTƒCƒY‚Éû‚Ü‚é‚æ‚¤‚É‰æ‘œ‚Ì”ä—¦‚ğl‚¦‚Äk¬‚·‚é
+/// æœ€å¤§ã‚µã‚¤ã‚ºã«åã¾ã‚‹ã‚ˆã†ã«ç”»åƒã®æ¯”ç‡ã‚’è€ƒãˆã¦ç¸®å°ã™ã‚‹
 CSize	CalcActualSize(Gdiplus::Image* image, CSize maxImageSize)
 {
 	CSize ActualSize;
@@ -200,7 +200,7 @@ void PreviewWindow::_ConvertDragdropPointToBounds()
 	
 	CSize actualSize = _CalcPreviewImageActualSize();
 
-	// ƒhƒ‰ƒbƒOƒhƒƒbƒv‚ª‰æ‘œ“à‚Éû‚Ü‚é‚æ‚¤‚É•â³
+	// ãƒ‰ãƒ©ãƒƒã‚°ãƒ‰ãƒ­ãƒƒãƒ—ãŒç”»åƒå†…ã«åã¾ã‚‹ã‚ˆã†ã«è£œæ­£
 	m_rcDragdropBounds.top = std::max(m_rcDragdropBounds.top, 0L);
 	m_rcDragdropBounds.left = std::max(m_rcDragdropBounds.left, 0L);
 	m_rcDragdropBounds.right = std::min(m_rcDragdropBounds.right, actualSize.cx);

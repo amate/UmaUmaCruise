@@ -42,14 +42,14 @@ namespace TesseractWrapper {
 	std::shared_ptr<TextFromImageFunc> GetOCRFunction()
 	{
 		std::unique_lock<std::mutex> lock(s_mtx);
-		// ƒLƒƒƒbƒVƒ…‚ğ•Ô‚·
+		// ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’è¿”ã™
 		for (auto& cacheFunc : s_cacheOCRFunction) {
 			if (cacheFunc.unique()) {
 				return cacheFunc;
 			}
 		}
 
-		// V‚½‚Éì¬‚µ‚Ä•Ô‚·
+		// æ–°ãŸã«ä½œæˆã—ã¦è¿”ã™
 
 		// tesseract init
 		auto ptess = std::make_shared<tesseract::TessBaseAPI>();
@@ -63,7 +63,7 @@ namespace TesseractWrapper {
 		INFO_LOG << L"ptess->Init success!";
 		ptess->SetPageSegMode(tesseract::/*PSM_SINGLE_BLOCK*/PSM_SINGLE_LINE);
 
-		// OCRŠÖ”ì¬
+		// OCRé–¢æ•°ä½œæˆ
 		auto OCRFunc = std::make_shared<TextFromImageFunc>([ptess](cv::Mat targetImage) -> std::wstring {
 			Utility::timer timer;
 
@@ -72,7 +72,7 @@ namespace TesseractWrapper {
 			ptess->Recognize(0);
 			std::wstring text = UTF16fromUTF8(ptess->GetUTF8Text()).c_str();
 
-			// whilte space ‚ğæ‚èœ‚­
+			// whilte space ã‚’å–ã‚Šé™¤ã
 			boost::algorithm::trim(text);
 			boost::algorithm::replace_all(text, L" ", L"");
 			boost::algorithm::replace_all(text, L"\n", L"");
@@ -112,7 +112,7 @@ namespace TesseractWrapper {
 		ptess->Recognize(0);
 		std::wstring text = UTF16fromUTF8(ptess->GetUTF8Text()).c_str();
 
-		// whilte space ‚ğæ‚èœ‚­
+		// whilte space ã‚’å–ã‚Šé™¤ã
 		boost::algorithm::trim(text);
 		boost::algorithm::replace_all(text, L" ", L"");
 		boost::algorithm::replace_all(text, L"\n", L"");
@@ -147,7 +147,7 @@ namespace TesseractWrapper {
 		ptess->Recognize(0);
 		std::wstring text = UTF16fromUTF8(ptess->GetUTF8Text()).c_str();
 
-		// whilte space ‚ğæ‚èœ‚­
+		// whilte space ã‚’å–ã‚Šé™¤ã
 		boost::algorithm::trim(text);
 		boost::algorithm::replace_all(text, L" ", L"");
 		boost::algorithm::replace_all(text, L"\n", L"");

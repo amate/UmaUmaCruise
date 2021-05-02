@@ -159,6 +159,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.6
+・[add] vcpkg.json を追加 (各種ライブラリの取得/ビルドの自動化)
+・[add] .editorconfig を追加、デフォルトのソースコードのエンコーディングをUTF8にした
+
 v1.5
 ・[add] レース一覧をウィンドウ化するオプションを追加
 ・[add] レース一覧でレース予約機能を追加 (レースをCtrl+クリック or 右クリックメニューから"レース予約を切り替え")

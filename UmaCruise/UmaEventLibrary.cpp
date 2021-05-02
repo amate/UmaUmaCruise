@@ -26,7 +26,7 @@ boost::optional<std::wstring> retrieve(
 {
 	// Retrieve similar strings into a string vector.
 	std::vector<std::wstring> xstrs;
-	for (; threshold > minThreshold/*kMinThreshold*/; threshold -= 0.05) {	// ­‚È‚­‚Æ‚àˆê‚Â‚ªŒ©‚Â‚©‚é‚æ‚¤‚Èè‡’l‚ğ’T‚·
+	for (; threshold > minThreshold/*kMinThreshold*/; threshold -= 0.05) {	// å°‘ãªãã¨ã‚‚ä¸€ã¤ãŒè¦‹ã¤ã‹ã‚‹ã‚ˆã†ãªé–¾å€¤ã‚’æ¢ã™
 		for (const std::wstring& query : ambiguousEventNames) {
 			dbr.retrieve(query, measure, threshold, std::back_inserter(xstrs));
 			if (xstrs.size()) {
@@ -58,7 +58,7 @@ boost::optional<std::wstring> retrieve(
 
 void	EventNameNormalize(std::wstring& eventName)
 {
-	std::wregex rx(L"iis“x[^\\j]+j");
+	std::wregex rx(L"ï¼ˆé€²è¡Œåº¦[^\\ï¼‰]+ï¼‰");
 	eventName = std::regex_replace(eventName, rx, L"");
 }
 
@@ -87,7 +87,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 
 					if (kMaxOption <= i) {
 						ATLASSERT(FALSE);
-						throw std::runtime_error("‘I‘ğˆ‚Ì”‚ª kMaxOption ‚ğ’´‚¦‚Ü‚·");
+						throw std::runtime_error("é¸æŠè‚¢ã®æ•°ãŒ kMaxOption ã‚’è¶…ãˆã¾ã™");
 					}
 
 					umaEvent.eventOptions[i].option = option;
@@ -117,21 +117,21 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibrary.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
-				throw std::runtime_error("UmaMusumeLibrary.json ‚Ì“Ç‚İ‚İ‚É¸”s");
+				throw std::runtime_error("UmaMusumeLibrary.json ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—");
 			}
 			json jsonLibrary;
 			ifs >> jsonLibrary;
 
 			funcLoad(jsonLibrary, "Charactor", m_charaEventList);
 			funcLoad(jsonLibrary, "Support", m_supportEventList);
-			// R->SR->SSR‚Æ“Ç‚İ‚Ü‚ê‚é‚Ì‚Å SSR->SR->R‡‚É‹t“]‚µ‚Ä‚¨‚­
+			// R->SR->SSRã¨èª­ã¿è¾¼ã¾ã‚Œã‚‹ã®ã§ SSR->SR->Ré †ã«é€†è»¢ã—ã¦ãŠã
 			std::reverse(m_supportEventList.begin(), m_supportEventList.end());			
 		}
 		{	// UmaMusumeLibraryMainStory.json
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryMainStory.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
-				throw std::runtime_error("UmaMusumeLibraryMainStory.json ‚Ì“Ç‚İ‚İ‚É¸”s");
+				throw std::runtime_error("UmaMusumeLibraryMainStory.json ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—");
 			}
 			json jsonLibrary;
 			ifs >> jsonLibrary;
@@ -151,12 +151,12 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 
 					auto funcUpdateEventOptions = [](const CharaEvent& charaEvent, CharaEventList& charaEventList) -> bool {
 						for (auto& anotherCharaEventList : charaEventList) {
-							if (anotherCharaEventList->name == charaEvent.name) {	// ƒ\[ƒXˆê’v
+							if (anotherCharaEventList->name == charaEvent.name) {	// ã‚½ãƒ¼ã‚¹ä¸€è‡´
 								bool update = false;
 								for (auto& anotherUmaEventList : anotherCharaEventList->umaEventList) {
 									for (const auto& umaEventList : charaEvent.umaEventList) {
-										if (anotherUmaEventList.eventName == umaEventList.eventName) {	// ƒCƒxƒ“ƒg–¼ˆê’v
-											anotherUmaEventList.eventOptions = umaEventList.eventOptions;	// ‘I‘ğˆ‚ğã‘‚«
+										if (anotherUmaEventList.eventName == umaEventList.eventName) {	// ã‚¤ãƒ™ãƒ³ãƒˆåä¸€è‡´
+											anotherUmaEventList.eventOptions = umaEventList.eventOptions;	// é¸æŠè‚¢ã‚’ä¸Šæ›¸ã
 											update = true;
 										}
 									}
@@ -167,10 +167,10 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 						}
 						return false;
 					};
-					// chara/supportEventList ‚Öã‘‚«‚·‚é
+					// chara/supportEventList ã¸ä¸Šæ›¸ãã™ã‚‹
 					if (!funcUpdateEventOptions(charaEvent, m_charaEventList)) {
 						if (!funcUpdateEventOptions(charaEvent, m_supportEventList)) {
-							// ƒCƒxƒ“ƒgƒŠƒXƒg‚ÉƒCƒxƒ“ƒg–¼‚ª‚È‚©‚Á‚½‚Ì‚ÅAm_supportEventList‚Ö’Ç‰Á‚µ‚Ä‚¨‚­
+							// ã‚¤ãƒ™ãƒ³ãƒˆãƒªã‚¹ãƒˆã«ã‚¤ãƒ™ãƒ³ãƒˆåãŒãªã‹ã£ãŸã®ã§ã€m_supportEventListã¸è¿½åŠ ã—ã¦ãŠã
 							m_supportEventList.emplace_back(std::make_unique<CharaEvent>(charaEvent));
 						}
 					}
@@ -181,7 +181,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / L"Common.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
-				throw std::runtime_error("Common.json ‚Ì“Ç‚İ‚İ‚É¸”s");
+				throw std::runtime_error("Common.json ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—");
 			}
 			json jsonCommon;
 			ifs >> jsonCommon;
@@ -190,7 +190,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 
 		_DBUmaNameInit();
 
-		// ‚à‚¤ˆê“xŒÄ‚Î‚ê‚½‚Æ‚«‚Ì‚½‚ß‚É m_currentIkuseiUmaEvent ‚ğ‰Šú‰»‚µ‚Ä‚¨‚­
+		// ã‚‚ã†ä¸€åº¦å‘¼ã°ã‚ŒãŸã¨ãã®ãŸã‚ã« m_currentIkuseiUmaEvent ã‚’åˆæœŸåŒ–ã—ã¦ãŠã
 		m_currentIkuseiUmaEvent = nullptr;
 		std::wstring ikuseiUmaName = m_currentIkuseUmaMusume;
 		m_currentIkuseUmaMusume.clear();
@@ -206,7 +206,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 
 void UmaEventLibrary::ChangeIkuseiUmaMusume(const std::wstring& umaName)
 {
-	std::unique_lock<std::mutex> lock(m_mtxName);	// ˆê‰”O‚Ì‚½‚ßc
+	std::unique_lock<std::mutex> lock(m_mtxName);	// ä¸€å¿œå¿µã®ãŸã‚â€¦
 	if (m_currentIkuseUmaMusume != umaName) {
 		INFO_LOG << L"ChangeIkuseiUmaMusume: " << umaName;
 		m_currentIkuseUmaMusume = umaName;
@@ -221,7 +221,7 @@ void UmaEventLibrary::ChangeIkuseiUmaMusume(const std::wstring& umaName)
 			}
 			ATLASSERT(m_currentIkuseiUmaEvent);
 			if (!m_currentIkuseiUmaEvent) {
-				ERROR_LOG << L"m_charaEventList ‚©‚çˆç¬ƒEƒ}–º‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: " << umaName;
+				ERROR_LOG << L"m_charaEventList ã‹ã‚‰è‚²æˆã‚¦ãƒå¨˜ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: " << umaName;
 			}
 		}
 		if (m_funcNotifyChangeIkuseiUmaMusume) {
@@ -233,11 +233,11 @@ void UmaEventLibrary::ChangeIkuseiUmaMusume(const std::wstring& umaName)
 
 void UmaEventLibrary::AnbigiousChangeIkuseImaMusume(std::vector<std::wstring> ambiguousUmaMusumeNames)
 {
-	// whilte space ‚ğæ‚èœ‚­
+	// whilte space ã‚’å–ã‚Šé™¤ã
 	for (auto& name : ambiguousUmaMusumeNames) {
 		boost::algorithm::trim(name);
-		boost::algorithm::replace_all(name, L"[", L"y");
-		boost::algorithm::replace_all(name, L"]",  L"z");
+		boost::algorithm::replace_all(name, L"[", L"ã€");
+		boost::algorithm::replace_all(name, L"]",  L"ã€‘");
 	}
 
 	// Output similar strings from Unicode queries.
@@ -264,12 +264,12 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 	UmaEvent event1 = optResult ? _SearchEventOptions(optResult.get()) : UmaEvent();
 	UmaEvent event2 = optOptionResult ? _SearchEventOptionsFromBottomOption(optOptionResult.get()) : UmaEvent();
 	if (event1.eventName != event2.eventName) {
-		WARN_LOG << L"AmbiguousSearchEvent ƒCƒxƒ“ƒg–¼•sˆê’v\n"
-			<< L"EƒCƒxƒ“ƒg–¼‚©‚ç 1: [" << event1.eventName << L"] (" << ambiguousEventNames.front() << L")\n"
-			<< L"E‰º•”‘I‘ğˆ‚©‚ç 2: [" << event2.eventName << L"] (" << ambiguousEventBottomOptions.front() << L")";
+		WARN_LOG << L"AmbiguousSearchEvent ã‚¤ãƒ™ãƒ³ãƒˆåä¸ä¸€è‡´\n"
+			<< L"ãƒ»ã‚¤ãƒ™ãƒ³ãƒˆåã‹ã‚‰ 1: [" << event1.eventName << L"] (" << ambiguousEventNames.front() << L")\n"
+			<< L"ãƒ»ä¸‹éƒ¨é¸æŠè‚¢ã‹ã‚‰ 2: [" << event2.eventName << L"] (" << ambiguousEventBottomOptions.front() << L")";
 	}
 
-	if (optOptionResult) {	// ‘I‘ğˆ‚©‚ç‚ÌŒŸõ‚ğ—Dæ‚·‚é
+	if (optOptionResult) {	// é¸æŠè‚¢ã‹ã‚‰ã®æ¤œç´¢ã‚’å„ªå…ˆã™ã‚‹
 		INFO_LOG << L"AmbiguousSearchEvent result: " << event2.eventName;
 		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
 	}
@@ -284,7 +284,7 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 #else
 
 	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
-	if (optOptionResult) {	// ‘I‘ğˆ‚©‚ç‚ÌŒŸõ‚ğ—Dæ‚·‚é
+	if (optOptionResult) {	// é¸æŠè‚¢ã‹ã‚‰ã®æ¤œç´¢ã‚’å„ªå…ˆã™ã‚‹
 		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
 	}
 	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 1.0, m_kMinThreshold);
@@ -303,7 +303,7 @@ void UmaEventLibrary::_DBUmaNameInit()
 	auto dbFolder = GetExeDirectory() / L"simstringDB" / L"UmaName";
 	auto dbPath = dbFolder / L"umaName_unicode.db";
 
-	// DBƒtƒHƒ‹ƒ_“à‚ğÁ‚µ‚Ä‰Šú‰»
+	// DBãƒ•ã‚©ãƒ«ãƒ€å†…ã‚’æ¶ˆã—ã¦åˆæœŸåŒ–
 	if (boost::filesystem::is_directory(dbFolder)) {
 		boost::system::error_code ec = {};
 		boost::filesystem::remove_all(dbFolder, ec);
@@ -317,7 +317,7 @@ void UmaEventLibrary::_DBUmaNameInit()
 	simstring::ngram_generator gen;
 	simstring::writer_base<std::wstring> dbw(gen, dbPath.string());
 
-	// ˆç¬ƒEƒ}–º‚Ì–¼‘O‚ğ’Ç‰Á
+	// è‚²æˆã‚¦ãƒå¨˜ã®åå‰ã‚’è¿½åŠ 
 	for (const auto& charaEvent : m_charaEventList) {
 		const std::wstring& name = charaEvent->name;
 		dbw.insert(name);
@@ -339,7 +339,7 @@ void UmaEventLibrary::_DBInit()
 		m_dbOptionReader = std::make_unique<simstring::reader>();
 		auto dbOptionPath = dbFolder / L"eventOption_unicode.db";
 
-		// DBƒtƒHƒ‹ƒ_“à‚ğÁ‚µ‚Ä‰Šú‰»
+		// DBãƒ•ã‚©ãƒ«ãƒ€å†…ã‚’æ¶ˆã—ã¦åˆæœŸåŒ–
 		if (boost::filesystem::is_directory(dbFolder)) {
 			boost::system::error_code ec = {};
 			boost::filesystem::remove_all(dbFolder, ec);
@@ -351,13 +351,13 @@ void UmaEventLibrary::_DBInit()
 
 		// Open a SimString database for writing (with std::wstring).
 		simstring::ngram_generator gen(2, false);	// bi-gram
-		// ƒCƒxƒ“ƒg–¼DB
+		// ã‚¤ãƒ™ãƒ³ãƒˆåDB
 		simstring::writer_base<std::wstring> dbw(gen, dbPath.string());
-		// ƒCƒxƒ“ƒg‘I‘ğˆDB
+		// ã‚¤ãƒ™ãƒ³ãƒˆé¸æŠè‚¢DB
 		simstring::writer_base<std::wstring> dbwOption(gen, dbOptionPath.string());
 
 
-		// ˆç¬ƒEƒ}–º‚ÌƒCƒxƒ“ƒg‚ğ’Ç‰Á
+		// è‚²æˆã‚¦ãƒå¨˜ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿½åŠ 
 		for (const auto& charaEvent : m_charaEventList) {
 			if (charaEvent->name.find(m_currentIkuseUmaMusume) == std::wstring::npos) {
 				continue;
@@ -370,14 +370,14 @@ void UmaEventLibrary::_DBInit()
 					if (it->option.empty()) {
 						continue;
 					}
-					dbwOption.insert(it->option);	// ÅŒã‚Ì‘I‘ğˆ‚ğ’Ç‰Á
+					dbwOption.insert(it->option);	// æœ€å¾Œã®é¸æŠè‚¢ã‚’è¿½åŠ 
 					break;
 				}
 			}
 			break;
 		}
 
-		// ƒTƒ|[ƒgƒJ[ƒh‚ÌƒCƒxƒ“ƒg‚ğ’Ç‰Á
+		// ã‚µãƒãƒ¼ãƒˆã‚«ãƒ¼ãƒ‰ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿½åŠ 
 		for (const auto& charaEvent : m_supportEventList) {
 			for (const auto& umaEvent : charaEvent->umaEventList) {
 				dbw.insert(umaEvent.eventName);
@@ -386,7 +386,7 @@ void UmaEventLibrary::_DBInit()
 					if (it->option.empty()) {
 						continue;
 					}
-					dbwOption.insert(it->option);	// ÅŒã‚Ì‘I‘ğˆ‚ğ’Ç‰Á
+					dbwOption.insert(it->option);	// æœ€å¾Œã®é¸æŠè‚¢ã‚’è¿½åŠ 
 					break;
 				}
 			}
@@ -405,7 +405,7 @@ void UmaEventLibrary::_DBInit()
 
 UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstring& eventName)
 {
-	// ˆç¬ƒEƒ}–º‚ÌƒCƒxƒ“ƒg‚ğ’T‚·
+	// è‚²æˆã‚¦ãƒå¨˜ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ¢ã™
 	if (m_currentIkuseiUmaEvent) {
 		for (const auto& umaEvent : m_currentIkuseiUmaEvent->umaEventList) {
 			if (umaEvent.eventName == eventName) {
@@ -415,7 +415,7 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstrin
 		}
 	}
 
-	// ƒTƒ|[ƒgƒJ[ƒh‚ÌƒCƒxƒ“ƒg‚ğ’T‚·
+	// ã‚µãƒãƒ¼ãƒˆã‚«ãƒ¼ãƒ‰ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ¢ã™
 	for (const auto& charaEvent : m_supportEventList) {
 		for (const auto& umaEvent : charaEvent->umaEventList) {
 			if (umaEvent.eventName == eventName) {
@@ -430,14 +430,14 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstrin
 
 UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptionsFromBottomOption(const std::wstring& bottomOption)
 {
-	// ˆç¬ƒEƒ}–º‚ÌƒCƒxƒ“ƒg‚ğ’T‚·
+	// è‚²æˆã‚¦ãƒå¨˜ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ¢ã™
 	if (m_currentIkuseiUmaEvent) {
 		for (const auto& umaEvent : m_currentIkuseiUmaEvent->umaEventList) {
 			for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
 				if (it->option.empty()) {
 					continue;
 				}
-				if (it->option == bottomOption) {	// ÅŒã‚Ì‘I‘ğˆ‚ğ”äŠr
+				if (it->option == bottomOption) {	// æœ€å¾Œã®é¸æŠè‚¢ã‚’æ¯”è¼ƒ
 					m_lastEventSource = m_currentIkuseiUmaEvent->name;
 					return umaEvent;
 				}
@@ -446,14 +446,14 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptionsFromBottomOption(c
 		}
 	}
 
-	// ƒTƒ|[ƒgƒJ[ƒh‚ÌƒCƒxƒ“ƒg‚ğ’T‚·
+	// ã‚µãƒãƒ¼ãƒˆã‚«ãƒ¼ãƒ‰ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’æ¢ã™
 	for (const auto& charaEvent : m_supportEventList) {
 		for (const auto& umaEvent : charaEvent->umaEventList) {
 			for (auto it = umaEvent.eventOptions.crbegin(); it != umaEvent.eventOptions.crend(); ++it) {
 				if (it->option.empty()) {
 					continue;
 				}
-				if (it->option == bottomOption) {	// ÅŒã‚Ì‘I‘ğˆ‚ğ”äŠr
+				if (it->option == bottomOption) {	// æœ€å¾Œã®é¸æŠè‚¢ã‚’æ¯”è¼ƒ
 					m_lastEventSource = charaEvent->name;
 					return umaEvent;
 				}

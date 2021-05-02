@@ -7,13 +7,6 @@
 #include <thread>
 #include <atomic>
 
-#include <atlframe.h>
-#include <atlctrls.h>
-#include <atldlgs.h>
-#include <atlcrack.h>
-#include <atlstr.h>
-#include <atlddx.h>
-
 #include "UmaEventLibrary.h"
 #include "RaceDateLibrary.h"
 #include "UmaTextRecognizer.h"

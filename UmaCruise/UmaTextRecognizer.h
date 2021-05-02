@@ -5,16 +5,16 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <atlmisc.h>
+#include <wtl\atlmisc.h>
 #include "Utility\GdiplusUtil.h"
 
 class UmaTextRecognizer
 {
 	static constexpr double kEventNameIconThreshold = 155.0;
 	static constexpr double kEventNameIconWhiteRatioThreshold = 0.5;
-	static constexpr double kMinWhiteRatioThreshold = 0.5;	// ”’”wŒi‚©Œˆ‚ß‚éè‡’l
-	static constexpr double kMinWhiteTextRatioThreshold = 0.05;	// ‰æ‘œ’†‚Ì”’•¶š—¦‚Ìè‡’l
-	static constexpr double kBlueBackgroundThreshold = 0.7;	// Â”wŒi—¦‚Ìè‡’l
+	static constexpr double kMinWhiteRatioThreshold = 0.5;	// ç™½èƒŒæ™¯ã‹æ±ºã‚ã‚‹é–¾å€¤
+	static constexpr double kMinWhiteTextRatioThreshold = 0.05;	// ç”»åƒä¸­ã®ç™½æ–‡å­—ç‡ã®é–¾å€¤
+	static constexpr double kBlueBackgroundThreshold = 0.7;	// é’èƒŒæ™¯ç‡ã®é–¾å€¤
 
 public:
 	bool	LoadSetting();
@@ -43,7 +43,7 @@ public:
 	}
 
 private:
-	// BaseClientSize ‚ğŠî€‚Æ‚µ‚ÄAimage‚ÌƒTƒCƒY‚É‡‚¤‚æ‚¤‚É bounds‚ğ’²ß‚·‚é
+	// BaseClientSize ã‚’åŸºæº–ã¨ã—ã¦ã€imageã®ã‚µã‚¤ã‚ºã«åˆã†ã‚ˆã†ã« boundsã‚’èª¿ç¯€ã™ã‚‹
 	CRect	_AdjustBounds(const cv::Mat& srcImage, CRect bounds);
 
 	bool	_IsEventNameIcon(cv::Mat srcImage);

@@ -35,7 +35,7 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 	std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / L"RaceDataLibrary.json").wstring());
 	ATLASSERT(ifs);
 	if (!ifs) {
-		throw std::runtime_error("RaceDataLibrary.json ‚Ì“Ç‚İ‚İ‚É¸”s");
+		throw std::runtime_error("RaceDataLibrary.json ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—");
 	}
 	json jsonLibrary;
 	ifs >> jsonLibrary;
@@ -53,9 +53,9 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 		}
 	};
 	auto funcGroundConditionFromText = [](const std::string& text) -> Race::GroundCondition {
-		if (text == u8"Å") {
+		if (text == u8"èŠ") {
 			return Race::GroundCondition::kGrass;
-		} else if (text == u8"ƒ_[ƒg") {
+		} else if (text == u8"ãƒ€ãƒ¼ãƒˆ") {
 			return Race::GroundCondition::kDart;
 		} else {
 			ATLASSERT(FALSE);
@@ -63,13 +63,13 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 		}
 	};
 	auto funcDistanceClassFromText = [](const std::string& text) -> Race::DistanceClass {
-		if (text == u8"’Z‹——£") {
+		if (text == u8"çŸ­è·é›¢") {
 			return Race::DistanceClass::kSprint;
-		} else if (text == u8"ƒ}ƒCƒ‹") {
+		} else if (text == u8"ãƒã‚¤ãƒ«") {
 			return Race::DistanceClass::kMile;
-		} else if (text == u8"’†‹——£") {
+		} else if (text == u8"ä¸­è·é›¢") {
 			return Race::DistanceClass::kMiddle;
-		} else if (text == u8"’·‹——£") {
+		} else if (text == u8"é•·è·é›¢") {
 			return Race::DistanceClass::kLong;
 		} else {
 			ATLASSERT(FALSE);
@@ -77,11 +77,11 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 		}
 	};
 	auto funcRotationFromText = [](const std::string& text) -> Race::Rotation {
-		if (text == u8"‰E") {
+		if (text == u8"å³") {
 			return Race::Rotation::kRight;
-		} else if (text == u8"¶") {
+		} else if (text == u8"å·¦") {
 			return Race::Rotation::kLeft;
-		} else if (text == u8"’¼ü") {
+		} else if (text == u8"ç›´ç·š") {
 			return Race::Rotation::kLine;
 		} else {
 			ATLASSERT(FALSE);
@@ -90,7 +90,7 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 	};
 	auto funcLocationFlagFromText = [](const std::string& text) -> Race::Location {
 		LPCSTR locationNames[Race::Location::kMaxLocationCount] = {
-			u8"D–y", u8"”ŸŠÙ", u8"•Ÿ“‡", u8"VŠƒ", u8"“Œ‹", u8"’†R", u8"’†‹", u8"‹“s", u8"ã_", u8"¬‘q", u8"‘åˆä"
+			u8"æœ­å¹Œ", u8"å‡½é¤¨", u8"ç¦å³¶", u8"æ–°æ½Ÿ", u8"æ±äº¬", u8"ä¸­å±±", u8"ä¸­äº¬", u8"äº¬éƒ½", u8"é˜ªç¥", u8"å°å€‰", u8"å¤§äº•"
 		};
 		for (int i = 0; i < Race::Location::kMaxLocationCount; ++i) {
 			LPCSTR location = locationNames[i];
@@ -143,24 +143,24 @@ std::wstring RaceDateLibrary::AnbigiousChangeCurrentTurn(std::vector<std::wstrin
 	}
 	if (optResult) {
 		std::wstring turn = optResult.get();
-		if (m_currentTurn.length() && m_searchCount != -1) {	// “ú•t‚ª‹t–ß‚è‚µ‚Ä‚¢‚é‚©’²‚×‚é
-			if (m_currentTurn != L"ƒtƒ@ƒCƒiƒ‹ƒYŠJÃ’†" && m_currentTurn != L"ƒWƒ…ƒjƒA‹‰ƒfƒrƒ…[‘O") {
+		if (m_currentTurn.length() && m_searchCount != -1) {	// æ—¥ä»˜ãŒé€†æˆ»ã‚Šã—ã¦ã„ã‚‹ã‹èª¿ã¹ã‚‹
+			if (m_currentTurn != L"ãƒ•ã‚¡ã‚¤ãƒŠãƒ«ã‚ºé–‹å‚¬ä¸­" && m_currentTurn != L"ã‚¸ãƒ¥ãƒ‹ã‚¢ç´šãƒ‡ãƒ“ãƒ¥ãƒ¼å‰") {
 				enum { kWrongTurnElapsedCount = 12 };
 				const int turnNumber = GetTurnNumberFromTurnName(turn);
 				const int prevTurnNumber = GetTurnNumberFromTurnName(m_currentTurn);
-				if (std::abs(turnNumber - prevTurnNumber) >= kWrongTurnElapsedCount ||	// ŠÔŒo‰ß‚ªˆÙí
-					turnNumber < prevTurnNumber	// ƒ^[ƒ“‚ªŠª‚«–ß‚Á‚Ä‚é
+				if (std::abs(turnNumber - prevTurnNumber) >= kWrongTurnElapsedCount ||	// æ™‚é–“çµŒéãŒç•°å¸¸
+					turnNumber < prevTurnNumber	// ã‚¿ãƒ¼ãƒ³ãŒå·»ãæˆ»ã£ã¦ã‚‹
 					) {
 					enum { kPassCount = 5 };
 					++m_searchCount;
 					if (m_searchCount < kPassCount) {
-						// ‘O‰ñŒŸõ‚©‚ç kPassCountˆÈ“à‚È‚çAŒo‰ßƒ^[ƒ“”‚ªˆÙí‚È‚Ì‚ÅA‘O‰ñ‚Ìƒ^[ƒ“”‚ğ•Ô‚·‚æ‚¤‚É‚·‚é
-						WARN_LOG << L"AnbigiousChangeCurrentTurn, Œo‰ßƒ^[ƒ“”‚ªˆÙí‚Å‚·"
+						// å‰å›æ¤œç´¢ã‹ã‚‰ kPassCountä»¥å†…ãªã‚‰ã€çµŒéã‚¿ãƒ¼ãƒ³æ•°ãŒç•°å¸¸ãªã®ã§ã€å‰å›ã®ã‚¿ãƒ¼ãƒ³æ•°ã‚’è¿”ã™ã‚ˆã†ã«ã™ã‚‹
+						WARN_LOG << L"AnbigiousChangeCurrentTurn, çµŒéã‚¿ãƒ¼ãƒ³æ•°ãŒç•°å¸¸ã§ã™"
 							<< L" prevTurnNumber: " << prevTurnNumber << L" turnNumber: " << turnNumber;
 						return m_currentTurn;
 					} else {
 						m_searchCount = 0;
-						ATLASSERT(FALSE);	// Œo‰ßƒ^[ƒ“”‚ª‚¨‚©‚µ‚­‚Ä‚à’Ê‚·
+						ATLASSERT(FALSE);	// çµŒéã‚¿ãƒ¼ãƒ³æ•°ãŒãŠã‹ã—ãã¦ã‚‚é€šã™
 					}
 				}
 			}
@@ -180,7 +180,7 @@ void RaceDateLibrary::_InitDB()
 
 	m_dbReader = std::make_unique<simstring::reader>();
 
-	// DBƒtƒHƒ‹ƒ_“à‚ğÁ‚µ‚Ä‰Šú‰»
+	// DBãƒ•ã‚©ãƒ«ãƒ€å†…ã‚’æ¶ˆã—ã¦åˆæœŸåŒ–
 	if (boost::filesystem::is_directory(dbFolder)) {
 		boost::system::error_code ec = {};
 		boost::filesystem::remove_all(dbFolder, ec);
@@ -194,18 +194,18 @@ void RaceDateLibrary::_InitDB()
 	simstring::ngram_generator gen(3, false);	// bi-gram
 	simstring::writer_base<std::wstring> dbw(gen, dbPath.string());
 
-	// “ú•t‚Ìˆê——‚ğì¬‚·‚é
-	m_allTurnList.emplace_back(L"ƒWƒ…ƒjƒA‹‰ƒfƒrƒ…[‘O");
-	dbw.insert(L"ƒWƒ…ƒjƒA‹‰ƒfƒrƒ…[‘O");
-	LPCWSTR classList[3] = { L"ƒWƒ…ƒjƒA‹‰", L"ƒNƒ‰ƒVƒbƒN‹‰", L"ƒVƒjƒA‹‰" };
-	LPCWSTR halfMonth[2] = { L"‘O”¼", L"Œã”¼" };
+	// æ—¥ä»˜ã®ä¸€è¦§ã‚’ä½œæˆã™ã‚‹
+	m_allTurnList.emplace_back(L"ã‚¸ãƒ¥ãƒ‹ã‚¢ç´šãƒ‡ãƒ“ãƒ¥ãƒ¼å‰");
+	dbw.insert(L"ã‚¸ãƒ¥ãƒ‹ã‚¢ç´šãƒ‡ãƒ“ãƒ¥ãƒ¼å‰");
+	LPCWSTR classList[3] = { L"ã‚¸ãƒ¥ãƒ‹ã‚¢ç´š", L"ã‚¯ãƒ©ã‚·ãƒƒã‚¯ç´š", L"ã‚·ãƒ‹ã‚¢ç´š" };
+	LPCWSTR halfMonth[2] = { L"å‰åŠ", L"å¾ŒåŠ" };
 	for (std::wstring className : classList) {
 		int i = 1;
-		if (className == L"ƒWƒ…ƒjƒA‹‰") {
-			i = 7;	// ƒWƒ…ƒjƒA‹‰‚Í7Œ‚©‚ç
+		if (className == L"ã‚¸ãƒ¥ãƒ‹ã‚¢ç´š") {
+			i = 7;	// ã‚¸ãƒ¥ãƒ‹ã‚¢ç´šã¯7æœˆã‹ã‚‰
 		}
-		for (; i <= 12; ++i) {	// 1Œ ~ 12Œ
-			std::wstring classNameMonth = className + std::to_wstring(i) + L"Œ";
+		for (; i <= 12; ++i) {	// 1æœˆ ~ 12æœˆ
+			std::wstring classNameMonth = className + std::to_wstring(i) + L"æœˆ";
 			for (LPCWSTR firstLast : halfMonth) {
 				std::wstring date = classNameMonth + firstLast;
 				m_allTurnList.emplace_back(date);
@@ -213,8 +213,8 @@ void RaceDateLibrary::_InitDB()
 			}
 		}
 	}
-	m_allTurnList.emplace_back(L"ƒtƒ@ƒCƒiƒ‹ƒYŠJÃ’†");
-	dbw.insert(L"ƒtƒ@ƒCƒiƒ‹ƒYŠJÃ’†");
+	m_allTurnList.emplace_back(L"ãƒ•ã‚¡ã‚¤ãƒŠãƒ«ã‚ºé–‹å‚¬ä¸­");
+	dbw.insert(L"ãƒ•ã‚¡ã‚¤ãƒŠãƒ«ã‚ºé–‹å‚¬ä¸­");
 
 	dbw.close();
 
@@ -259,9 +259,9 @@ std::wstring RaceDateLibrary::Race::GroundConditionText() const
 {
 	switch (groundCondition) {
 	case kGrass:
-		return L"Å";
+		return L"èŠ";
 	case kDart:
-		return L"ƒ_[ƒg";
+		return L"ãƒ€ãƒ¼ãƒˆ";
 	default:
 		ATLASSERT(FALSE);
 	}
@@ -272,13 +272,13 @@ std::wstring RaceDateLibrary::Race::DistanceText() const
 {
 	switch (distanceClass) {
 	case kSprint:
-		return L"’Z‹——£i" + distance + L")";
+		return L"çŸ­è·é›¢ï¼ˆ" + distance + L")";
 	case kMile:
-		return L"ƒ}ƒCƒ‹i" + distance + L")";
+		return L"ãƒã‚¤ãƒ«ï¼ˆ" + distance + L")";
 	case kMiddle:
-		return L"’†‹——£i" + distance + L")";
+		return L"ä¸­è·é›¢ï¼ˆ" + distance + L")";
 	case kLong:
-		return L"’·‹——£i" + distance + L")";
+		return L"é•·è·é›¢ï¼ˆ" + distance + L")";
 	default:
 		ATLASSERT(FALSE);
 	}
@@ -289,11 +289,11 @@ std::wstring RaceDateLibrary::Race::RotationText() const
 {
 	switch (rotation) {
 	case kRight:
-		return L"‰E";
+		return L"å³";
 	case kLeft:
-		return L"¶";
+		return L"å·¦";
 	case kLine:
-		return L"’¼ü";
+		return L"ç›´ç·š";
 	default:
 		ATLASSERT(FALSE);
 	}

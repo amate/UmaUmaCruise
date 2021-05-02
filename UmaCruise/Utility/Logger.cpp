@@ -55,7 +55,7 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(my_logger, logger_t)
 	core->add_sink(sink_ostream);
 #endif
 
-	// ƒƒO‚Ìƒtƒ@ƒCƒ‹o—Í‚ğİ’è
+	// ãƒ­ã‚°ã®ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›ã‚’è¨­å®š
 	auto text_backend = boost::make_shared<sinks::text_file_backend>(
 			//boost::log::keywords::file_name = SYS_LOGFILE
 			boost::log::keywords::file_name = LogFileName()
@@ -74,7 +74,7 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(my_logger, logger_t)
 	core->add_sink(sink_text);
 
 #ifdef _DEBUG
-	// ƒƒO‚ÌƒRƒ“ƒ\[ƒ‹o—Í‚ğİ’è
+	// ãƒ­ã‚°ã®ã‚³ãƒ³ã‚½ãƒ¼ãƒ«å‡ºåŠ›ã‚’è¨­å®š
 	//setlocale(LC_ALL, "");
 
 	::AllocConsole();

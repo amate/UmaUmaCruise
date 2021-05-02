@@ -8,7 +8,7 @@
 #include "Logger.h"
 #include "CodeConvert.h"
 
-/// 現在実行中の exeのあるフォルダのパスを返す
+/// 迴ｾ蝨ｨ螳溯｡御ｸｭ縺ｮ exe縺ｮ縺ゅｋ繝輔か繝ｫ繝縺ｮ繝代せ繧定ｿ斐☆
 fs::path GetExeDirectory()
 {
 	WCHAR exePath[MAX_PATH] = L"";
@@ -30,7 +30,7 @@ void	FatalErrorOccur(const std::wstring& error, const char* fileName, const int 
 	throw std::exception(CodeConvert::ShiftJISfromUTF16(error).c_str());
 }
 
-/// プロセスを起動し、終了まで待つ
+/// 繝励Ο繧ｻ繧ｹ繧定ｵｷ蜍輔＠縲∫ｵゆｺ�縺ｾ縺ｧ蠕�縺､
 DWORD	StartProcess(const fs::path& exePath, const std::wstring& commandLine)
 {
 	//INFO_LOG << L"StartProcess\n" << L"\"" << exePath << L"\" " << commandLine;

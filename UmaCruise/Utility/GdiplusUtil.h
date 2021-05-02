@@ -1,22 +1,22 @@
 /**
 *	@file	GdiplusUtil.h
-*	@brief	Gdi+‚ğg‚¤‚Ì‚ğ•Ö—˜‚É‚·‚é
+*	@brief	Gdi+ã‚’ä½¿ã†ã®ã‚’ä¾¿åˆ©ã«ã™ã‚‹
 */
 
 #pragma once
 
 #include <GdiPlus.h>
 
-// ‰Šú‰»/Œãn––
+// åˆæœŸåŒ–/å¾Œå§‹æœ«
 void	GdiplusInit();
 void	GdiplusTerm();
 
 //---------------------------------------
-/// Šg’£q‚ğw’è‚µ‚ÄƒGƒ“ƒR[ƒ_[‚ğæ“¾‚·‚é
+/// æ‹¡å¼µå­ã‚’æŒ‡å®šã—ã¦ã‚¨ãƒ³ã‚³ãƒ¼ãƒ€ãƒ¼ã‚’å–å¾—ã™ã‚‹
 Gdiplus::ImageCodecInfo*	GetEncoderByExtension(LPCWSTR extension);
 
 //--------------------------------------
-/// MIMEƒ^ƒCƒv‚ğw’è‚µ‚ÄƒGƒ“ƒR[ƒ_‚ğæ“¾‚·‚é
+/// MIMEã‚¿ã‚¤ãƒ—ã‚’æŒ‡å®šã—ã¦ã‚¨ãƒ³ã‚³ãƒ¼ãƒ€ã‚’å–å¾—ã™ã‚‹
 Gdiplus::ImageCodecInfo*	GetEncoderByMimeType(LPCWSTR mimetype);
 
 

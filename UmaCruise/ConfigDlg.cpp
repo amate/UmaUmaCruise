@@ -66,14 +66,14 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 		std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
 		ATLASSERT(ifs);
 		if (!ifs) {
-			MessageBox(L"Common.json ‚Ì“Ç‚İ‚İ‚É¸”s");
+			MessageBox(L"Common.json ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—");
 			return;
 		}
 		json jsonCommon;
 		ifs >> jsonCommon;
 		std::string libraryURL = jsonCommon["Common"]["UmaMusumeLibraryURL"];
 
-		// ƒtƒ@ƒCƒ‹ƒTƒCƒYæ“¾
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºå–å¾—
 		auto umaLibraryPath = GetExeDirectory() / L"UmaLibrary" / L"UmaMusumeLibrary.json";
 		const DWORD umaLibraryFileSize = static_cast<DWORD>(fs::file_size(umaLibraryPath));
 
@@ -85,31 +85,31 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 			if (statusCode == 200) {
 				DWORD contentLength = 0;
 				HttpQueryHeaders(hRequest, WINHTTP_QUERY_CONTENT_LENGTH, contentLength);
-				if (umaLibraryFileSize != contentLength) {	// ƒtƒ@ƒCƒ‹ƒTƒCƒY”äŠr
-					// XV‚·‚é
+				if (umaLibraryFileSize != contentLength) {	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºæ¯”è¼ƒ
+					// æ›´æ–°ã™ã‚‹
 					auto optDLData = HttpDownloadData(downloadUrl.GetURL());
 					if (optDLData) {
 						SaveFile(umaLibraryPath, optDLData.get());
-						MessageBox(L"XV‚µ‚Ü‚µ‚½\nXVŒã‚Ì UmaMusumeLibrary.json ‚ÍÄ‹N“®Œã‚É—LŒø‚É‚È‚è‚Ü‚·", L"¬Œ÷");
+						MessageBox(L"æ›´æ–°ã—ã¾ã—ãŸ\næ›´æ–°å¾Œã® UmaMusumeLibrary.json ã¯å†èµ·å‹•å¾Œã«æœ‰åŠ¹ã«ãªã‚Šã¾ã™", L"æˆåŠŸ");
 						GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
 						return;
 					} else {
-						MessageBox(L"ƒ_ƒEƒ“ƒ[ƒh‚É¸”s‚µ‚Ü‚µ‚½...", L"ƒGƒ‰[", MB_ICONERROR);
+						MessageBox(L"ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ...", L"ã‚¨ãƒ©ãƒ¼", MB_ICONERROR);
 						return;
 					}
 				} else {
-					MessageBox(L"XV‚Í•K—v‚ ‚è‚Ü‚¹‚ñ", L"¬Œ÷");
+					MessageBox(L"æ›´æ–°ã¯å¿…è¦ã‚ã‚Šã¾ã›ã‚“", L"æˆåŠŸ");
 					GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
 					return;
 				}
 			} else {
 				CString errorText;
-				errorText.Format(L"ƒT[ƒo[‚©‚çƒGƒ‰[‚ª•Ô‚³‚ê‚Ü‚µ‚½B\nƒXƒe[ƒ^ƒXƒR[ƒh: %d", statusCode);
-				MessageBox(errorText, L"ƒGƒ‰[", MB_ICONERROR);
+				errorText.Format(L"ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ã‚¨ãƒ©ãƒ¼ãŒè¿”ã•ã‚Œã¾ã—ãŸã€‚\nã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚³ãƒ¼ãƒ‰: %d", statusCode);
+				MessageBox(errorText, L"ã‚¨ãƒ©ãƒ¼", MB_ICONERROR);
 				return;
 			}
 		} else {
-			MessageBox(L"ƒŠƒNƒGƒXƒg‚Ì‘—M‚É¸”s‚µ‚Ü‚µ‚½B\nÚ×‚Í info.log ‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B", L"ƒGƒ‰[", MB_ICONERROR);
+			MessageBox(L"ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®é€ä¿¡ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\nè©³ç´°ã¯ info.log ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚", L"ã‚¨ãƒ©ãƒ¼", MB_ICONERROR);
 			return;
 		}
 	} catch (boost::exception& e) {
@@ -118,5 +118,5 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 		int a = 0;
 	}
 	ATLASSERT(FALSE);
-	MessageBox(L"‰½‚©‚µ‚ç‚ÌƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½...", L"ƒGƒ‰[", MB_ICONERROR);
+	MessageBox(L"ä½•ã‹ã—ã‚‰ã®ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ...", L"ã‚¨ãƒ©ãƒ¼", MB_ICONERROR);
 }

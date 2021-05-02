@@ -19,7 +19,7 @@ using namespace CodeConvert;
 using namespace cv;
 
 
-// android”Å
+// androidç‰ˆ
 bool SaveScreenShot(const std::wstring& device, const std::wstring& filePath)
 {
 	auto adbPath = GetExeDirectory() / L"platform-tools" / L"adb.exe";
@@ -89,20 +89,20 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	UIAddChildWindowContainer(m_hWnd);
 
-	// ƒtƒHƒ‹ƒ_ƒpƒX‚Ì•¶šƒR[ƒhƒ`ƒFƒbƒN
+	// ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã®æ–‡å­—ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
 	auto exeDir = GetExeDirectory().wstring();
 	auto sjisDir = ShiftJISfromUTF16(exeDir);
 	auto sjis_utf16exeDir = UTF16fromShiftJIS(sjisDir);
 	if (exeDir != sjis_utf16exeDir) {
 		//ERROR_LOG << L"exeDir contain unicode";
-		MessageBox(L"ƒtƒHƒ‹ƒ_–¼‚Éunicode‚ªŠÜ‚Ü‚ê‚Ä‚¢‚é‚Ì‚Å³í“®ì‚µ‚Ü‚¹‚ñB\n‚à‚Á‚Æó‚¢ŠK‘w(C:\\)‚È‚Ç‚ÉƒtƒHƒ‹ƒ_‚ğˆÚ“®‚³‚¹‚Ä‚­‚¾‚³‚¢B", L"ƒGƒ‰[", MB_ICONERROR);
+		MessageBox(L"ãƒ•ã‚©ãƒ«ãƒ€åã«unicodeãŒå«ã¾ã‚Œã¦ã„ã‚‹ã®ã§æ­£å¸¸å‹•ä½œã—ã¾ã›ã‚“ã€‚\nã‚‚ã£ã¨æµ…ã„éšå±¤(C:\\)ãªã©ã«ãƒ•ã‚©ãƒ«ãƒ€ã‚’ç§»å‹•ã•ã›ã¦ãã ã•ã„ã€‚", L"ã‚¨ãƒ©ãƒ¼", MB_ICONERROR);
 	}
 
 	m_config.LoadConfig();
 
 	DoDataExchange(DDX_LOAD);
 
-	// ‘I‘ğˆƒGƒfƒBƒbƒg‚Ì”wŒiF‚ğİ’è
+	// é¸æŠè‚¢ã‚¨ãƒ‡ã‚£ãƒƒãƒˆã®èƒŒæ™¯è‰²ã‚’è¨­å®š
 	m_optionBkColor[0] = RGB(203, 247, 148);
 	m_optionBkColor[1] = RGB(255, 236, 150);
 	m_optionBkColor[2] = RGB(255, 203, 228);
@@ -110,18 +110,18 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		m_brsOptions[i].CreateSolidBrush(m_optionBkColor[i]);
 	}
 
-	// ƒvƒŒƒrƒ…[ƒEƒBƒ“ƒhƒEì¬
+	// ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆ
 	m_previewWindow.Create(m_hWnd);
 	m_previewWindow.SetNotifyDragdropBounds([this](const CRect& rcBounds) {
 		m_rcBounds = rcBounds;
 	});
 
-	// UmaMusumeLibrary‚ğ“Ç‚İ‚İ
+	// UmaMusumeLibraryã‚’èª­ã¿è¾¼ã¿
 	if (!m_umaEventLibrary.LoadUmaMusumeLibrary()) {
 		ERROR_LOG << L"LoadUmaMusumeLibrary failed";
 		ATLASSERT(FALSE);
 	} else {
-		// ˆç¬ƒEƒ}–º‚ÌƒŠƒXƒg‚ğƒRƒ“ƒ{ƒ{ƒbƒNƒX‚É’Ç‰Á
+		// è‚²æˆã‚¦ãƒå¨˜ã®ãƒªã‚¹ãƒˆã‚’ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã«è¿½åŠ 
 		CString currentProperty;
 		for (const auto& uma : m_umaEventLibrary.GetIkuseiUmaMusumeEventList()) {
 			if (currentProperty != uma->property.c_str()) {
@@ -137,7 +137,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		ATLASSERT(FALSE);
 	}
 
-	// ƒŒ[ƒXˆê——ƒEƒBƒ“ƒhƒEì¬
+	// ãƒ¬ãƒ¼ã‚¹ä¸€è¦§ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆ
 	m_raceListWindow.Create(m_hWnd);
 	m_umaEventLibrary.RegisterNotifyChangeIkuseiUmaMusume([this](const std::wstring& umaName) {
 		m_raceListWindow.ChangeIkuseiUmaMusume(umaName);
@@ -148,8 +148,8 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
 			ATLASSERT(ifs);
 			if (!ifs) {
-				ERROR_LOG << L"Common.json ‚ª‘¶İ‚µ‚Ü‚¹‚ñ...";
-				ChangeWindowTitle(L"Common.json ‚ª‘¶İ‚µ‚Ü‚¹‚ñ...");
+				ERROR_LOG << L"Common.json ãŒå­˜åœ¨ã—ã¾ã›ã‚“...";
+				ChangeWindowTitle(L"Common.json ãŒå­˜åœ¨ã—ã¾ã›ã‚“...");
 			} else {
 				json jsonCommon;
 				ifs >> jsonCommon;
@@ -229,7 +229,7 @@ LRESULT CMainDlg::OnAppAbout(WORD, WORD, HWND, BOOL&)
 	return 0;
 }
 
-// ƒŒ[ƒXƒŠƒXƒg‚Ì•\¦‚ğØ‚è‘Ö‚¦
+// ãƒ¬ãƒ¼ã‚¹ãƒªã‚¹ãƒˆã®è¡¨ç¤ºã‚’åˆ‡ã‚Šæ›¿ãˆ
 void CMainDlg::OnShowHideRaceList(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	m_bShowRaceList = !m_bShowRaceList;
@@ -246,7 +246,7 @@ LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 {
 	DoDataExchange(DDX_SAVE);
 
-	m_raceListWindow.ShowWindow(false);	// ƒEƒBƒ“ƒhƒEˆÊ’u•Û‘¶
+	m_raceListWindow.ShowWindow(false);	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½ç½®ä¿å­˜
 
 	json jsonSetting;
 	std::ifstream fs((GetExeDirectory() / "setting.json").wstring());
@@ -304,7 +304,7 @@ void CMainDlg::OnTimer(UINT_PTR nIDEvent)
 {
 }
 
-// ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚©‚çˆç¬ƒEƒ}–º‚ª•ÏX‚³‚ê‚½ê‡
+// ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‹ã‚‰è‚²æˆã‚¦ãƒå¨˜ãŒå¤‰æ›´ã•ã‚ŒãŸå ´åˆ
 void CMainDlg::OnSelChangeUmaMusume(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	const int index = m_cmbUmaMusume.GetCurSel();
@@ -313,14 +313,14 @@ void CMainDlg::OnSelChangeUmaMusume(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	CString umaName;
 	m_cmbUmaMusume.GetLBText(index, umaName);
-	if (umaName.Left(1) == L"™") {
+	if (umaName.Left(1) == L"â˜†") {
 		m_umaEventLibrary.ChangeIkuseiUmaMusume(L"");
 		return;
 	}
 	m_umaEventLibrary.ChangeIkuseiUmaMusume((LPCWSTR)umaName);
 }
 
-// ƒhƒbƒLƒ“ƒOó‘Ô‚È‚çƒŒ[ƒXˆê——ƒEƒBƒ“ƒhƒE‚ğ“¯‚É“®‚©‚·
+// ãƒ‰ãƒƒã‚­ãƒ³ã‚°çŠ¶æ…‹ãªã‚‰ãƒ¬ãƒ¼ã‚¹ä¸€è¦§ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’åŒæ™‚ã«å‹•ã‹ã™
 LRESULT CMainDlg::OnDockingProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	auto funcDockingMove = [this]() -> bool {
@@ -336,22 +336,22 @@ LRESULT CMainDlg::OnDockingProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		const int cyPadding = GetSystemMetrics(SM_CYSIZEFRAME) * 2;
 
 		bool bDocking = false;
-		// ƒƒCƒ“‚Ì‰E‚É‚ ‚é
+		// ãƒ¡ã‚¤ãƒ³ã®å³ã«ã‚ã‚‹
 		if (std::abs(rcParentWindow.right - rcWindow.left) <= RaceListWindow::kDockingMargin) {
 			rcWindow.MoveToX(rcParentWindow.right - cxPadding);
 			bDocking = true;
 
-			// ƒƒCƒ“‚Ì¶‚É‚ ‚é
+			// ãƒ¡ã‚¤ãƒ³ã®å·¦ã«ã‚ã‚‹
 		} else if (std::abs(rcParentWindow.left - rcWindow.right) <= RaceListWindow::kDockingMargin) {
 			rcWindow.MoveToX(rcParentWindow.left - rcWindow.Width() + cxPadding);
 			bDocking = true;
 
-			// ƒƒCƒ“‚Ìã‚É‚ ‚é
+			// ãƒ¡ã‚¤ãƒ³ã®ä¸Šã«ã‚ã‚‹
 		} else if (std::abs(rcParentWindow.top - rcWindow.bottom) <= RaceListWindow::kDockingMargin) {
 			rcWindow.MoveToY(rcParentWindow.top - rcWindow.Height() + cyPadding);
 			bDocking = true;
 
-			// ƒƒCƒ“‚Ì‰º‚É‚ ‚é
+			// ãƒ¡ã‚¤ãƒ³ã®ä¸‹ã«ã‚ã‚‹
 		} else if (std::abs(rcParentWindow.bottom - rcWindow.top) <= RaceListWindow::kDockingMargin) {
 			rcWindow.MoveToY(rcParentWindow.bottom - cyPadding);
 			bDocking = true;
@@ -381,10 +381,10 @@ LRESULT CMainDlg::OnDockingProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
-// ƒ_ƒCƒAƒƒO‚Ì”wŒiF‚ğ”’‚É•ÏX
+// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®èƒŒæ™¯è‰²ã‚’ç™½ã«å¤‰æ›´
 HBRUSH CMainDlg::OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 {
-	// ‘I‘ğˆƒGƒfƒBƒbƒg‚Ì”wŒiF‚ğİ’è
+	// é¸æŠè‚¢ã‚¨ãƒ‡ã‚£ãƒƒãƒˆã®èƒŒæ™¯è‰²ã‚’è¨­å®š
 	const int ctrlID = wnd.GetDlgCtrlID();
 	if (IDC_EDIT_OPTION1 <= ctrlID && ctrlID <= IDC_EDIT_OPTION3) {
 		int i = ctrlID - IDC_EDIT_OPTION1;
@@ -398,7 +398,7 @@ HBRUSH CMainDlg::OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 
 void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
-	if (::GetKeyState(VK_CONTROL) < 0) {	// Ctrl ‚ğ‰Ÿ‚µ‚È‚ª‚ç‚¾‚ÆƒvƒŒƒrƒ…[‚©‚çIR‚·‚é
+	if (::GetKeyState(VK_CONTROL) < 0) {	// Ctrl ã‚’æŠ¼ã—ãªãŒã‚‰ã ã¨ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ã‹ã‚‰IRã™ã‚‹
 		Utility::timer timer;
 		//auto ssImage = m_umaTextRecoginzer.ScreenShot();
 		auto image = m_previewWindow.GetImage();
@@ -412,12 +412,12 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		bool success = m_umaTextRecoginzer.TextRecognizer(&bmp);
 		INFO_LOG << L"TextRecognizer processing time: " << timer.format();
 
-		// ˆç¬ƒEƒ}–º–¼
+		// è‚²æˆã‚¦ãƒå¨˜å
 		std::wstring prevUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
 		m_umaEventLibrary.AnbigiousChangeIkuseImaMusume(m_umaTextRecoginzer.GetUmaMusumeName());
 		std::wstring nowUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
 		if (prevUmaName != nowUmaName) {
-			// ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ğ•ÏX
+			// ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚’å¤‰æ›´
 			const int count = m_cmbUmaMusume.GetCount();
 			for (int i = 0; i < count; ++i) {
 				CString name;
@@ -429,7 +429,7 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 			}
 		}
 
-		// ƒCƒxƒ“ƒgŒŸõ
+		// ã‚¤ãƒ™ãƒ³ãƒˆæ¤œç´¢
 		auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
 			m_umaTextRecoginzer.GetEventName(), 
 			m_umaTextRecoginzer.GetEventBottomOption() );
@@ -444,10 +444,10 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		}
 
 
-		// Œ»İƒ^[ƒ“
+		// ç¾åœ¨ã‚¿ãƒ¼ãƒ³
 		m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
 
-		// ƒŒ[ƒX‹——£
+		// ãƒ¬ãƒ¼ã‚¹è·é›¢
 		m_raceListWindow.EntryRaceDistance(m_umaTextRecoginzer.GetEntryRaceDistance());
 
 		//++count;
@@ -458,7 +458,7 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 	} else {
 		HWND hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
 		if (!hwndTarget) {
-			ChangeWindowTitle(L"ƒEƒ}–º‚ÌƒEƒBƒ“ƒhƒE‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBBB");
+			ChangeWindowTitle(L"ã‚¦ãƒå¨˜ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚ã€‚ã€‚");
 			return;
 		}
 		auto ssFolderPath = GetExeDirectory() / L"screenshot";
@@ -473,7 +473,7 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		// 
 		auto image = m_umaTextRecoginzer.ScreenShot();
 		if (!image) {
-			ChangeWindowTitle(L"ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚É¸”s...");
+			ChangeWindowTitle(L"ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆã«å¤±æ•—...");
 			return;
 		}
 		auto pngEncoder = GetEncoderByMimeType(L"image/png");
@@ -495,7 +495,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 	bool bChecked = btnStart.GetCheck() == BST_CHECKED;
 	if (bChecked) {
 		ATLASSERT(!m_threadAutoDetect.joinable());
-		btnStart.SetWindowText(L"ƒXƒgƒbƒv");
+		btnStart.SetWindowText(L"ã‚¹ãƒˆãƒƒãƒ—");
 		m_cancelAutoDetect = false;
 		m_threadAutoDetect = std::thread([this]()
 		{
@@ -518,12 +518,12 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 						m_previewWindow.UpdateImage(ssImage.release());
 					}
 
-					// ˆç¬ƒEƒ}–º–¼
+					// è‚²æˆã‚¦ãƒå¨˜å
 					std::wstring prevUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
 					m_umaEventLibrary.AnbigiousChangeIkuseImaMusume(m_umaTextRecoginzer.GetUmaMusumeName());
 					std::wstring nowUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
 					if (prevUmaName != nowUmaName) {
-						// ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ğ•ÏX
+						// ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚’å¤‰æ›´
 						const int count = m_cmbUmaMusume.GetCount();
 						for (int i = 0; i < count; ++i) {
 							CString name;
@@ -535,7 +535,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 						}
 					}
 
-					// ƒCƒxƒ“ƒgŒŸõ
+					// ã‚¤ãƒ™ãƒ³ãƒˆæ¤œç´¢
 					auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
 						m_umaTextRecoginzer.GetEventName(), 
 						m_umaTextRecoginzer.GetEventBottomOption() );
@@ -550,10 +550,10 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 					}
 
 
-					// Œ»İƒ^[ƒ“
+					// ç¾åœ¨ã‚¿ãƒ¼ãƒ³
 					m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
 
-					// ƒŒ[ƒX‹——£
+					// ãƒ¬ãƒ¼ã‚¹è·é›¢
 					m_raceListWindow.EntryRaceDistance(m_umaTextRecoginzer.GetEntryRaceDistance());
 
 					++count;
@@ -573,7 +573,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 				} else {
 					if (!ssImage) {
-						ChangeWindowTitle(L"ƒEƒ}–º‚ÌƒEƒBƒ“ƒhƒE‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ...");
+						ChangeWindowTitle(L"ã‚¦ãƒå¨˜ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“...");
 					} else {
 						ChangeWindowTitle(L"failed...");
 					}
@@ -588,7 +588,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 			// finish
 			if (m_threadAutoDetect.joinable()) {
 				CButton btnStart = GetDlgItem(IDC_CHECK_START);
-				btnStart.SetWindowText(L"ƒXƒ^[ƒg");
+				btnStart.SetWindowText(L"ã‚¹ã‚¿ãƒ¼ãƒˆ");
 				btnStart.EnableWindow(TRUE);
 				m_threadAutoDetect.detach();
 			}
@@ -597,7 +597,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 		//SetTimer(kAutoOCRTimerID, kAutoOCRTimerInterval);
 	} else {
 		if (m_threadAutoDetect.joinable()) {
-			btnStart.SetWindowText(L"’â~’†...");
+			btnStart.SetWindowText(L"åœæ­¢ä¸­...");
 			btnStart.EnableWindow(FALSE);
 			m_cancelAutoDetect = true;
 		}
@@ -624,18 +624,18 @@ void CMainDlg::OnEventNameChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 	
 }
 
-// ƒCƒxƒ“ƒg‘I‘ğˆ‚ÌŒø‰Ê‚ğC³‚·‚é
+// ã‚¤ãƒ™ãƒ³ãƒˆé¸æŠè‚¢ã®åŠ¹æœã‚’ä¿®æ­£ã™ã‚‹
 void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	UmaEventLibrary::UmaEvent umaEvent;
 	DoDataExchange(DDX_SAVE, IDC_EDIT_EVENTNAME);
 	DoDataExchange(DDX_SAVE, IDC_EDIT_EVENT_SOURCE);
 	if (m_eventName.IsEmpty()) {
-		MessageBox(L"ƒCƒxƒ“ƒg–¼ ‚ª‹ó‚Å‚·B");
+		MessageBox(L"ã‚¤ãƒ™ãƒ³ãƒˆå ãŒç©ºã§ã™ã€‚");
 		return;
 	}
 	if (m_eventSource.IsEmpty()) {
-		MessageBox(L"ƒ\[ƒX ‚ª‹ó‚Å‚·");
+		MessageBox(L"ã‚½ãƒ¼ã‚¹ ãŒç©ºã§ã™");
 		return;
 	}
 	
@@ -661,13 +661,13 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		jsonOptionsArray.push_back(jsonOption);
 	}
 	if (jsonOptionsArray.empty()) {
-		MessageBox(L"‘I‘ğˆ ‚ª‹ó‚Å‚·");
+		MessageBox(L"é¸æŠè‚¢ ãŒç©ºã§ã™");
 		return;
 	}
 
 	CString msg;
-	msg.Format(L"ƒCƒxƒ“ƒg–¼ [%s] ‚Ì‘I‘ğˆ‚ğC³‚µ‚Ü‚·B\n‚æ‚ë‚µ‚¢‚Å‚·‚©H", (LPCWSTR)m_eventName);
-	if (MessageBox(msg, L"Šm”F", MB_YESNO) == IDNO) {
+	msg.Format(L"ã‚¤ãƒ™ãƒ³ãƒˆå [%s] ã®é¸æŠè‚¢ã‚’ä¿®æ­£ã—ã¾ã™ã€‚\nã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ", (LPCWSTR)m_eventName);
+	if (MessageBox(msg, L"ç¢ºèª", MB_YESNO) == IDNO) {
 		return;
 	}
 	{
@@ -684,57 +684,57 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 		bool update = false;
 		json& jsonEventList = jsonRevisionLibrary[source]["Event"];
 		if (jsonEventList.is_array()) {
-			// XV
+			// æ›´æ–°
 			for (json& jsonEvent : jsonEventList) {
 				auto eventElm = *jsonEvent.items().begin();
 				std::string orgEventName = eventElm.key();
 				if (orgEventName == eventName) {
 					json& jsonOptions = eventElm.value();
-					jsonOptions.clear();		// ‘I‘ğˆ‚ğˆê’U‘S•”Á‚·
+					jsonOptions.clear();		// é¸æŠè‚¢ã‚’ä¸€æ—¦å…¨éƒ¨æ¶ˆã™
 					jsonOptions = jsonOptionsArray;
 					update = true;
 					break;
 				}
 			}
 		}
-		// ’Ç‰Á
+		// è¿½åŠ 
 		if (!update) {
 			json jsonEvent;
 			jsonEvent[eventName] = jsonOptionsArray;
 			jsonEventList.push_back(jsonEvent);
 		}
 
-		// •Û‘¶
+		// ä¿å­˜
 		std::ofstream ofs((GetExeDirectory() / L"UmaLibrary" / "UmaMusumeLibraryRevision.json").wstring());
 		ATLASSERT(ofs);
 		if (!ofs) {
-			MessageBox(L"UmaMusumeLibraryRevision.json ‚ÌƒI[ƒvƒ“‚É¸”s");
+			MessageBox(L"UmaMusumeLibraryRevision.json ã®ã‚ªãƒ¼ãƒ—ãƒ³ã«å¤±æ•—");
 			return;
 		}
 		ofs << jsonRevisionLibrary.dump(2);
 		ofs.close();
 
 		m_umaEventLibrary.LoadUmaMusumeLibrary();
-		MessageBox(L"C³Š®—¹", L"¬Œ÷");
+		MessageBox(L"ä¿®æ­£å®Œäº†", L"æˆåŠŸ");
 	}
 }
 
 
-// ƒŒ[ƒXˆê——‚ğƒƒCƒ“ƒ_ƒCƒAƒƒO‚ÉƒhƒbƒLƒ“ƒO‚³‚¹‚é‚©Aƒ|ƒbƒvƒAƒbƒvƒEƒBƒ“ƒhƒE‰»‚³‚¹‚é
+// ãƒ¬ãƒ¼ã‚¹ä¸€è¦§ã‚’ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã«ãƒ‰ãƒƒã‚­ãƒ³ã‚°ã•ã›ã‚‹ã‹ã€ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åŒ–ã•ã›ã‚‹
 void CMainDlg::_DockOrPopupRaceListWindow()
 {
 	if (!m_config.popupRaceListWindow) {
 		// docking
 		INFO_LOG << L"docking";
 
-		// ƒŒ[ƒXˆê——ƒEƒBƒ“ƒhƒE‚ÌˆÊ’u‚ğ•Û‘¶‚µ‚Ä‚¨‚­•”ñ•\¦‰»
+		// ãƒ¬ãƒ¼ã‚¹ä¸€è¦§ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½ç½®ã‚’ä¿å­˜ã—ã¦ãŠãï¼†éè¡¨ç¤ºåŒ–
 		m_raceListWindow.ShowWindow(false);
 
-		// qƒEƒBƒ“ƒhƒE‰»
+		// å­ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åŒ–
 		m_raceListWindow.ModifyStyle(WS_POPUPWINDOW | WS_CAPTION, WS_CHILD);
 		m_raceListWindow.SetParent(m_hWnd);
 
-		// RaceListWindow‚ÌˆÊ’u‚ğ’²ß
+		// RaceListWindowã®ä½ç½®ã‚’èª¿ç¯€
 		CRect rcShowHideButton;
 		GetDlgItem(IDC_BUTTON_SHOWHIDE_RACELIST).GetClientRect(&rcShowHideButton);
 		GetDlgItem(IDC_BUTTON_SHOWHIDE_RACELIST).MapWindowPoints(m_hWnd, &rcShowHideButton);
@@ -743,19 +743,19 @@ void CMainDlg::_DockOrPopupRaceListWindow()
 		// popup
 		INFO_LOG << L"popup";
 
-		// ƒ|ƒbƒvƒAƒbƒvƒEƒBƒ“ƒhƒE‰»
+		// ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åŒ–
 		m_raceListWindow.ModifyStyle(WS_CHILD, WS_POPUPWINDOW | WS_CAPTION);
 		m_raceListWindow.SetParent(NULL);
 
-		// ƒƒCƒ“ƒ_ƒCƒAƒƒO‚Ì•‚ğk¬‚³‚¹‚é
+		// ãƒ¡ã‚¤ãƒ³ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®å¹…ã‚’ç¸®å°ã•ã›ã‚‹
 		_ExtentOrShrinkWindow(false);
 	}
-	// ƒŒ[ƒXˆê——‚Ì•\¦/”ñ•\¦‚ğ•œŒ³
+	// ãƒ¬ãƒ¼ã‚¹ä¸€è¦§ã®è¡¨ç¤º/éè¡¨ç¤ºã‚’å¾©å…ƒ
 	m_bShowRaceList = !m_bShowRaceList;
 	OnShowHideRaceList(0, 0, NULL);
 }
 
-// ƒŒ[ƒXˆê——‚Ì‚½‚ß‚ÉƒEƒBƒ“ƒhƒE‚Ì•‚ğL‚Î‚µ‚½‚èk‚ß‚½‚è‚·‚é
+// ãƒ¬ãƒ¼ã‚¹ä¸€è¦§ã®ãŸã‚ã«ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å¹…ã‚’ä¼¸ã°ã—ãŸã‚Šç¸®ã‚ãŸã‚Šã™ã‚‹
 void CMainDlg::_ExtentOrShrinkWindow(bool bExtent)
 {
 	CRect rcWindow;

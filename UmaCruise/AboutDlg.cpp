@@ -28,7 +28,7 @@ void	LoadPointSizeFromJson(const json& json, const std::string& key, CPoint& pt,
 
 CRect AdjustBounds(const cv::Mat& srcImage, CRect bounds)
 {
-	const CSize baseSize = { 588,  1045 };	// ƒfƒoƒbƒO—p‚È‚Ì‚ÅŒˆ‚ß‘Å‚¿‚Å
+	const CSize baseSize = { 588,  1045 };	// ãƒ‡ãƒãƒƒã‚°ç”¨ãªã®ã§æ±ºã‚æ‰“ã¡ã§
 	//CSize imageSize(static_cast<int>(image->GetWidth()), static_cast<int>(image->GetHeight()));
 	CSize imageSize(srcImage.size().width, srcImage.size().height);
 	const double Xratio = static_cast<double>(imageSize.cx) / baseSize.cx;
@@ -52,7 +52,7 @@ bool IsEventNameIcon(cv::Mat srcImage, const CRect& rcIconBounds)
 	cv::Mat cutImage(srcImage, cvRectFromCRect(rcIconBounds));
 
 	ATLASSERT(cutImage.channels() == 3);	// must color image
-	std::vector<cv::Mat> splitColors(3);	// —\‚ßŠm•Û‚µ‚Ä‚¢‚È‚¢‚Æ—‚¿‚é
+	std::vector<cv::Mat> splitColors(3);	// äºˆã‚ç¢ºä¿ã—ã¦ã„ãªã„ã¨è½ã¡ã‚‹
 	cv::split(cutImage, splitColors);
 	//cv::imshow("Blue", splitColors[0]);	// [0] -> Blue
 	//cv::imshow("Green", splitColors[1]);// [1] -> Green
@@ -63,9 +63,9 @@ bool IsEventNameIcon(cv::Mat srcImage, const CRect& rcIconBounds)
 	cv::threshold(splitColors[0], blueThresImage, kBlueThreshold, 255.0, cv::THRESH_BINARY);
 	//cv::imshow("Blue thres", blueThresImage);
 	const double blueRatio = ImageWhiteRatio(blueThresImage);
-	constexpr double kBlueBackgroundThreshold = 0.7;	// Â”wŒi—¦‚Ìè‡’l
+	constexpr double kBlueBackgroundThreshold = 0.7;	// é’èƒŒæ™¯ç‡ã®é–¾å€¤
 	if (kBlueBackgroundThreshold < blueRatio) {
-		return false;	// ƒTƒ|[ƒgƒJ[ƒhƒCƒxƒ“ƒg
+		return false;	// ã‚µãƒãƒ¼ãƒˆã‚«ãƒ¼ãƒ‰ã‚¤ãƒ™ãƒ³ãƒˆ
 	}
 
 	cv::Mat grayImage;
@@ -80,7 +80,7 @@ bool IsEventNameIcon(cv::Mat srcImage, const CRect& rcIconBounds)
 
 	const double whiteRatio = ImageWhiteRatio(thresImage);
 	constexpr double kEventNameIconThreshold = 0.5;
-	bool isIcon = whiteRatio > kEventNameIconThreshold;	// ”’‚Ì”ä—¦‚ªˆê’èˆÈã‚È‚çƒAƒCƒRƒ“‚Æ‚İ‚È‚·
+	bool isIcon = whiteRatio > kEventNameIconThreshold;	// ç™½ã®æ¯”ç‡ãŒä¸€å®šä»¥ä¸Šãªã‚‰ã‚¢ã‚¤ã‚³ãƒ³ã¨ã¿ãªã™
 	INFO_LOG << L"IsEventNameIcon: " << isIcon << L" whiteRatio: " << whiteRatio;
 	return isIcon;
 }
@@ -171,18 +171,18 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		return 0;
 	}
 
-	const bool bManualThresOnly = ::GetKeyState(VK_CONTROL) < 0;	// ctrl ‚ÅƒXƒ‰ƒCƒhƒo[OCR‚Ì‚İ
-	const bool bNoAdjustBounds = ::GetKeyState(VK_SHIFT) < 0;	// shift ‚ÅƒeƒLƒXƒg‚ğˆÍ‚í‚È‚¢
-	const bool bScale4 = ::GetKeyState(VK_MENU) < 0;		// atl ‚Å2”{Šg‘å "‚µ‚È‚¢"
+	const bool bManualThresOnly = ::GetKeyState(VK_CONTROL) < 0;	// ctrl ã§ã‚¹ãƒ©ã‚¤ãƒ‰ãƒãƒ¼OCRã®ã¿
+	const bool bNoAdjustBounds = ::GetKeyState(VK_SHIFT) < 0;	// shift ã§ãƒ†ã‚­ã‚¹ãƒˆã‚’å›²ã‚ãªã„
+	const bool bScale4 = ::GetKeyState(VK_MENU) < 0;		// atl ã§2å€æ‹¡å¤§ "ã—ãªã„"
 
-	// Ø‚è”²‚«••ÏŠ·
+	// åˆ‡ã‚ŠæŠœãï¼†å¤‰æ›
 	Utility::timer timer;
 
 	Gdiplus::Bitmap bmp(image->GetWidth(), image->GetHeight(), PixelFormat24bppRGB);
 	Gdiplus::Graphics graphics(&bmp);
 	graphics.DrawImage(image, 0, 0);
 	auto srcImage = GdiPlusBitmapToOpenCvMat(&bmp);//cv::imread(ssPath.string());
-	if (index != kDirect) {	// kDirect ˆÈŠO‚Í •ÏX‚ª•K—v
+	if (index != kDirect) {	// kDirect ä»¥å¤–ã¯ å¤‰æ›´ãŒå¿…è¦
 		rcBounds = AdjustBounds(srcImage, rcBounds);
 		rcIconBounds = AdjustBounds(srcImage, rcIconBounds);
 	}
@@ -190,9 +190,9 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 	cv::Mat cutImage(srcImage, cvRectFromCRect(rcBounds));
 
 	if (index == kEventNameBounds /*|| index == kCurrentMenuBounds*/) {
-		if (!bNoAdjustBounds) {	// ƒeƒLƒXƒg‚ğ³ŠmˆÍ‚Ş
-			// ƒAƒCƒRƒ“ˆ—
-			if (IsEventNameIcon(srcImage, rcIconBounds)) {	// ƒAƒCƒRƒ“‚ª‘¶İ‚µ‚½ê‡A”F¯”ÍˆÍ‚ğ‰E‚É‚¸‚ç‚·
+		if (!bNoAdjustBounds) {	// ãƒ†ã‚­ã‚¹ãƒˆã‚’æ­£ç¢ºå›²ã‚€
+			// ã‚¢ã‚¤ã‚³ãƒ³å‡¦ç†
+			if (IsEventNameIcon(srcImage, rcIconBounds)) {	// ã‚¢ã‚¤ã‚³ãƒ³ãŒå­˜åœ¨ã—ãŸå ´åˆã€èªè­˜ç¯„å›²ã‚’å³ã«ãšã‚‰ã™
 				enum { kIconTextMargin = 8 };
 				rcBounds.left += rcIconBounds.Width() + kIconTextMargin;
 			}
@@ -235,7 +235,7 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		cv::inRange(resizedImage, cv::Scalar(h_min, s_min, v_min), cv::Scalar(h_max, s_max, v_max), textImage);
 
 		cv::Mat invertedTextImage;
-		cv::bitwise_not(textImage, invertedTextImage);	// ”’”wŒi‰»
+		cv::bitwise_not(textImage, invertedTextImage);	// ç™½èƒŒæ™¯åŒ–
 
 		cv::imshow("1", invertedTextImage);
 		cv::imshow("2", resizedImage);
@@ -252,7 +252,7 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		CEdit edit = m_editResult;
 		if (i == 1) {
 			if (bScale4) {
-				break;	// Šg‘åOCR‚ÍÀs‚µ‚È‚¢
+				break;	// æ‹¡å¤§OCRã¯å®Ÿè¡Œã—ãªã„
 			}
 			edit = m_editResult2;
 		}
@@ -282,7 +282,7 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		cv::threshold(invertedImage, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);
 		// ==================================================
 
-		ATLTRACE(L"Ø‚è”²‚«•ÏŠ· %s\n", UTF16fromUTF8(timer.format()).c_str());
+		ATLTRACE(L"åˆ‡ã‚ŠæŠœãå¤‰æ› %s\n", UTF16fromUTF8(timer.format()).c_str());
 
 		std::function<std::wstring(cv::Mat)> funcTextFromImage = TextFromImage;
 		if (index == kCurrentTurnBounds) {
@@ -298,7 +298,7 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		cv::imshow("5", thresImage);
 		cv::imshow("6", thresImage2);
 
-		// async‚É“n‚·ŠÖ”ƒIƒuƒWƒFƒNƒg
+		// asyncã«æ¸¡ã™é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 		auto asyncTextFromImage = [this](cv::Mat& image, std::shared_ptr<TextFromImageFunc> funcTextFromImage) -> std::wstring {
 			std::wstring text = (*funcTextFromImage)(image);
 			return text;

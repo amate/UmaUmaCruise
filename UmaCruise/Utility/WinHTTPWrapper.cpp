@@ -174,7 +174,7 @@ std::string HttpReadData(const INetHandle& hRequest)
 		if (::WinHttpQueryDataAvailable(hRequest.get(), &dwAvailableSize) == FALSE)
 			BOOST_THROW_EXCEPTION(WinHTTPException());
 
-		if (dwAvailableSize == 0)	// Ç‡Ç§ÉfÅ[É^Ç™Ç»Ç¢
+		if (dwAvailableSize == 0)	// „ÇÇ„ÅÜ„Éá„Éº„Çø„Åå„Å™„ÅÑ
 			break;
 		CTempBuffer<char>	buff;
 		DWORD dwDownloaded = 0;

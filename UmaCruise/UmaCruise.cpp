@@ -11,7 +11,7 @@
 #include "Utility\WinHTTPWrapper.h"
 #include "TesseractWrapper.h"
 
-// ƒOƒ[ƒoƒ‹•Ï”
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 CAppModule _Module;
 
 using SetThreadDpiAwarenessContextFunc = DPI_AWARENESS_CONTEXT(*)(DPI_AWARENESS_CONTEXT);

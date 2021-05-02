@@ -173,5 +173,6 @@
     <None Include="cpp.hint">
       <Filter>Source Files</Filter>
     </None>
+    <None Include=".editorconfig" />
   </ItemGroup>
 </Project>

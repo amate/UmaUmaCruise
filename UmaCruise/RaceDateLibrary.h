@@ -16,28 +16,28 @@ public:
 			kG2 = 1 << 1,
 			kG3 = 1 << 2,
 		};
-		Grade			grade;				// G1EG2EG3
-		std::wstring	name;				// ƒŒ[ƒX–¼
+		Grade			grade;				// G1ãƒ»G2ãƒ»G3
+		std::wstring	name;				// ãƒ¬ãƒ¼ã‚¹å
 		enum GroundCondition {
 			kGrass = 1 << 3,
 			kDart  = 1 << 4,
 		};
-		GroundCondition	groundCondition;	// ÅEƒ_[ƒg
+		GroundCondition	groundCondition;	// èŠãƒ»ãƒ€ãƒ¼ãƒˆ
 		enum DistanceClass {
 			kSprint = 1 << 5,
 			kMile	= 1 << 6,
 			kMiddle	= 1 << 7,
 			kLong	= 1 << 8,
 		};
-		DistanceClass	distanceClass;		// ’Z‹——£Eƒ}ƒCƒ‹E’†‹——£E’·‹——£
-		std::wstring	distance;			// ã‚ÌÀÛ‚Ì‹——£”
+		DistanceClass	distanceClass;		// çŸ­è·é›¢ãƒ»ãƒã‚¤ãƒ«ãƒ»ä¸­è·é›¢ãƒ»é•·è·é›¢
+		std::wstring	distance;			// ä¸Šã®å®Ÿéš›ã®è·é›¢æ•°
 		enum Rotation {
 			kRight	= 1 << 9, 
 			kLeft	= 1 << 10,
 			kLine	= 1 << 11,
 		};
-		Rotation		rotation;			// ‰EE¶‰ñ‚èE’¼ü
-		std::wstring	location;			// êŠ
+		Rotation		rotation;			// å³ãƒ»å·¦å›ã‚Šãƒ»ç›´ç·š
+		std::wstring	location;			// å ´æ‰€
 		enum Location {
 			kSapporo	= 1 << 12,
 			kHakodate	= 1 << 13,
@@ -53,7 +53,7 @@ public:
 			kMaxLocationCount = 11,
 		};
 		Location		locationFlag;
-		std::vector<std::wstring>	date;	// ŠJÃ“ú
+		std::vector<std::wstring>	date;	// é–‹å‚¬æ—¥
 
 		// =============================
 		std::wstring	RaceName() const;
@@ -61,18 +61,18 @@ public:
 		std::wstring	DistanceText() const;
 		std::wstring	RotationText() const;
 
-		// “¯í—Ş‚ÍORŒŸõA•Êí—Ş‚ÍANDŒŸõ
+		// åŒç¨®é¡ã¯ORæ¤œç´¢ã€åˆ¥ç¨®é¡ã¯ANDæ¤œç´¢
 		bool	IsMatchState(int32_t state);
 	};
 
-	// RaceDataLibrary.json ‚ğ“Ç‚İ‚Ş
+	// RaceDataLibrary.json ã‚’èª­ã¿è¾¼ã‚€
 	bool	LoadRaceDataLibrary();
 
-	// ‘Sƒ^[ƒ“ƒŠƒXƒg
+	// å…¨ã‚¿ãƒ¼ãƒ³ãƒªã‚¹ãƒˆ
 	const std::vector<std::wstring>& GetAllTurnList() const {
 		return m_allTurnList;
 	}
-	// ƒ^[ƒ“‡‚Ì‘SƒŒ[ƒXƒŠƒXƒg
+	// ã‚¿ãƒ¼ãƒ³é †ã®å…¨ãƒ¬ãƒ¼ã‚¹ãƒªã‚¹ãƒˆ
 	const std::vector<std::vector<std::shared_ptr<Race>>>& GetTurnOrderedRaceList() const {
 		return m_turnOrderedRaceList;
 	}
@@ -81,14 +81,14 @@ public:
 	int		GetTurnNumberFromTurnName(const std::wstring& searchTurn);
 
 
-	// ‚ ‚¢‚Ü‚¢ŒŸõ‚ÅŒ»İ‚Ì“ú•t‚ğ•ÏX‚·‚é
+	// ã‚ã„ã¾ã„æ¤œç´¢ã§ç¾åœ¨ã®æ—¥ä»˜ã‚’å¤‰æ›´ã™ã‚‹
 	std::wstring	AnbigiousChangeCurrentTurn(std::vector<std::wstring> ambiguousCurrentTurn);
 
 private:
 	void	_InitDB();
 
 	std::wstring	m_currentTurn;
-	int		m_searchCount = 0;	// ‹tsE‘ks–h~‚Ì‚½‚ß
+	int		m_searchCount = 0;	// é€†è¡Œãƒ»é¡è¡Œé˜²æ­¢ã®ãŸã‚
 
 	std::vector<std::wstring> m_allTurnList;
 
