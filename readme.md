@@ -82,64 +82,32 @@ icon
 http://iconhoihoi.oops.jp/
 
 ## ■How to build
-ビルドには、Visual Studio 2019が必要です  
+実行ファイルの生成には、Visual Studio 2019が必要です  
 
-$(SolutionDir)は、UmaCruise.sln があるフォルダのことです
+ビルドに必要なライブラリは、[vcpkg](https://github.com/microsoft/vcpkg)によって自動的にダウンロード、ライブラリ(.lib)の生成が行われるようになっています
 
-・opencvの準備  
-https://github.com/opencv/opencv/releases  
-上記リンク先から opencv-4.x.x-vc14_vc15.exe をダウンロードして、適当なディレクトリにファイルを解凍してください
+https://github.com/microsoft/vcpkg/archive/refs/tags/2021.04.30.zip  
+まず上記URLから"vcpkg-2021.04.30.zip"をダウンロードして、適当なフォルダに解凍します
 
-$(SolutionDir)opencv\x64\lib に  
-opencv_world451.lib  
-opencv_world451d.lib  
+解凍したフォルダ内にある "bootstrap-vcpkg.bat" を実行すれば、同じフォルダ内に "vcpkg.exe"が生成されます
 
-$(SolutionDir)opencv\include に  
-opencv2 フォルダが存在する状態にしてください
+コマンドプロンプトを管理者権限で起動し
 
-・tesseractの準備  
-https://qiita.com/lilac0011/items/9fe6e061c3a036689a36  
-基本上記の記事通りで、vcpkgから導入します  
+>cd vcpkg.exeのあるフォルダまでのパス
 
->vcpkg install tesseract:x64-windows-static
+を入力しEnter、コマンドプロンプトのカレントディレクトリを変更します
 
-一部コマンドを変更して x64-windows-static と指定してください  
-vcpkg installが終了すると  
-vcpkg.exeがあるフォルダ\installed\x64-windows-static  フォルダ以下に、libやincludeディレクトリが生成されているはずです  
+次に
+>vcpkg integrate install
 
-x64-windows-staticフォルダをコピーして $(SolutionDir) へペースト  
-コピペしたフォルダ名を "tesseract" へ変更すれば完了です  
-$(SolutionDir)tesseract\lib に各種ライブラリが入ってるかどうかを確認してください
+と入力しEnter
 
-・boostの準備  
-boost::log filesystem timer を使っているので、それぞれビルドが必要です  
--Boostライブラリのビルド方法  
-https://boostjp.github.io/howtobuild.html  
-上記URLを参考にビルドしてください  
+>Applied user-wide integration for this vcpkg root.
 
-コマンドライン
->b2.exe install --prefix=lib64 toolset=msvc-14.2 runtime-link=static address-model=64 --with-filesystem --with-date_time --with-timer --with-log
+と表示されたら成功です
 
-ビルドが終了すると
-boostフォルダ\lib64\lib にライブラリが生成されているはずです  
-UmaCruiseプロパティページの VC++ ディレクトリにパスを設定します
-インクルードディレクトリに  
-boostフォルダ\lib64\include\boost-1_xx  
-ライブラリディレクトリに  
-boostフォルダ\lib64\lib  
-を追加してください
-
-・WTLの準備  
-https://sourceforge.net/projects/wtl/files/latest/download  
-上記URLからファイルをダウンロードして、適当なフォルダに解凍してください  
-boostの時と同じように VC++ディレクトリのインクルードディレクトリに  
-WTL10のフォルダ\Include  
-のパスを追加してください
-
-インクルードディレクトリやライブラリディレクトリはDebug/Releaseそれぞれ設定してください
-
-以上で、ビルドの前準備は完了です  
-あとはビルドが正常に終わることを祈りましょう
+Visual Studio 2019で "UmaCruise.sln"を開き、  
+デバッグ->デバッグの開始 を実行すれば、vcpkgがライブラリの準備をした後、実行ファイルが生成されます
 
 
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
@@ -162,6 +130,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 v1.6
 ・[add] vcpkg.json を追加 (各種ライブラリの取得/ビルドの自動化)
 ・[add] .editorconfig を追加、デフォルトのソースコードのエンコーディングをUTF8にした
+
+・[change] readme.mdの How to buildを vcpkgを使ったビルド方法に変更
+・[fix] resource.h と WinHTTPWrapper.h をUTF8に変換
+・[fix] コンパイラオプションに "/source-charset:utf-8"を追加
 
 v1.5
 ・[add] レース一覧をウィンドウ化するオプションを追加

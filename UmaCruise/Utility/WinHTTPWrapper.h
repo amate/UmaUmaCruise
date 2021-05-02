@@ -75,40 +75,40 @@ private:
 	boost::optional<int>	m_optSSLPort;
 };
 
-/// url‚Åw’è‚µ‚½ƒT[ƒo[‚Æ‚ÌƒRƒlƒNƒVƒ‡ƒ“‚ğì¬‚·‚é
+/// urlã§æŒ‡å®šã—ãŸã‚µãƒ¼ãƒãƒ¼ã¨ã®ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’ä½œæˆã™ã‚‹
 INetHandle	HttpConnect(const CUrl& url);
 
-/// ƒRƒlƒNƒVƒ‡ƒ“‚©‚çÀÛ‚ÌƒŠƒ\[ƒX‚É‘Î‚·‚éƒŠƒNƒGƒXƒg‚ğì¬‚·‚é
+/// ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‹ã‚‰å®Ÿéš›ã®ãƒªã‚½ãƒ¼ã‚¹ã«å¯¾ã™ã‚‹ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹
 INetHandle	HttpOpenRequest(const CUrl& url, const INetHandle& hConnect, LPCWSTR Verb = L"GET", const CString& referer = CString());
 
-/// ƒŠƒNƒGƒXƒgƒwƒbƒ_‚ğ’Ç‰Á‚·‚é
+/// ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ˜ãƒƒãƒ€ã‚’è¿½åŠ ã™ã‚‹
 void		HttpAddRequestHeaders(const INetHandle& hRequest, const CString& addHeaders, DWORD dwModifiers = WINHTTP_ADDREQ_FLAG_ADD);
 
-/// ƒŠƒNƒGƒXƒg‚Ìİ’è‚ğ•ÏX‚·‚é
+/// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®è¨­å®šã‚’å¤‰æ›´ã™ã‚‹
 void		HttpSetOption(const INetHandle& hRequest, DWORD option, DWORD optionValue);
 
-/// ƒŠƒNƒGƒXƒg‚ÉƒvƒƒNƒV‚ğİ’è‚·‚é
+/// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«ãƒ—ãƒ­ã‚¯ã‚·ã‚’è¨­å®šã™ã‚‹
 void		HttpSetProxy(const INetHandle& hRequest, const CString& proxy);
 
-/// ƒŠƒNƒGƒXƒg‚ğ‘—M‚µ‚½ŒãA‰“š‚ª‚ ‚é‚Ü‚Å‘Ò‚Â
+/// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’é€ä¿¡ã—ãŸå¾Œã€å¿œç­”ãŒã‚ã‚‹ã¾ã§å¾…ã¤
 bool		HttpSendRequestAndReceiveResponse(const INetHandle& hRequest, const std::string& postData = std::string());
 
-/// ƒŠƒNƒGƒXƒgŒ‹‰Ê‚ÌƒXƒe[ƒ^ƒXƒR[ƒh‚ğ•Ô‚·
+/// ãƒªã‚¯ã‚¨ã‚¹ãƒˆçµæœã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’è¿”ã™
 DWORD		HttpQueryStatusCode(const INetHandle& hRequest);
 
-/// InfoLevel‚Åw’è‚µ‚½ƒŒƒXƒ|ƒ“ƒXƒwƒbƒ_‚ğ•Ô‚·
+/// InfoLevelã§æŒ‡å®šã—ãŸãƒ¬ã‚¹ãƒãƒ³ã‚¹ãƒ˜ãƒƒãƒ€ã‚’è¿”ã™
 bool		HttpQueryHeaders(const INetHandle& hRequest, DWORD InfoLevel, CString& headerContents);
 
-/// InfoLevel‚Åw’è‚µ‚½ƒŒƒXƒ|ƒ“ƒXƒwƒbƒ_‚ğ•Ô‚·
+/// InfoLevelã§æŒ‡å®šã—ãŸãƒ¬ã‚¹ãƒãƒ³ã‚¹ãƒ˜ãƒƒãƒ€ã‚’è¿”ã™
 bool		HttpQueryHeaders(const INetHandle& hRequest, DWORD InfoLevel, DWORD& headerContents);
 
-// ƒŒƒXƒ|ƒ“ƒXƒwƒbƒ_‚ğ¶‚Ì‚Ü‚Ü•Ô‚·
+// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ãƒ˜ãƒƒãƒ€ã‚’ç”Ÿã®ã¾ã¾è¿”ã™
 bool		HttpQueryRawHeaders(const INetHandle& hRequest, CString& rawHeaderContents);
 
-/// ƒŒƒXƒ|ƒ“ƒX‚©‚çƒ{ƒfƒB•”•ª‚ğæ“¾‚·‚é
+/// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‹ã‚‰ãƒœãƒ‡ã‚£éƒ¨åˆ†ã‚’å–å¾—ã™ã‚‹
 std::string HttpReadData(const INetHandle& hRequest);
 
-/// url‚©‚çƒ_ƒEƒ“ƒ[ƒh‚·‚é
+/// urlã‹ã‚‰ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 boost::optional<std::string>	HttpDownloadData(const CString& url);
 
 
