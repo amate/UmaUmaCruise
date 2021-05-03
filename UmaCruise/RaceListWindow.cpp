@@ -442,6 +442,29 @@ void RaceListWindow::OnShowRaceAfterCurrentDate(UINT uNotifyCode, int nID, CWind
 void RaceListWindow::OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	DoDataExchange(DDX_SAVE);
+	const bool bShift = ::GetKeyState(VK_SHIFT) < 0;
+	if (bShift) {
+		const bool checked = CButton(GetDlgItem(nID)).GetCheck() == BST_CHECKED;
+		if (IDC_CHECK_G1 <= nID && nID <= IDC_CHECK_G3) {
+			m_gradeG1 = m_gradeG2 = m_gradeG3 = checked;
+		} else if (IDC_CHECK_SPRINT <= nID && nID <= IDC_CHECK_LONG) {
+			m_sprint = m_mile = m_middle = m_long = checked;
+		} else if (IDC_CHECK_GRASS <= nID && nID <= IDC_CHECK_DART) {
+			m_grass = m_dart = checked;
+		} else if (IDC_CHECK_RIGHT <= nID && nID <= IDC_CHECK_LINE) {
+			m_right = m_left = m_line = checked;
+		} else if (IDC_CHECK_LOCATION_SAPPORO <= nID && nID <= IDC_CHECK_LOCATION_OOI) {
+			for (bool& location : m_raceLocation) {
+				location = checked;
+			}
+			for (int i = 0; i < RaceDateLibrary::Race::Location::kMaxLocationCount; ++i) {
+				const int checkBoxID = IDC_CHECK_LOCATION_SAPPORO + i;
+				CButton(GetDlgItem(checkBoxID)).SetCheck(checked);
+			}
+		}
+		DoDataExchange(DDX_LOAD);
+	}
+
 	_UpdateRaceList((LPCWSTR)m_currentTurn);
 }
 

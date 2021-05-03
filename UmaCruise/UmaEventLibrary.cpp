@@ -263,7 +263,9 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 
 	UmaEvent event1 = optResult ? _SearchEventOptions(optResult.get()) : UmaEvent();
 	UmaEvent event2 = optOptionResult ? _SearchEventOptionsFromBottomOption(optOptionResult.get()) : UmaEvent();
-	if (event1.eventName != event2.eventName) {
+	if (event1.eventName.length() && event2.eventName.length() &&
+		event1.eventName != event2.eventName) 
+	{
 		WARN_LOG << L"AmbiguousSearchEvent イベント名不一致\n"
 			<< L"・イベント名から 1: [" << event1.eventName << L"] (" << ambiguousEventNames.front() << L")\n"
 			<< L"・下部選択肢から 2: [" << event2.eventName << L"] (" << ambiguousEventBottomOptions.front() << L")";

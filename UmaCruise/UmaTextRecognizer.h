@@ -15,6 +15,7 @@ class UmaTextRecognizer
 	static constexpr double kMinWhiteRatioThreshold = 0.5;	// 白背景か決める閾値
 	static constexpr double kMinWhiteTextRatioThreshold = 0.05;	// 画像中の白文字率の閾値
 	static constexpr double kBlueBackgroundThreshold = 0.7;	// 青背景率の閾値
+	static constexpr int kBackButtonExistThreshold = 200;	// 戻るボタンの文字列を分ける閾値
 
 public:
 	bool	LoadSetting();
@@ -54,13 +55,12 @@ private:
 	CSize	m_baseClientSize;
 
 	enum TestBounds {
-		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kBackButtonBounds, kRaceDetailBounds, kMaxCount
+		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kBackButtonBounds, kRaceDetailBounds,  kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"BackButtonBounds", L"RaceDetailBounds"
+		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"BackButtonBounds", L"RaceDetailBounds",
 	};
 	std::array<CRect, kMaxCount>	m_testBounds;
-	int		m_kCurrentTurnThreshold = 111;
 	std::unordered_map<std::wstring, std::wstring>	m_typoDictionary;
 
 	struct HSVBounds {

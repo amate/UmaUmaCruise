@@ -38,6 +38,11 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 "4"は現在の日付以降に予約されているレースの回数  
 となります
 
+### ・レース予約機能について
+
+レースの予約は育成ウマ娘毎に保存されます  
+予め育成ウマ娘を設定していないと保存されないので注意
+
 ## ■アンインストールの方法
 レジストリも何もいじっていないので、UmaUmaCruiseフォルダ事削除すれば終わりです
 
@@ -134,6 +139,16 @@ v1.6
 ・[change] readme.mdの How to buildを vcpkgを使ったビルド方法に変更
 ・[fix] resource.h と WinHTTPWrapper.h をUTF8に変換
 ・[fix] コンパイラオプションに "/source-charset:utf-8"を追加
+
+・[add] about画面のdebugに、RaceDetailBoundsを追加
+・[change]  Common.jsonのWindowNameとClassNameが空の時はFindoWindowにnullptrを渡すようにした #33
+・[fix] ゲームから読み取った現在の日付の判定を厳格にした(もう日付の処理は大丈夫なはず)
+・[add] レース一覧でshiftキーを押しながらチェックボックスをクリックすることによって、クリックしたチェックボックスが所属するグループのチェックボックスを一括でオン・オフできるようにした
+・[change] TextRecognizerで、イベント選択肢のOCRを文字色を検出した時に変更(CPU負荷軽減)
+・[change] TextRecognizerで、育成ウマ娘のOCRを文字色を検出した時に変更(CPU負荷軽減)
+・[change] TextRecognizerで、現在の日付の検出を文字色抜き出しのみに限定(CPU負担軽減)
+・[fix] レース予約完了ダイアログが表示されたときにも、URA予想の出走履歴に追加されてしまっていたのを修正
+・[change] 全てのライブラリのCRTをstaticにできたので、実行ファイルにすべてのライブラリをスタティックリンクさせた(同伴させていた~.dllがすべて不要になった)
 
 v1.5
 ・[add] レース一覧をウィンドウ化するオプションを追加

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "RaceDateLibrary.h"
 
+#include <regex>
+
 #include <boost\algorithm\string\trim.hpp>
 #include <boost\algorithm\string\replace.hpp>
 #include <boost\filesystem.hpp>
@@ -132,12 +134,26 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 	return true;
 }
 
+
 std::wstring RaceDateLibrary::AnbigiousChangeCurrentTurn(std::vector<std::wstring> ambiguousCurrentTurn)
 {
 	// Output similar strings from Unicode queries.
 	auto optResult = retrieve(*m_dbReader, ambiguousCurrentTurn, simstring::exact, 1.0);
 	if (!optResult) {
-		optResult = retrieve(*m_dbReader, ambiguousCurrentTurn, simstring::cosine, 0.8);
+		std::wregex rx(LR"((ジュニア|クラシック|シニア)[^0-9]+(\d+)月(前|\W)半)");
+		for (const std::wstring& turn : ambiguousCurrentTurn) {
+			std::wsmatch result;
+			if (std::regex_match(turn, result, rx)) {
+				// "前"は認識しやすいが、"後"は認識が難しいので
+				std::wstring half = result[3].str() == L"前" ? L"前半" : L"後半";
+				std::wstring guessTurn = result[1].str() + L"級" + result[2].str() + L"月" + half;
+				optResult = guessTurn;
+				break;
+			}
+		}
+		if (!optResult) {	// ジュニア級デビュー前 or ファイナルズ開催中
+			optResult = retrieve(*m_dbReader, ambiguousCurrentTurn, simstring::cosine, 0.8);
+		}
 	} else {
 		m_searchCount = -1;	// exact
 	}

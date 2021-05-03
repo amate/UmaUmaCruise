@@ -456,7 +456,9 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		ChangeWindowTitle((LPCWSTR)title)
 			;
 	} else {
-		HWND hwndTarget = ::FindWindow(m_targetClassName, m_targetWindowName);
+		LPCWSTR className = m_targetClassName.GetLength() ? (LPCWSTR)m_targetClassName : nullptr;
+		LPCWSTR windowName = m_targetWindowName.GetLength() ? (LPCWSTR)m_targetWindowName : nullptr;
+		HWND hwndTarget = ::FindWindow(className, windowName);
 		if (!hwndTarget) {
 			ChangeWindowTitle(L"ウマ娘のウィンドウが見つかりません。。。");
 			return;
@@ -486,6 +488,7 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 		m_previewWindow.UpdateImage(ssPath.wstring());
 	}
 }
+
 
 void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 {

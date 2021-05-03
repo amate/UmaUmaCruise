@@ -45,7 +45,6 @@
         },
 
         "ImageProcess": {
-            "CurrentTurnThreshold": 111,
             "HSV_TextColorBounds": [
                 [12, 13],
                 [75, 255],
