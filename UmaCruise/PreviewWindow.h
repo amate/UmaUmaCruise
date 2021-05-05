@@ -10,12 +10,14 @@
 #include "Utility\GdiplusUtil.h"
 #include <opencv2\opencv.hpp>
 
+#include "DarkModeUI.h"
+
 #include "resource.h"
 
 
 CSize	CalcActualSize(Gdiplus::Image* image, CSize maxImageSize);
 
-class PreviewWindow : public CDialogImpl<PreviewWindow>
+class PreviewWindow : public CDialogImpl<PreviewWindow>, DarkModeUI<PreviewWindow>
 {
 public:
 	enum { IDD = IDD_PREVIEW };
@@ -57,6 +59,8 @@ public:
 		MSG_WM_LBUTTONDOWN(OnLButtonDown)
 		MSG_WM_MOUSEMOVE(OnMouseMove)
 		MSG_WM_LBUTTONUP(OnLButtonUp)
+
+		CHAIN_MSG_MAP(DarkModeUI<PreviewWindow>)
 	END_MSG_MAP()
 
 	// Handler prototypes (uncomment arguments if needed):

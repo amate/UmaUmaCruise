@@ -2,6 +2,7 @@
 # ウマウマクルーズ
 
 ![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss1.png)
+![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss5.png)
 
 ![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss2.png)
 
@@ -82,6 +83,9 @@ https://github.com/nlohmann/json
 - WTL  
 https://sourceforge.net/projects/wtl/
 
+- win32-darkmode  
+https://github.com/ysc3839/win32-darkmode
+
 icon
 - ICON HOIHOI  
 http://iconhoihoi.oops.jp/
@@ -114,6 +118,14 @@ https://github.com/microsoft/vcpkg/archive/refs/tags/2021.04.30.zip
 Visual Studio 2019で "UmaCruise.sln"を開き、  
 デバッグ->デバッグの開始 を実行すれば、vcpkgがライブラリの準備をした後、実行ファイルが生成されます
 
+実行ファイルを動作させるために、事前に "tessdata"と"UmaLibrary"フォルダを"x64\Debug"にコピーしてください
+
+
+## ■既知のバグ
+
+- windows10以前のOSかつ高DPI環境だと動作しない  
+実行ファイルのプロパティから 互換性->高DPI設定の変更  
+高いDPIスケールの動作を上書きにチェック、アプリケーションを選択してください
 
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
@@ -131,6 +143,19 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+v1.7
+・[add] ダークモードに対応 (undocumentな方法を使っているので、将来のアップデートで使えなくなる可能性があります)
+・[add] Common.jsonから色テーマを読み込むようにした
+・[add] about画面にソフトの更新チェッカーを追加
+・[add] "UmaMusumeLibrary.jsonの更新確認"実行時に古い方のjsonを残しておくようにした
+・[change] AnbigiousChangeCurrentTurnで日付の検索にregex_matchではなく、regex_searchを使うようにした
+・[change] TextRecognizerで、イベント選択肢の検出は文字色抜き出しに変更
+・[fix] TextRecognizerで、イベント選択肢の検出前にテキストを囲って切り出すようにした (文字数が少ないと検出されないことがあるため)
+・[fix] "サクラバクシンオー"の"レース敗北"の選択肢が上下逆なのを修正 #39
+・[fix] "ゴールドシップの"夏合宿(3年目)終了"が抜けていたのを修正 (どっち選んでも一緒だが一応…) #40 
+・[add] AUTHORS.txtにライセンステキストを追加
+・[add] tessdataフォルダを追加
 
 v1.6
 ・[add] vcpkg.json を追加 (各種ライブラリの取得/ビルドの自動化)

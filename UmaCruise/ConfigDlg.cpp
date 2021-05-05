@@ -29,6 +29,8 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	m_notifyFavoriteRaceHold = m_config.notifyFavoriteRaceHold;
 	DoDataExchange(DDX_LOAD);
 
+	DarkModeInit();
+
 	return 0;
 }
 
@@ -89,6 +91,10 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 					// 更新する
 					auto optDLData = HttpDownloadData(downloadUrl.GetURL());
 					if (optDLData) {
+						// 古い方を残しておく
+						auto prevPath = umaLibraryPath.parent_path() / (umaLibraryPath.stem().wstring() + L"_prev.json");
+						fs::rename(umaLibraryPath, prevPath);
+
 						SaveFile(umaLibraryPath, optDLData.get());
 						MessageBox(L"更新しました\n更新後の UmaMusumeLibrary.json は再起動後に有効になります", L"成功");
 						GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);

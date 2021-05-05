@@ -10,6 +10,7 @@
 #include "Utility\GdiplusUtil.h"
 #include "Utility\WinHTTPWrapper.h"
 #include "TesseractWrapper.h"
+#include "win32-darkmode\DarkMode.h"
 
 // グローバル変数
 CAppModule _Module;
@@ -65,6 +66,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	if (g_funcSetThreadDpiAwarenessContext) {
 		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 	}
+
+	InitDarkMode();
 
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 

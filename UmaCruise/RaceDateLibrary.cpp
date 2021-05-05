@@ -143,7 +143,7 @@ std::wstring RaceDateLibrary::AnbigiousChangeCurrentTurn(std::vector<std::wstrin
 		std::wregex rx(LR"((ジュニア|クラシック|シニア)[^0-9]+(\d+)月(前|\W)半)");
 		for (const std::wstring& turn : ambiguousCurrentTurn) {
 			std::wsmatch result;
-			if (std::regex_match(turn, result, rx)) {
+			if (std::regex_search(turn, result, rx)) {
 				// "前"は認識しやすいが、"後"は認識が難しいので
 				std::wstring half = result[3].str() == L"前" ? L"前半" : L"後半";
 				std::wstring guessTurn = result[1].str() + L"級" + result[2].str() + L"月" + half;

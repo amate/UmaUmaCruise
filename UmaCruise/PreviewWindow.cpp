@@ -91,6 +91,7 @@ LRESULT PreviewWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 	//ATLVERIFY(::ChangeWindowMessageFilterEx(m_hWnd, WM_COPYDATA, MSGFLT_ALLOW, nullptr));
 	ATLVERIFY(::ChangeWindowMessageFilterEx(m_hWnd, 0x0049 , MSGFLT_ALLOW, nullptr));
 
+	DarkModeInit();
 	return 0;
 }
 
@@ -123,7 +124,7 @@ void PreviewWindow::OnPaint(CDCHandle dc)
 
 	CRect rcClient;
 	GetClientRect(&rcClient);
-	memDC.FillSolidRect(rcClient, RGB(0xFF, 0xFF, 0xFF));
+	memDC.FillRect(&rcClient, GetBkgndBrush());
 	if (m_pImage) {
 		Gdiplus::Graphics gClient(memDC);
 

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Config.h"
-
+#include "DarkModeUI.h"
 #include "resource.h"
 
 
 class ConfigDlg : 
 	public CDialogImpl<ConfigDlg>,
-	public CWinDataExchange<ConfigDlg>
+	public CWinDataExchange<ConfigDlg>,
+	public DarkModeUI<ConfigDlg>
 {
 public:
 	enum { IDD = IDD_CONFIG };
@@ -28,6 +29,7 @@ public:
 		COMMAND_ID_HANDLER(IDCANCEL, OnCancel)
 
 		COMMAND_ID_HANDLER_EX(IDC_BUTTON_CHECK_UMALIBRARY, OnCheckUmaLibrary)
+		CHAIN_MSG_MAP(DarkModeUI<ConfigDlg>)
 	END_MSG_MAP()
 
 	// Handler prototypes (uncomment arguments if needed):

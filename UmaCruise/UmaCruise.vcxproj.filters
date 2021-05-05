@@ -19,6 +19,9 @@
     <Filter Include="Header Files\simstring">
       <UniqueIdentifier>{5a997501-3f93-4e95-a50b-6cd81ee1b5cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\win32-darkmode">
+      <UniqueIdentifier>{5e8cf68a-5cf7-4ef1-a5cb-9ab22627c48c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="RaceListWindow.cpp">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win32-darkmode\DarkMode.cpp">
+      <Filter>Header Files\win32-darkmode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +162,21 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="RaceListWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="win32-darkmode\DarkMode.h">
+      <Filter>Header Files\win32-darkmode</Filter>
+    </ClInclude>
+    <ClInclude Include="win32-darkmode\IatHook.h">
+      <Filter>Header Files\win32-darkmode</Filter>
+    </ClInclude>
+    <ClInclude Include="win32-darkmode\ListViewUtil.h">
+      <Filter>Header Files\win32-darkmode</Filter>
+    </ClInclude>
+    <ClInclude Include="win32-darkmode\win32-darkmode.h">
+      <Filter>Header Files\win32-darkmode</Filter>
+    </ClInclude>
+    <ClInclude Include="DarkModeUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

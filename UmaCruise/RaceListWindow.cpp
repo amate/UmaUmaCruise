@@ -240,12 +240,23 @@ DWORD RaceListWindow::OnItemPrePaint(int, LPNMCUSTOMDRAW lpNMCustomDraw)
 	m_raceListView.GetItemText(static_cast<int>(pCustomDraw->nmcd.dwItemSpec), 0, date);
 	const bool first = date.Right(2) == L"前半";
 #endif
+	pCustomDraw->clrText = GetTextColor();	// white
+
 	const bool alter = (pCustomDraw->nmcd.lItemlParam & kAlter) != 0;
 	const bool favorite = (pCustomDraw->nmcd.lItemlParam & kFavorite) != 0;
 	if (favorite) {
-		pCustomDraw->clrTextBk = RGB(255, 215, 0);
+		if (IsDarkMode()) {
+			pCustomDraw->clrTextBk = m_darkTheme.bkFavorite;
+		} else {
+			pCustomDraw->clrTextBk = m_lightTheme.bkFavorite;
+		}
 	} else {
-		pCustomDraw->clrTextBk = alter ? RGB(230, 231, 255) : RGB(252, 228, 214);// : RGB(241, 246, 252);
+		if (IsDarkMode()) {
+			pCustomDraw->clrTextBk = alter ? m_darkTheme.bkRow1 : m_darkTheme.bkRow2;
+
+		} else {
+			pCustomDraw->clrTextBk = alter ? m_lightTheme.bkRow1 : m_lightTheme.bkRow2;
+		}
 	}
 	return 0;
 }
@@ -309,11 +320,28 @@ LRESULT RaceListWindow::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 			fs >> m_jsonCharaFavoriteRaceList;
 		}
 	}
+	{
+		json jsonCommon;
+		std::ifstream fs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
+		ATLASSERT(fs);
+		fs >> jsonCommon;
+		fs.close();
 
+		auto funcSetColorFromSetting = [](const json& jsonTheme, ThemeColor& themeColor) {
+			const json& j = jsonTheme["RaceList"];
+			themeColor.bkFavorite = ColorFromText(j["BkFavorite"].get<std::string>());
+			themeColor.bkRow1 = ColorFromText(j["BkRow1"].get<std::string>());
+			themeColor.bkRow2 = ColorFromText(j["BkRow2"].get<std::string>());
+		};
+		funcSetColorFromSetting(jsonCommon["Theme"]["Dark"], m_darkTheme);
+		funcSetColorFromSetting(jsonCommon["Theme"]["Light"], m_lightTheme);
+	}
 
 	_UpdateRaceList(L"");
 
 	DoDataExchange(DDX_LOAD);
+
+	DarkModeInit();
 
 	return TRUE;
 }

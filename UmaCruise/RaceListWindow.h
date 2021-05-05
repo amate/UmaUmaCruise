@@ -8,13 +8,15 @@
 #include "Config.h"
 
 #include "Utility\json.hpp"
+#include "DarkModeUI.h"
 
 #include "resource.h"
 
 class RaceListWindow : 
 	public CDialogImpl<RaceListWindow>,
 	public CWinDataExchange<RaceListWindow>,
-	public CCustomDraw<RaceListWindow>
+	public CCustomDraw<RaceListWindow>,
+	public DarkModeUI<RaceListWindow>
 {
 public:
 	enum { IDD = IDD_RACELIST };
@@ -69,10 +71,10 @@ public:
 
 		MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
 
-		MSG_WM_CTLCOLORDLG(OnCtlColorDlg)
-		MSG_WM_CTLCOLORSTATIC(OnCtlColorDlg)
-		MSG_WM_CTLCOLORBTN(OnCtlColorDlg)
-		MSG_WM_CTLCOLOREDIT(OnCtlColorDlg)
+		//MSG_WM_CTLCOLORDLG(OnCtlColorDlg)
+		//MSG_WM_CTLCOLORSTATIC(OnCtlColorDlg)
+		//MSG_WM_CTLCOLORBTN(OnCtlColorDlg)
+		//MSG_WM_CTLCOLOREDIT(OnCtlColorDlg)
 
 		NOTIFY_HANDLER_EX(IDC_LIST_RACE, NM_CLICK, OnRaceListClick)
 		NOTIFY_HANDLER_EX(IDC_LIST_RACE, NM_RCLICK, OnRaceListRClick)
@@ -82,6 +84,7 @@ public:
 		COMMAND_RANGE_HANDLER_EX(IDC_CHECK_G1, IDC_CHECK_LOCATION_OOI, OnRaceFilterChanged)
 
 		CHAIN_MSG_MAP(CCustomDraw<RaceListWindow>)
+		CHAIN_MSG_MAP(DarkModeUI<RaceListWindow>)
 	END_MSG_MAP()
 
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
@@ -157,5 +160,13 @@ private:
 		RaceDistanceData(int turn, int distanceClass) : turn(turn), distanceClass(distanceClass) {}
 	};
 	std::vector<RaceDistanceData>	m_entryRaceDistanceList;
+
+	struct ThemeColor {
+		COLORREF	bkFavorite;
+		COLORREF	bkRow1;
+		COLORREF	bkRow2;
+	};
+	ThemeColor	m_darkTheme;
+	ThemeColor	m_lightTheme;
 };
 

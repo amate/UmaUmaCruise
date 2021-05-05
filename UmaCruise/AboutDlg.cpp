@@ -5,22 +5,28 @@
 
 #include <future>
 #include <vector>
+#include <thread>
 
 #include <tesseract\baseapi.h>
 #include <leptonica\allheaders.h>
 
 #include <opencv2\opencv.hpp>
 
+#include <boost\algorithm\string\trim_all.hpp>
+
 #include "Utility\CodeConvert.h"
 #include "Utility\CommonUtility.h"
 #include "Utility\json.hpp"
 #include "Utility\timer.h"
+#include "Utility\WinHTTPWrapper.h"
 #include "TesseractWrapper.h"
 using namespace TesseractWrapper;
 
 using json = nlohmann::json;
 using namespace CodeConvert;
 using namespace cv;
+
+CString	g_versionCheckText;
 
 cv::Mat GdiPlusBitmapToOpenCvMat(Gdiplus::Bitmap* bmp);
 
@@ -113,6 +119,34 @@ LRESULT CAboutDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	}
 	m_cmbTestBounds.SetCurSel(0);
 
+	if (g_versionCheckText.IsEmpty()) {
+		std::thread([this]() {
+			CWindow wndVersionCheck = GetDlgItem(IDC_SYSLINK_VERSIONCHECK);
+
+			CString versionURL = L"https://raw.githubusercontent.com/amate/UmaUmaCruise/master/appversion.txt";
+			if (auto optVersion = WinHTTPWrapper::HttpDownloadData(versionURL)) {
+				std::wstring latestVersion = UTF16fromUTF8(optVersion.get());
+				boost::algorithm::trim_all(latestVersion);
+
+				if (latestVersion != kAppVersion) {
+					g_versionCheckText.Format(L"更新あり: <a>%s</a>", latestVersion.c_str());
+					wndVersionCheck.SetWindowText(g_versionCheckText);
+				} else {
+					g_versionCheckText = L"更新なし";
+					wndVersionCheck.SetWindowText(g_versionCheckText);
+				}				
+			} else {
+				g_versionCheckText = L"更新確認に失敗";
+				wndVersionCheck.SetWindowText(g_versionCheckText);
+			}
+		}).detach();
+	} else {
+		CWindow wndVersionCheck = GetDlgItem(IDC_SYSLINK_VERSIONCHECK);
+		wndVersionCheck.SetWindowText(g_versionCheckText);
+	}
+
+	DarkModeInit();
+
 	return TRUE;
 }
 
@@ -126,6 +160,18 @@ LRESULT CAboutDlg::OnCloseCmd(WORD, WORD wID, HWND, BOOL&)
 LRESULT CAboutDlg::OnLinkClick(int, LPNMHDR, BOOL&)
 {
 	::ShellExecute(NULL, nullptr, L"https://gamerch.com/umamusume/", nullptr, nullptr, SW_NORMAL);
+	return LRESULT();
+}
+
+LRESULT CAboutDlg::OnLinkClickHomePage(int, LPNMHDR, BOOL&)
+{
+	::ShellExecute(NULL, nullptr, L"https://github.com/amate/UmaUmaCruise", nullptr, nullptr, SW_NORMAL);
+	return LRESULT();
+}
+
+LRESULT CAboutDlg::OnLinkClickLatestVersion(int, LPNMHDR, BOOL&)
+{
+	::ShellExecute(NULL, nullptr, L"https://github.com/amate/UmaUmaCruise/releases", nullptr, nullptr, SW_NORMAL);
 	return LRESULT();
 }
 
@@ -202,6 +248,12 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 
 			cutImage = cv::Mat(srcImage, cvRectFromCRect(rcBounds));
 		}
+	} else if (index == kEventBottomOptionBounds) {
+		CRect rcAdjustTextBounds = GetTextBounds(cutImage, rcBounds);
+		rcBounds = rcAdjustTextBounds;
+
+		cutImage = cv::Mat(srcImage, cvRectFromCRect(rcBounds));
+
 	} else if (index == kEventNameIconBounds) {
 		bool isIcon = IsEventNameIcon(srcImage, rcBounds);
 		CString result;

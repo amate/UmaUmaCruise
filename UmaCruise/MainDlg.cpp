@@ -11,12 +11,30 @@
 #include "Utility\CommonUtility.h"
 #include "Utility\json.hpp"
 #include "Utility\timer.h"
+#include "win32-darkmode\DarkMode.h"
 
 #include "ConfigDlg.h"
 
 using json = nlohmann::json;
 using namespace CodeConvert;
 using namespace cv;
+
+
+bool IsDarkMode()
+{
+	CRegKey regkey;
+	LSTATUS ret = regkey.Open(HKEY_CURRENT_USER, LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize)", KEY_READ);
+	if (ret == ERROR_SUCCESS) {
+		DWORD value = 0;
+		ret = regkey.QueryDWORDValue(L"AppsUseLightTheme", value);
+		if (ret == ERROR_SUCCESS) {
+			bool isDarkMode = !value;
+			return isDarkMode;
+		}
+	}
+	return false;
+}
+
 
 
 // android版
@@ -202,6 +220,9 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		CButton(GetDlgItem(IDC_CHECK_START)).SetCheck(BST_CHECKED);
 		OnStart(0, 0, NULL);
 	}
+
+	DarkModeInit();
+
 	return TRUE;
 }
 
@@ -392,7 +413,7 @@ HBRUSH CMainDlg::OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 		dc.SetBkColor(m_optionBkColor[i]);
 		return m_brsOptions[i];
 	}
-
+	SetMsgHandled(FALSE);
 	return (HBRUSH)::GetStockObject(WHITE_BRUSH);
 }
 

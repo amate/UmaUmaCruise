@@ -56,8 +56,30 @@
             "MinThreshold": 0.40
         }
     },
+
     "TypoDictionary": [
         {"Typo": "初語", "Corret": "初詣"},
         {"Typo": "初議", "Corret": "初詣"}        
-    ]
+    ],
+
+    "Theme": {
+        "Dark": {
+            "Background": "#383838",
+            "Text": "#FFFFFF",
+            "RaceList": {
+                "BkFavorite": "#78181E",
+                "BkRow1": "#211E5C",
+                "BkRow2": "#502A71"
+            }
+        },
+        "Light": {
+            "Background": "#FFFFFF",
+            "Text": "#000000",
+            "RaceList": {
+                "BkFavorite": "#FFD700",
+                "BkRow1": "#E6E7FF",
+                "BkRow2": "#FCE4D6"
+            }
+        }
+    }
 }

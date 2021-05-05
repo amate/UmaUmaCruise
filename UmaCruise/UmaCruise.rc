@@ -24,25 +24,28 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 378, 222
+IDD_ABOUTBOX DIALOGEX 0, 0, 342, 222
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_ACCEPTFILES
 CAPTION "About"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,130,81,50,14
-    CTEXT           "UmaUmaCruise Application {version}\n\n(c) Copyright 2021 amate",IDC_STATIC_ABOUT,25,57,78,32
-    ICON            IDR_MAINFRAME,IDC_STATIC,55,26,20,20
-    GROUPBOX        "",IDC_STATIC,7,7,115,88
+    CTEXT           "UmaUmaCruise Application {version}\n\n(c) Copyright 2021 amate",IDC_STATIC_ABOUT,25,37,78,32
+    ICON            IDR_MAINFRAME,IDC_STATIC,56,16,18,17
+    GROUPBOX        "",IDC_STATIC,7,6,115,94
     GROUPBOX        "debug",IDC_STATIC,6,102,330,117
     COMBOBOX        IDC_COMBO_TESTBOUNDS,18,114,126,174,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_EDIT_RESULT,18,132,156,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
     PUSHBUTTON      "OCR",IDC_BUTTON_OCR,18,198,66,18
     CONTROL         "",IDC_SLIDER_THRESHOLD,"msctls_trackbar32",TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,90,200,84,12
-    LTEXT           "■イベント選択肢データ(UmaMusumeLibrary.json)について\n\nGamerch様運営の""ウマ娘攻略wiki""から\nイベントデータを加工して、自動生成しています",IDC_STATIC,132,12,180,33
+    LTEXT           "Gamerch様運営の""ウマ娘攻略wiki""から\nイベントデータを加工して、自動生成しています",IDC_STATIC,132,18,150,18
     CONTROL         "URL:<a>https://gamerch.com/umamusume/</a>",IDC_SYSLINK1,
-                    "SysLink",WS_TABSTOP,132,48,180,11
+                    "SysLink",WS_TABSTOP,132,38,180,11
     EDITTEXT        IDC_EDIT_RESULT2,174,132,156,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
+    CONTROL         "<a>ホームページ</a>",IDC_SYSLINK_HOMEPAGE,"SysLink",WS_TABSTOP,43,74,42,10
+    GROUPBOX        "■イベント選択肢データ(UmaMusumeLibrary.json)について",IDC_STATIC,126,6,180,48
+    CONTROL         "更新確認中...<a></a>",IDC_SYSLINK_VERSIONCHECK,"SysLink",WS_TABSTOP,42,87,48,11
 END
 
 IDD_MAINDLG DIALOGEX 0, 0, 570, 222
@@ -153,7 +156,7 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 371
+        RIGHTMARGIN, 335
         TOPMARGIN, 7
         BOTTOMMARGIN, 215
     END

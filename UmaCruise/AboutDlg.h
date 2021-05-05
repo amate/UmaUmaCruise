@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "DarkModeUI.h"
+
 class PreviewWindow;
 
 #include "resource.h"
@@ -14,9 +16,9 @@ class PreviewWindow;
 #define	DEBUG_STRING
 #endif
 
-constexpr LPCWSTR	kAppVersion = L"v1.6" DEBUG_STRING;
+constexpr LPCWSTR	kAppVersion = L"v1.7" DEBUG_STRING;
 
-class CAboutDlg : public CDialogImpl<CAboutDlg>
+class CAboutDlg : public CDialogImpl<CAboutDlg>, DarkModeUI<CAboutDlg>
 {
 public:
 	enum { IDD = IDD_ABOUTBOX };
@@ -28,7 +30,11 @@ public:
 		COMMAND_ID_HANDLER(IDOK, OnCloseCmd)
 		COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
 		NOTIFY_HANDLER(IDC_SYSLINK1, NM_CLICK, OnLinkClick)
+		NOTIFY_HANDLER(IDC_SYSLINK_HOMEPAGE, NM_CLICK, OnLinkClickHomePage)
+		NOTIFY_HANDLER(IDC_SYSLINK_VERSIONCHECK, NM_CLICK, OnLinkClickLatestVersion )
+		
 		COMMAND_ID_HANDLER(IDC_BUTTON_OCR, OnOCR)
+		CHAIN_MSG_MAP(DarkModeUI<CAboutDlg>)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -40,6 +46,8 @@ public:
 	LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	LRESULT OnLinkClick(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/);
+	LRESULT OnLinkClickHomePage(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/);
+	LRESULT OnLinkClickLatestVersion(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/);
 
 	LRESULT OnOCR(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 

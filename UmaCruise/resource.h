@@ -40,6 +40,9 @@
 #define IDC_CHECK_NOTIFY_FAVORITERACEHOLD 1040
 #define IDC_EDIT1                       1041
 #define IDC_EDIT_EXPECT_URA             1041
+#define IDC_SYSLINK_HOMEPAGE            1042
+#define IDC_SYSLINK3                    1043
+#define IDC_SYSLINK_VERSIONCHECK        1043
 #define IDC_EDIT_OPTION1                1500
 #define IDC_EDIT_OPTION2                1501
 #define IDC_EDIT_OPTION3                1502
@@ -76,7 +79,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        209
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1042
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

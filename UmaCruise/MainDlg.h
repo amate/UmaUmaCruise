@@ -18,13 +18,16 @@
 #include "RaceListWindow.h"
 #include "Config.h"
 
+#include "DarkModeUI.h"
+
 
 class CMainDlg : 
 	public CDialogImpl<CMainDlg>, 
 	public CUpdateUI<CMainDlg>,
 	public CMessageFilter, 
 	public CIdleHandler,
-	public CWinDataExchange<CMainDlg>
+	public CWinDataExchange<CMainDlg>,
+	public DarkModeUI<CMainDlg>
 {
 public:
 	enum { IDD = IDD_MAINDLG };
@@ -82,7 +85,8 @@ public:
 		COMMAND_HANDLER_EX(IDC_EDIT_EVENTNAME, EN_CHANGE, OnEventNameChanged)
 
 		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REVISION, OnEventRevision)	
-		
+
+		CHAIN_MSG_MAP(DarkModeUI<CMainDlg>)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):

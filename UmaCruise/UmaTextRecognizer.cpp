@@ -113,16 +113,8 @@ double ImageWhiteRatio(cv::Mat thresImage)
 
 
 // cutImage にあるテキストを囲う範囲を調べて返す
-// cutImageは黒背景に白文字である必要がある
-// 今のところイベント名の時だけ使ってる
 CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 {
-	//cv::Mat resizedImage;
-	//constexpr double scale = 1.0;//4.0;
-	//cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
-	//auto saveImagePath = GetExeDirectory() / L"debug1.png";
-	//cv::imwrite(saveImagePath.string(), resizedImage);
-
 	cv::Mat grayImage;
 	cv::cvtColor(cutImage/*resizedImage*/, grayImage, cv::COLOR_RGB2GRAY);
 
@@ -130,16 +122,20 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 	cv::threshold(grayImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
 
 	int c = thresImage.channels();
+	ATLASSERT(c == 1);
+	uchar zeroPointVal = thresImage.at<uchar>(0, 0);	// 背景色確認
+	ATLASSERT(zeroPointVal == 0 || zeroPointVal == 255);
+
 	CPoint ptLT = { thresImage.cols , thresImage.rows };
 	CPoint ptRB = { 0, 0 };
 	for (int y = 0; y < thresImage.rows; y++) {
 		for (int x = 0; x < thresImage.cols; x++) {
 			uchar val = thresImage.at<uchar>(y, x);
-			if (val >= 255) {
-				// 白が見つかった時点で一番小さい地点を探す
+			if (val != zeroPointVal) {	// 背景色以外なら
+				// 見つかった時点で一番小さい地点を探す
 				ptLT.y = std::min(ptLT.y, (LONG)y);
 				ptLT.x = std::min(ptLT.x, (LONG)x);
-				// 白が見つかった時点で一番大きい地点を探す
+				// 見つかった時点で一番大きい地点を探す
 				ptRB.y = std::max(ptRB.y, (LONG)y);
 				ptRB.x = std::max(ptRB.x, (LONG)x);
 			}
@@ -149,10 +145,6 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 		kTextMargin = 5 
 	};
 	CRect rcAdjustTextBounds(ptLT, ptRB);
-	//rcAdjustTextBounds.top /= scale;
-	//rcAdjustTextBounds.left /= scale;
-	//rcAdjustTextBounds.right /= scale;
-	//rcAdjustTextBounds.bottom /= scale;
 	rcAdjustTextBounds.MoveToXY(rcBounds.left + rcAdjustTextBounds.left, rcBounds.top + rcAdjustTextBounds.top);
 
 	rcAdjustTextBounds.InflateRect(kTextMargin, kTextMargin, kTextMargin, kTextMargin);	// 膨らませる
@@ -329,7 +321,6 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		}
 
 		cv::Mat cutImage2(srcImage, cvRectFromCRect(rcAdjustTextBounds));
-		//cv::imshow("test", cutImage2);
 
 		cv::Mat grayImage;		// グレースケール
 		cv::cvtColor(cutImage2/*resizedImage*/, grayImage, cv::COLOR_RGB2GRAY);
@@ -350,34 +341,32 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		TextFromImageFutureList.emplace_back(
 			std::async(std::launch::async, asyncTextFromImage, thresImage2, GetOCRFunction()));
 
-		//funcPushBackImageText(resizedImage, m_eventName);	// 4 グレースケール反転 + 2倍
-		//funcPushBackImageText(thresImage2, m_eventName);	// 6 白背景黒文字(グレー反転閾値) + 2倍
-		//cv::imshow("test1", resizedImage);
-		//cv::imshow("test2", thresImage2);
-
 		// イベント選択肢
 		{
 			//INFO_LOG << L"・イベント選択肢";
 			CRect rcEventBottomOption = _AdjustBounds(srcImage, m_testBounds[kEventBottomOptionBounds]);
 			cv::Mat cutImage(srcImage, cvRectFromCRect(rcEventBottomOption));
 
-			cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
+			CRect rcAdjustTextBounds3 = GetTextBounds(cutImage, rcEventBottomOption);
+			cv::Mat cutImage3(srcImage, cvRectFromCRect(rcAdjustTextBounds3));
+
+			cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage3);
 			// 画像における白文字率を確認して、一定比率以下のときは無視する
 			const double whiteRatio = ImageWhiteRatio(textImage);
 			if (whiteRatio > kMinWhiteTextRatioThreshold) {
+#if 0
 				cv::Mat grayImage;
-				cv::cvtColor(cutImage, grayImage, cv::COLOR_RGB2GRAY);
+				cv::cvtColor(cutImage3, grayImage, cv::COLOR_RGB2GRAY);
 
 				cv::Mat resizedImage;
 				constexpr double scale = 2.0;
 				cv::resize(grayImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
 
 				cv::Mat thresImage;
-				cv::threshold(resizedImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);	// 5	
-
+				cv::threshold(resizedImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+#endif
 				optfutureEventBottomOption =
-					std::async(std::launch::async, asyncTextFromImage, resizedImage, GetOCRFunction());
-				//funcPushBackImageText(resizedImage, m_eventBottomOption);	// 5 黒背景白文字(グレー閾値) + 2倍
+					std::async(std::launch::async, asyncTextFromImage, textImage, GetOCRFunction());
 			}
 		}
 	}
