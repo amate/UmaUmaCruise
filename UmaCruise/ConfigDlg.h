@@ -21,6 +21,7 @@ public:
 		DDX_CHECK(IDC_CHECK_STOPUPDATEPREVIEWONTRAINING, m_stopUpdatePreviewOnTraining)
 		DDX_CHECK(IDC_CHECK_POPUP_RACELISTWINDOW, m_popupRaceListWindow)
 		DDX_CHECK(IDC_CHECK_NOTIFY_FAVORITERACEHOLD, m_notifyFavoriteRaceHold)
+		DDX_COMBO_INDEX(IDC_COMBO_THEME, m_theme)
 	END_DDX_MAP()
 
 	BEGIN_MSG_MAP_EX(ConfigDlg)
@@ -51,5 +52,6 @@ private:
 	bool	m_stopUpdatePreviewOnTraining = false;
 	bool	m_popupRaceListWindow = false;
 	bool	m_notifyFavoriteRaceHold = true;
+	int		m_theme = Config::kAuto;
 
 };

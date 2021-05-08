@@ -119,6 +119,10 @@ LRESULT CAboutDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	}
 	m_cmbTestBounds.SetCurSel(0);
 
+#ifdef _DEBUG
+	CWindow wndVersionCheck = GetDlgItem(IDC_SYSLINK_VERSIONCHECK);
+	wndVersionCheck.SetWindowText(L"デバッグ中");
+#else
 	if (g_versionCheckText.IsEmpty()) {
 		std::thread([this]() {
 			CWindow wndVersionCheck = GetDlgItem(IDC_SYSLINK_VERSIONCHECK);
@@ -144,7 +148,7 @@ LRESULT CAboutDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		CWindow wndVersionCheck = GetDlgItem(IDC_SYSLINK_VERSIONCHECK);
 		wndVersionCheck.SetWindowText(g_versionCheckText);
 	}
-
+#endif
 	DarkModeInit();
 
 	return TRUE;
@@ -188,14 +192,23 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 
 	CRect rcBounds;
 	CRect rcIconBounds;
+
+	json jsonCommon;
+	std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / L"Common.json").wstring());
+	ATLASSERT(ifs);
+	if (!ifs) {
+		return 0;
+	}
+	ifs >> jsonCommon;
+	const json& jsonHSVBounds = jsonCommon["Common"]["ImageProcess"]["HSV_TextColorBounds"];
+	int h_min = jsonHSVBounds[0][0];
+	int h_max = jsonHSVBounds[0][1];
+	int s_min = jsonHSVBounds[1][0];
+	int s_max = jsonHSVBounds[1][1];
+	int v_min = jsonHSVBounds[2][0];
+	int v_max = jsonHSVBounds[2][1];
 	if (index != kDirect) {
-		json jsonCommon;
-		std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / L"Common.json").wstring());
-		ATLASSERT(ifs);
-		if (!ifs) {
-			return 0;
-		}
-		ifs >> jsonCommon;
+
 
 		json jsonOCR = jsonCommon["Common"]["TestBounds"];
 
@@ -277,12 +290,12 @@ LRESULT CAboutDlg::OnOCR(WORD, WORD, HWND, BOOL&)
 		cv::Mat resizedImage;
 		cv::resize(hsvImage, resizedImage, cv::Size(), scale, scale, cv::INTER_LINEAR/*INTER_CUBIC*/);
 
-		int h_min = 12;
-		int h_max = 13;
-		int s_min = 75;
-		int s_max = 255;
-		int v_min = 100;
-		int v_max = 180;
+		//int h_min = 12;
+		//int h_max = 13;
+		//int s_min = 75;
+		//int s_max = 255;
+		//int v_min = 100;
+		//int v_max = 180;
 		cv::Mat textImage;
 		cv::inRange(resizedImage, cv::Scalar(h_min, s_min, v_min), cv::Scalar(h_max, s_max, v_max), textImage);
 

@@ -7,6 +7,10 @@ struct Config
 	bool	stopUpdatePreviewOnTraining = false;
 	bool	popupRaceListWindow = false;
 	bool	notifyFavoriteRaceHold = true;
+	enum Theme {
+		kAuto, kDark, kLight,
+	};
+	Theme	theme = kAuto;
 
 	bool	LoadConfig();
 	void	SaveConfig();

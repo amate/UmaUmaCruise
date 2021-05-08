@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 
+#include <wtl\atlctrls.h>	// RichEditCtrl
 #include "MainDlg.h"
 
 #include "Utility\CommonUtility.h"
@@ -56,6 +57,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	hRes = _Module.Init(NULL, hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
 
+	//HMODULE hModRichEdit = ::LoadLibrary(CRichEditCtrl::GetLibraryName());
+	//ATLASSERT(hModRichEdit);
+
 	GdiplusInit();
 	TesseractWrapper::TesseractInit();
 	WinHTTPWrapper::InitWinHTTP();
@@ -78,6 +82,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	WinHTTPWrapper::TermWinHTTP();
 	TesseractWrapper::TesseractTerm();
 	GdiplusTerm();
+
+	//::FreeLibrary(hModRichEdit);
+	//hModRichEdit = NULL;
 
 	_Module.Term();
 	::CoUninitialize();

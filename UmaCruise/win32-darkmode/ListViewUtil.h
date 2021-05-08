@@ -44,7 +44,8 @@ inline void InitListView(HWND hListView)
 					AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
 					AllowDarkModeForWindow(hHeader, g_darkModeEnabled);
 
-					HTHEME hTheme = OpenThemeData(nullptr, L"ItemsView");
+					
+					HTHEME hTheme = OpenThemeData(nullptr, g_darkModeEnabled ? L"ItemsView": VSCLASS_LISTVIEW);
 					if (hTheme)
 					{
 						COLORREF color;
@@ -97,6 +98,6 @@ inline void InitListView(HWND hListView)
 	//// Hide focus dots
 	//SendMessage(hListView, WM_CHANGEUISTATE, MAKELONG(UIS_SET, UISF_HIDEFOCUS), 0);
 
-	SetWindowTheme(hHeader, L"ItemsView", nullptr); // DarkMode
-	SetWindowTheme(hListView, L"ItemsView", nullptr); // DarkMode
+	//SetWindowTheme(hHeader, L"ItemsView", nullptr); // DarkMode
+	//SetWindowTheme(hListView, L"ItemsView", nullptr); // DarkMode
 }

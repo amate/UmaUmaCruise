@@ -276,7 +276,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 	}
 	INFO_LOG << L"TextRecognizer start! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
 	std::list<std::future<std::wstring>> TextFromImageFutureList;
-	boost::optional<std::future<std::wstring>>	optfutureEventBottomOption;
+	std::list<std::future<std::wstring>> eventBottomOptionFutureList;
 
 
 	auto funcInRangeHSVTextColorBounds = [this](cv::Mat cutImage) -> cv::Mat {
@@ -354,7 +354,6 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			// 画像における白文字率を確認して、一定比率以下のときは無視する
 			const double whiteRatio = ImageWhiteRatio(textImage);
 			if (whiteRatio > kMinWhiteTextRatioThreshold) {
-#if 0
 				cv::Mat grayImage;
 				cv::cvtColor(cutImage3, grayImage, cv::COLOR_RGB2GRAY);
 
@@ -364,9 +363,12 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 
 				cv::Mat thresImage;
 				cv::threshold(resizedImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
-#endif
-				optfutureEventBottomOption =
-					std::async(std::launch::async, asyncTextFromImage, textImage, GetOCRFunction());
+
+				eventBottomOptionFutureList.emplace_back(
+					std::async(std::launch::async, asyncTextFromImage, thresImage, GetOCRFunction()));
+
+				eventBottomOptionFutureList.emplace_back(
+					std::async(std::launch::async, asyncTextFromImage, textImage, GetOCRFunction()));
 			}
 		}
 	}
@@ -547,8 +549,8 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		funcPushBackImageText(future.get(), m_eventName);
 	}
 	// イベント選択肢
-	if (optfutureEventBottomOption) {
-		funcPushBackImageText(optfutureEventBottomOption->get(), m_eventBottomOption);
+	for (auto& future : eventBottomOptionFutureList) {
+		funcPushBackImageText(future.get(), m_eventBottomOption);
 	}
 
 	INFO_LOG << L"TextRecognizer finish! " << timer.format() << L"\n";

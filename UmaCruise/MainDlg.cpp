@@ -118,6 +118,8 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 	m_config.LoadConfig();
 
+	ChangeGlobalTheme(m_config.theme);
+
 	DoDataExchange(DDX_LOAD);
 
 	// 選択肢エディットの背景色を設定
@@ -307,11 +309,18 @@ LRESULT CMainDlg::OnCancel(WORD, WORD wID, HWND, BOOL&)
 void CMainDlg::OnShowConfigDlg(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	const bool prevPopupRaceListWindow = m_config.popupRaceListWindow;
+	const int prevTheme = m_config.theme;
 	ConfigDlg dlg(m_config);
 	auto ret = dlg.DoModal(m_hWnd);
 	if (ret == IDOK) {
 		if (prevPopupRaceListWindow != m_config.popupRaceListWindow) {
 			_DockOrPopupRaceListWindow();
+		}
+		if (prevTheme != m_config.theme) {
+			ChangeGlobalTheme(m_config.theme);
+			OnThemeChanged();
+			m_raceListWindow.OnThemeChanged();
+			m_previewWindow.OnThemeChanged();
 		}
 	}
 }
@@ -817,6 +826,7 @@ void CMainDlg::_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent)
 		const int IDC_EFFECT = IDC_EDIT_EFFECT1 + i;
 		GetDlgItem(IDC_OPTION).SetWindowText(umaEvent.eventOptions[i].option.c_str());
 		GetDlgItem(IDC_EFFECT).SetWindowText(umaEvent.eventOptions[i].effect.c_str());
+
 	}
 }
 

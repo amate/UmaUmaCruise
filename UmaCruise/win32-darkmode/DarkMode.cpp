@@ -4,6 +4,8 @@
 
 #include "IatHook.h"
 
+#include "..\Config.h"
+
 
 enum IMMERSIVE_HC_CACHE_MODE
 {
@@ -92,6 +94,7 @@ fnSetPreferredAppMode _SetPreferredAppMode = nullptr;
 bool g_darkModeSupported = false;
 bool g_darkModeEnabled = false;
 DWORD g_buildNumber = 0;
+int		g_globalTheme = 0;
 
 bool AllowDarkModeForWindow(HWND hWnd, bool allow)
 {
@@ -129,10 +132,25 @@ void RefreshTitleBarThemeColor(HWND hWnd)
 bool UpdateDarkModeEnabled()
 {
 	if (g_darkModeSupported) {
-		g_darkModeEnabled = _ShouldAppsUseDarkMode() && !IsHighContrast();
-		return g_darkModeEnabled;
+		if (g_globalTheme == Config::kAuto) {
+			g_darkModeEnabled = _ShouldAppsUseDarkMode() && !IsHighContrast();
+			return g_darkModeEnabled;
+
+		} else if (g_globalTheme == Config::kDark) {
+			g_darkModeEnabled = true;
+			return true;
+
+		} else if (g_globalTheme == Config::kLight) {
+			g_darkModeEnabled = false;
+			return false;
+		}
 	}
 	return false;
+}
+
+void ChangeGlobalTheme(int theme)
+{
+	g_globalTheme = theme;
 }
 
 bool IsColorSchemeChangeMessage(LPARAM lParam)
@@ -178,6 +196,11 @@ void FixDarkScrollBar()
 					{
 						hWnd = nullptr;
 						classList = L"Explorer::ScrollBar";
+						if (g_darkModeEnabled) {
+							classList = L"DarkMode_Explorer::ScrollBar";
+						} else {
+							classList = L"ScrollBar";
+						}
 					}
 					return _OpenNcThemeData(hWnd, classList);
 				};

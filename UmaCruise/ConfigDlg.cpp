@@ -23,10 +23,17 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	}
 	m_cmbRefreshInterval.SetCurSel(m_config.refreshInterval - 1);
 
+	CComboBox cmbTheme = GetDlgItem(IDC_COMBO_THEME);
+	LPCWSTR themeList[] = { L"自動", L"ダーク", L"ライト" };
+	for (LPCWSTR themeText : themeList) {
+		cmbTheme.AddString(themeText);
+	}
+
 	m_autoStart = m_config.autoStart;
 	m_stopUpdatePreviewOnTraining = m_config.stopUpdatePreviewOnTraining;
 	m_popupRaceListWindow = m_config.popupRaceListWindow;
 	m_notifyFavoriteRaceHold = m_config.notifyFavoriteRaceHold;
+	m_theme = static_cast<int>(m_config.theme);
 	DoDataExchange(DDX_LOAD);
 
 	DarkModeInit();
@@ -49,6 +56,7 @@ LRESULT ConfigDlg::OnOK(WORD, WORD wID, HWND, BOOL&)
 	m_config.stopUpdatePreviewOnTraining = m_stopUpdatePreviewOnTraining;
 	m_config.popupRaceListWindow = m_popupRaceListWindow;
 	m_config.notifyFavoriteRaceHold = m_notifyFavoriteRaceHold;
+	m_config.theme = static_cast<Config::Theme>(m_theme);
 
 	m_config.SaveConfig();
 

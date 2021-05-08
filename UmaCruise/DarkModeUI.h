@@ -42,6 +42,7 @@ public:
 		m_hbrLightBkgnd.CreateSolidBrush(m_light.bkColor);
 
 		m_bLastDarkModeEnabled = UpdateDarkModeEnabled();
+		//g_darkModeEnabled = true;
 		OnThemeChanged(true);
 	}
 
@@ -50,7 +51,7 @@ public:
 	}
 
 	HBRUSH GetBkgndBrush() const {
-		if (g_darkModeSupported && g_darkModeEnabled) {
+		if (g_darkModeSupported && IsDarkMode()) {
 			return m_hbrDarkBkgnd;
 		} else {
 			return m_hbrLightBkgnd;
@@ -58,7 +59,7 @@ public:
 	}
 
 	COLORREF GetTextColor() const {
-		if (g_darkModeSupported && g_darkModeEnabled) {
+		if (g_darkModeSupported && IsDarkMode()) {
 			return m_dark.textColor;
 		} else {
 			return m_light.textColor;
@@ -79,7 +80,6 @@ public:
 	void OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	{
 		if (g_darkModeSupported && IsColorSchemeChangeMessage((LPARAM)lpszSection)) {
-			UpdateDarkModeEnabled();
 			OnThemeChanged();
 		}
 	}
@@ -87,12 +87,15 @@ public:
 	void OnThemeChanged(bool force = false)
 	{
 		if (g_darkModeSupported) {
+			UpdateDarkModeEnabled();
+
 			if (!force) {
 				if (m_bLastDarkModeEnabled == g_darkModeEnabled) {
 					return;
 				}
 			}
 			m_bLastDarkModeEnabled = g_darkModeEnabled;
+			//ATLASSERT(g_darkModeEnabled);
 
 			T* pThis = static_cast<T*>(this);
 			AllowDarkModeForWindow(pThis->m_hWnd, g_darkModeEnabled);
@@ -133,6 +136,22 @@ public:
 						InitListView(hwnd);
 						m_setListView.emplace(hwnd);
 					}
+					HWND hHeader = ListView_GetHeader(hwnd);
+					LPCWSTR theme = g_darkModeEnabled ? L"DarkMode_ItemsView" : L"ItemsView";
+					SetWindowTheme(hHeader, theme, nullptr);
+					SetWindowTheme(hwnd, theme, nullptr);
+					::SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+
+				} else if (className == L"RICHEDIT50W") {
+					CRichEditCtrl richEdit = hwnd;
+					COLORREF	bkColor = g_darkModeEnabled ? m_dark.bkColor : m_light.bkColor;
+					COLORREF	textColor = g_darkModeEnabled ? m_dark.textColor : m_light.textColor;
+					richEdit.SetBackgroundColor(bkColor);
+					CHARFORMAT charFormat = {};
+					charFormat.dwMask = CFM_COLOR;
+					charFormat.crTextColor = textColor;
+					richEdit.SetDefaultCharFormat(charFormat);
+
 				} else {
 					const DWORD windowStyle = CWindow(hwnd).GetStyle();
 					auto funcDisableThemeCtrl = [windowStyle]() -> bool {
@@ -153,7 +172,7 @@ public:
 						CWindow(hwnd).GetWindowText(name);
 						//INFO_LOG << L"name: " << (LPCWSTR)name;
 					} else {
-						SetWindowTheme(hwnd, L"Explorer", nullptr);
+						SetWindowTheme(hwnd, g_darkModeEnabled ? L"DarkMode_Explorer" : L"Explorer", nullptr);
 					}
 				}
 
@@ -167,7 +186,7 @@ public:
 
 	HBRUSH OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 	{
-		if (g_darkModeSupported && g_darkModeEnabled) {
+		if (g_darkModeSupported && IsDarkMode()) {
 			dc.SetTextColor(m_dark.textColor);
 			dc.SetBkColor(m_dark.bkColor);
 		} else {

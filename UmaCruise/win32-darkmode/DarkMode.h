@@ -21,7 +21,11 @@ void AllowDarkModeForApp(bool allow);
 
 void FixDarkScrollBar();
 
+
 void InitDarkMode();
 
 bool UpdateDarkModeEnabled();
+
+// 現在のダークモードの設定を上書きする
+void ChangeGlobalTheme(int theme);
 

@@ -144,6 +144,16 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.8
+・[add] スマートファルコンのキャライベントを追加
+・[fix] その他UmaMusumeLibrary.json更新
+・[change] デバッグ時は、about画面での更新チェックを止めた
+・[fix] about画面でのdebugで、HSVBoundsを読み込むようにした
+・[add] 設定からテーマを選択できるようにした
+・[fix] TextRecognizerで、イベント選択肢の候補にthresImageを追加した
+・[add] UmaMusumeLibrary.json は、~Origin.json に ~Modify.jsonのパッチを当てて(BuildUmaMusumeLibrary.pyが)生成するようにした(wikiの変更点の確認を容易にするため)
+
+
 v1.7
 ・[add] ダークモードに対応 (undocumentな方法を使っているので、将来のアップデートで使えなくなる可能性があります)
 ・[add] Common.jsonから色テーマを読み込むようにした

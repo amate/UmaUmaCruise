@@ -17,7 +17,9 @@
 
 CSize	CalcActualSize(Gdiplus::Image* image, CSize maxImageSize);
 
-class PreviewWindow : public CDialogImpl<PreviewWindow>, DarkModeUI<PreviewWindow>
+class PreviewWindow : 
+	public CDialogImpl<PreviewWindow>, 
+	public DarkModeUI<PreviewWindow>
 {
 public:
 	enum { IDD = IDD_PREVIEW };
