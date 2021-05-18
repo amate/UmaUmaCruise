@@ -74,7 +74,7 @@ def main():
     print("errorCount: ", errorCount)
 
     # jsonへ保存
-    with io.open(umaLibraryPath, 'w', encoding="utf-8") as f:
+    with io.open(umaLibraryPath, 'w', encoding="utf-8", newline='\n') as f:
         print(f"json wrtie: {umaLibraryPath}")
         json.dump(jsonOrigin, f, indent=2, ensure_ascii=False)
 
