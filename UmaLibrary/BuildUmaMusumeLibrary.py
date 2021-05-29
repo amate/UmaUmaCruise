@@ -21,6 +21,9 @@ def main():
     global errorCount
     global successCount
 
+    print("選択肢に(成功)(失敗)の場合分けが入るようになってしまったので、こちら側で元に戻す処理を入れる")
+    print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい')
+
     print("AddCharactorEvent はキャラのイベント名が存在しないときのみ追加")
     print("UpdateEvent はキャラのイベント名が存在する時のみ更新します")
     print("ReplaceEventName と ReplaceOption は完全一致で置換")
@@ -36,6 +39,12 @@ def main():
         jsonModify = json.load(f)
 
     print("load complete")
+    
+    # "Option": "成功",　"Option": "失敗", を消す
+    DeleteSuccessFailedOnly()
+
+    # イベント名(成功), イベント名(失敗) を正規化
+    NomarizeEventSuccessFailed()
 
     # AddCharactorEvent
     for charaEvent in jsonModify["Modify"]["AddCharactorEvent"]:
@@ -233,11 +242,123 @@ def ReplaceEffect(searchText, replaceText):
     errorCount += 1
     return False
 
+def DeleteSuccessFailedOnly():
+    print(f'DeleteSuccessFailedOnly')
+    global errorCount
+    global successCount
 
+    deleteCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    deleteEventList = []
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')
+                        if len(eventOptionList) != 2:
+                            continue    # 選択肢が２個以外は見ない
 
+                        op1 = eventOptionList[0]["Option"]
+                        op2 = eventOptionList[1]["Option"]
+                        if "成功" in op1 and "失敗" in op2:
+                            deleteEventList.append(eventName)
 
+                    for delEventName in deleteEventList:
+                        print(f'deleteEvent: {delEventName}')
+                        del event[delEventName]
+                        deleteCount += 1
 
+                # 空要素を削除する
+                eventList["Event"] = [a for a in eventList["Event"] if a != {}]
+                len(eventList["Event"])
 
+    if deleteCount > 0:
+        successCount += deleteCount
+        return True
+
+    print("(成功,失敗)が見つかりませんでした")
+    errorCount += 1
+    return False
+
+def NomarizeEventSuccessFailed():
+    print(f'NomarizeEventSuccessFailed')
+    global errorCount
+    global successCount
+
+    rx1 = re.compile(r'(.+)\(成功\)')
+    rx2 = re.compile(r'(.+)\(失敗\)')
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    newEvent = None
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')                        
+                        newEventOptionList = []
+                        optionSkip = False
+                        replaced = False
+                        for i in range(len(eventOptionList)):
+                            if optionSkip:
+                                optionSkip = False
+                                continue
+
+                            newEventOptionList.append(eventOptionList[i])
+
+                            op1 = eventOptionList[i]["Option"]
+                            ef1 = eventOptionList[i]["Effect"]
+                            ret1 = rx1.match(op1)
+                            if ret1 == None:
+                                continue
+
+                            if i + 1 == len(eventOptionList):
+                                print("(失敗)が見つかりません")
+                                errorCount += 1
+                                break
+
+                            op2 = eventOptionList[i + 1]["Option"]
+                            ef2 = eventOptionList[i + 1]["Effect"]
+                            ret2 = rx2.match(op2)
+                            if ret2 == None:
+                                print("(失敗)が見つかりません")
+                                errorCount += 1
+                                break
+
+                            sub1 = ret1.group(1)
+                            sub2 = ret2.group(1)
+                            if sub1 != sub2:
+                                print(f"イベント名が一致しません: {eventName}")
+                                errorCount += 1
+                                break
+
+                            optionSkip = True
+                            effectText = f"[成功]==========\n{ef1}\n[失敗]==========\n{ef2}"
+                            newEventOptionList.pop(-1)
+                            newEventOptionList.append({
+                                "Option": sub1,
+                                "Effect": effectText
+                            })
+                            replaced = True
+
+                        if replaced:
+                            newEvent = {eventName: newEventOptionList}
+                        
+
+                    if newEvent != None:
+                        event.pop(eventName)
+                        event.update(newEvent)
+
+                        print(f"(成功/失敗)を置換: [{eventName}]")
+                        replaceCount += 1
+
+    if replaceCount > 0:
+        successCount += replaceCount
+        return True
+
+    print("選択肢(成功),選択肢(失敗)が見つかりませんでした")
+    errorCount += 1
+    return False
 
 
 

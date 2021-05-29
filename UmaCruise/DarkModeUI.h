@@ -27,7 +27,8 @@ class DarkModeUI
 public:
 	void	DarkModeInit()
 	{
-		json jsonCommon;
+
+		nlohmann::json jsonCommon;
 		std::ifstream fs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
 		ATLASSERT(fs);
 		fs >> jsonCommon;

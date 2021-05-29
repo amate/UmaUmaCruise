@@ -148,10 +148,10 @@ private:
 	std::unordered_set<std::string>	m_currentFavoriteRaceList;
 
 	enum ClassifyDistanceClass {
-		kMinSprint = 1000, kMaxSprint = 1599,
-		kMinMile = 1600, kMaxMile = 1999,
-		kMinMiddle = 2000, kMaxMiddle = 2499,
-		kMinLong = 2500, kMaxLong = 4000,
+		kMinSprint = 1000, kMaxSprint = 1400,
+		kMinMile = 1401, kMaxMile = 1800,
+		kMinMiddle = 1801, kMaxMiddle = 2400,
+		kMinLong = 2401, kMaxLong = 4000,
 	};
 	struct RaceDistanceData {
 		int turn;

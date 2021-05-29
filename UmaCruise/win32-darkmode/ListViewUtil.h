@@ -56,6 +56,9 @@ inline void InitListView(HWND hListView)
 						if (SUCCEEDED(GetThemeColor(hTheme, 0, 0, TMT_FILLCOLOR, &color)))
 						{
 							//ListView_SetTextBkColor(hWnd, color);
+							if (g_darkModeEnabled) {
+								color = RGB(0, 0, 0);	// black
+							}
 							ListView_SetBkColor(hWnd, color);
 						}
 						CloseThemeData(hTheme);

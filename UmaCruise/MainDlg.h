@@ -16,6 +16,7 @@
 #include "aboutdlg.h"
 #include "PreviewWindow.h"
 #include "RaceListWindow.h"
+#include "RichEditPopup.h"
 #include "Config.h"
 
 #include "DarkModeUI.h"
@@ -35,6 +36,15 @@ public:
 	enum {
 		kAutoOCRTimerID = 1,
 		kAutoOCRTimerInterval = 1000,
+
+		kMaxOptionEffect = 4,
+		kMaxEffectTextLength = 1024,
+
+		kWindowBottomMargin = 23,
+		kGroupOptionMargin = 10,
+
+		kPopupRichEditTopLeftMargin = -1,
+		kPopupRichEditRightBottomMargin = 10,
 	};
 
 	CMainDlg();
@@ -84,9 +94,13 @@ public:
 
 		COMMAND_HANDLER_EX(IDC_EDIT_EVENTNAME, EN_CHANGE, OnEventNameChanged)
 
-		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REVISION, OnEventRevision)	
+		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REVISION, OnEventRevision)
+
+		MSG_WM_SETCURSOR(OnSetCursor)
 
 		CHAIN_MSG_MAP(DarkModeUI<CMainDlg>)
+	ALT_MSG_MAP(1)
+		//MSG_WM_SETCURSOR(OnSetCursor)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -117,11 +131,16 @@ public:
 
 	void OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl);
 
+	// for EffectEdit
+	BOOL OnSetCursor(CWindow wnd, UINT nHitTest, UINT message);
+
 private:
 	void	_DockOrPopupRaceListWindow();
 	void	_ExtentOrShrinkWindow(bool bExtent);
+	void	_SwitchRow3Row4(bool row3);
 
 	void	_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent);
+	void	_UpdateEventEffect(CRichEditCtrl richEdit, const std::wstring& effectText);
 
 	Config	m_config;
 	bool	m_bShowRaceList = true;
@@ -136,8 +155,13 @@ private:
 	CString m_targetClassName;
 
 	CComboBox	m_cmbUmaMusume;
-	COLORREF	m_optionBkColor[3];
-	CBrush	m_brsOptions[3];
+	COLORREF	m_optionBkColor[kMaxOptionEffect];
+	CBrush	m_brsOptions[kMaxOptionEffect];
+	COLORREF	m_effectStatusInc;
+	COLORREF	m_effectStatusDec;
+
+	RichEditPopup	m_popupRichEdit;
+	CFont	m_effectFont;
 
 	CString	m_eventName;
 	CString	m_eventSource;
@@ -148,4 +172,6 @@ private:
 
 	bool	m_bDockingMove = false;
 	CPoint	m_ptRelativeDockingPos;
+
+	bool	m_effectRow3 = false;
 };

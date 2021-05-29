@@ -78,6 +78,9 @@
     <ClCompile Include="win32-darkmode\DarkMode.cpp">
       <Filter>Header Files\win32-darkmode</Filter>
     </ClCompile>
+    <ClCompile Include="RichEditPopup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainDlg.h">
@@ -177,6 +180,9 @@
       <Filter>Header Files\win32-darkmode</Filter>
     </ClInclude>
     <ClInclude Include="DarkModeUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RichEditPopup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

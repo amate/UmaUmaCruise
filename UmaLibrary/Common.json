@@ -59,10 +59,15 @@
 
     "TypoDictionary": [
         {"Typo": "初語", "Corret": "初詣"},
-        {"Typo": "初議", "Corret": "初詣"}        
+        {"Typo": "初議", "Corret": "初詣"},
+        {"Typo": "初詳", "Corret": "初詣"}
     ],
 
     "Theme": {
+        "Status": {
+            "+": "#4CAF50",
+            "-": "#F44336"
+        },
         "Dark": {
             "Background": "#383838",
             "Text": "#FFFFFF",

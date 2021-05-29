@@ -82,6 +82,7 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 		json jsonCommon;
 		ifs >> jsonCommon;
 		std::string libraryURL = jsonCommon["Common"]["UmaMusumeLibraryURL"];
+		libraryURL += "?" + std::to_string(std::time(nullptr));	// キャッシュ取得回避
 
 		// ファイルサイズ取得
 		auto umaLibraryPath = GetExeDirectory() / L"UmaLibrary" / L"UmaMusumeLibrary.json";

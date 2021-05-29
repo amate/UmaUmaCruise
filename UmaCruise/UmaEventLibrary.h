@@ -17,7 +17,7 @@ public:
 		std::wstring	option;	// 選択肢
 		std::wstring	effect;	// 効果
 	};
-	enum { kMaxOption = 3 };	// 1つのイベントに付き、最大3つの選択肢がある
+	enum { kMaxOption = 4 };	// 1つのイベントに付き、最大4つの選択肢がある
 	typedef std::array<EventOptionEffect, kMaxOption>	EventOptions;
 
 	struct UmaEvent {

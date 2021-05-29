@@ -57,8 +57,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	hRes = _Module.Init(NULL, hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
 
-	//HMODULE hModRichEdit = ::LoadLibrary(CRichEditCtrl::GetLibraryName());
-	//ATLASSERT(hModRichEdit);
+	HMODULE hModRichEdit = ::LoadLibrary(CRichEditCtrl::GetLibraryName());
+	ATLASSERT(hModRichEdit);
 
 	GdiplusInit();
 	TesseractWrapper::TesseractInit();
@@ -83,8 +83,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	TesseractWrapper::TesseractTerm();
 	GdiplusTerm();
 
-	//::FreeLibrary(hModRichEdit);
-	//hModRichEdit = NULL;
+	::FreeLibrary(hModRichEdit);
+	hModRichEdit = NULL;
 
 	_Module.Term();
 	::CoUninitialize();

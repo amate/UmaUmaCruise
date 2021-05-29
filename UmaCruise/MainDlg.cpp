@@ -126,9 +126,30 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	m_optionBkColor[0] = RGB(203, 247, 148);
 	m_optionBkColor[1] = RGB(255, 236, 150);
 	m_optionBkColor[2] = RGB(255, 203, 228);
+	m_optionBkColor[3] = RGB(193, 229, 251);
 	for (int i = 0; i < std::size(m_brsOptions); ++i) {
 		m_brsOptions[i].CreateSolidBrush(m_optionBkColor[i]);
 	}
+
+	// デフォルトフォント取得
+	CEdit edit = GetDlgItem(IDC_EDIT_OPTION1);
+	HFONT font = edit.GetFont();
+	CLogFont lf;
+	GetObject(font, sizeof(LOGFONT), (LPVOID)&lf);
+	m_effectFont.CreateFontIndirectW(&lf);
+
+	// 選択肢効果エディットを初期化
+	for (size_t i = 0; i < kMaxOptionEffect; ++i) {
+		const int IDC_EFFECT = IDC_EDIT_EFFECT1 + i;
+
+		// これを設定しないとフォント表示がおかしくなる
+		GetDlgItem(IDC_EFFECT).SendMessage(EM_SETLANGOPTIONS, 0, (LPARAM)IMF_UIFONTS/*dwLangOptions*/);
+		//GetDlgItem(IDC_EFFECT).SetFont(m_effectFont);
+	}
+
+	// ポップアップリッチエディット作成
+	m_popupRichEdit.SetFont(lf.CreateFontIndirectW());
+	m_popupRichEdit.Create(m_hWnd);
 
 	// プレビューウィンドウ作成
 	m_previewWindow.Create(m_hWnd);
@@ -163,6 +184,9 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		m_raceListWindow.ChangeIkuseiUmaMusume(umaName);
 	});
 
+	// ３択表示に変更
+	_SwitchRow3Row4(true);
+
 	try {
 		{
 			std::ifstream ifs((GetExeDirectory() / L"UmaLibrary" / "Common.json").wstring());
@@ -176,6 +200,9 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 
 				m_targetWindowName = UTF16fromUTF8(jsonCommon["Common"]["TargetWindow"]["WindowName"].get<std::string>()).c_str();
 				m_targetClassName = UTF16fromUTF8(jsonCommon["Common"]["TargetWindow"]["ClassName"].get<std::string>()).c_str();
+
+				m_effectStatusInc = ColorFromText(jsonCommon["Theme"]["Status"].value("+", "#4CAF50"));
+				m_effectStatusDec = ColorFromText(jsonCommon["Theme"]["Status"].value("-", "#F44336"));
 			}
 		}
 
@@ -321,6 +348,7 @@ void CMainDlg::OnShowConfigDlg(UINT uNotifyCode, int nID, CWindow wndCtl)
 			OnThemeChanged();
 			m_raceListWindow.OnThemeChanged();
 			m_previewWindow.OnThemeChanged();
+			m_popupRichEdit.OnThemeChanged();
 		}
 	}
 }
@@ -416,7 +444,7 @@ HBRUSH CMainDlg::OnCtlColorDlg(CDCHandle dc, CWindow wnd)
 {
 	// 選択肢エディットの背景色を設定
 	const int ctrlID = wnd.GetDlgCtrlID();
-	if (IDC_EDIT_OPTION1 <= ctrlID && ctrlID <= IDC_EDIT_OPTION3) {
+	if (IDC_EDIT_OPTION1 <= ctrlID && ctrlID <= IDC_EDIT_OPTION4) {
 		int i = ctrlID - IDC_EDIT_OPTION1;
 		dc.SetBkMode(OPAQUE);
 		dc.SetBkColor(m_optionBkColor[i]);
@@ -752,6 +780,93 @@ void CMainDlg::OnEventRevision(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 }
 
+// カーソル下の効果エディットをポップアップ表示させる
+BOOL CMainDlg::OnSetCursor(CWindow wnd, UINT nHitTest, UINT message)
+{
+	if (::GetAsyncKeyState(VK_MENU) < 0) {
+		return 0;
+	}
+	if (::GetFocus() == m_popupRichEdit.GetRichEdit()) {
+		return 0;
+	}
+
+	if (message == WM_MOUSEMOVE) {
+		CPoint ptCursor;
+		::GetCursorPos(&ptCursor);
+
+		for (size_t i = 0; i < kMaxOptionEffect; ++i) {
+			const int IDC_EFFECT = IDC_EDIT_EFFECT1 + i;
+			CRichEditCtrl richEdit = GetDlgItem(IDC_EFFECT);
+			CRect rcClient;
+			richEdit.GetClientRect(&rcClient);
+			richEdit.MapWindowPoints(NULL, &rcClient);
+			if (rcClient.PtInRect(ptCursor)) {
+
+				// 効果テキスト取得
+				CString text;
+				richEdit.GetWindowText(text.GetBuffer(kMaxEffectTextLength), kMaxEffectTextLength);
+				text.ReleaseBuffer();
+				text.Trim();
+				if (text.IsEmpty()) {
+					break;
+				}
+
+
+				// テキストの描写範囲を取得
+				CRect rcEditDesktop;
+				richEdit.GetClientRect(&rcEditDesktop);
+
+				CDCHandle dc(richEdit.GetDC());
+				HFONT prevFont = dc.SelectFont(m_effectFont);
+
+				CRect rcText;
+				dc.DrawText(text, text.GetLength(), &rcText, DT_CALCRECT);
+				rcEditDesktop = rcText;
+				rcEditDesktop.top = kPopupRichEditTopLeftMargin;
+				rcEditDesktop.left = kPopupRichEditTopLeftMargin;
+				rcEditDesktop.right += kPopupRichEditRightBottomMargin;
+				rcEditDesktop.bottom += kPopupRichEditRightBottomMargin;
+
+				dc.SelectFont(prevFont);
+
+				// テキストがエディットボックスからはみ出さなければポップアップは表示しない
+				if (rcEditDesktop.Width() <= rcClient.Width() && rcEditDesktop.Height() <= rcClient.Height()) {
+					return 0;
+				}
+				rcEditDesktop.right = max(static_cast<int>(rcEditDesktop.right), rcClient.Width());
+
+				m_popupRichEdit.SetOriginalEffectRichEditRect(rcClient);
+
+				// テキストコピー
+				m_popupRichEdit.SetOriginalEffectRichEdit(richEdit);
+				_UpdateEventEffect(m_popupRichEdit.GetRichEdit(), (LPCWSTR)text);
+
+				// ポップアップ表示させる				
+				richEdit.MapWindowPoints(NULL, &rcEditDesktop);
+
+				m_popupRichEdit.SetWindowPos(NULL, &rcEditDesktop, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+				//m_popupRichEdit.ShowWindow(SW_SHOWNOACTIVATE);
+				return 0;
+			}
+		}
+	}
+	if (::GetFocus() != m_popupRichEdit.GetRichEdit() && m_popupRichEdit.GetOriginalEffectRichEdit()) {
+		// 効果テキスト取得
+		CString text;
+		m_popupRichEdit.GetRichEdit().GetWindowText(text.GetBuffer(kMaxEffectTextLength), kMaxEffectTextLength);
+		text.ReleaseBuffer();
+		text.Trim();
+		if (text.GetLength()) {
+			// フォーカスを失う前に、ポップアップリッチエディットに書き込まれた内容を元のリッチエディットに書き戻す
+			_UpdateEventEffect(m_popupRichEdit.GetOriginalEffectRichEdit(), (LPCWSTR)text);
+		}
+
+		m_popupRichEdit.ShowWindow(SW_HIDE);
+		m_popupRichEdit.SetOriginalEffectRichEdit(NULL);
+	}
+	return 0;
+}
+
 
 // レース一覧をメインダイアログにドッキングさせるか、ポップアップウィンドウ化させる
 void CMainDlg::_DockOrPopupRaceListWindow()
@@ -818,6 +933,54 @@ void CMainDlg::_ExtentOrShrinkWindow(bool bExtent)
 	SetWindowPos(NULL, 0, 0, windowWidth, rcWindow.Height(), SWP_NOMOVE | SWP_NOZORDER);
 }
 
+void CMainDlg::_SwitchRow3Row4(bool row3)
+{
+	if (row3 == m_effectRow3) {
+		return;
+	}
+	m_effectRow3 = row3;
+
+	CRect rcWindow;
+	GetWindowRect(&rcWindow);
+	int windowHeight = rcWindow.Height();
+
+	CRect rcGroupOption;
+	GetDlgItem(IDC_GROUP_OPTION).GetClientRect(&rcGroupOption);
+
+	if (row3) {
+		CRect rcRevision;	// 修正ボタンを基準にする
+		GetDlgItem(IDC_BUTTON_REVISION).GetClientRect(&rcRevision);
+		GetDlgItem(IDC_BUTTON_REVISION).MapWindowPoints(NULL, &rcRevision);
+		rcRevision.bottom += kWindowBottomMargin;
+		windowHeight = rcRevision.bottom - rcWindow.top;
+
+		CRect rcEffect1;
+		GetDlgItem(IDC_EDIT_EFFECT1).GetClientRect(&rcEffect1);
+		rcGroupOption.bottom -= rcEffect1.bottom + kGroupOptionMargin;
+
+
+	} else {
+		CRect rcEffect;	// 効果エディット4 を基準にする
+		GetDlgItem(IDC_EDIT_EFFECT4).GetClientRect(&rcEffect);
+		GetDlgItem(IDC_EDIT_EFFECT4).MapWindowPoints(NULL, &rcEffect);
+		rcEffect.bottom += kWindowBottomMargin;
+		windowHeight = rcEffect.bottom - rcWindow.top;
+
+		CRect rcEffect1;
+		GetDlgItem(IDC_EDIT_EFFECT1).GetClientRect(&rcEffect1);
+		rcGroupOption.bottom += rcEffect1.bottom + kGroupOptionMargin;
+	}
+
+	GetDlgItem(IDC_EDIT_OPTION4).ShowWindow(row3 ? SW_HIDE : SW_NORMAL);
+	GetDlgItem(IDC_EDIT_EFFECT4).ShowWindow(row3 ? SW_HIDE : SW_NORMAL);
+
+	// メインダイアログの大きさを変更
+	SetWindowPos(NULL, 0, 0, rcWindow.Width(), windowHeight, SWP_NOZORDER | SWP_NOMOVE);
+
+	// 選択肢グループの大きさを変更
+	GetDlgItem(IDC_GROUP_OPTION).SetWindowPos(NULL, 0, 0, rcGroupOption.right, rcGroupOption.bottom, SWP_NOZORDER | SWP_NOMOVE);
+}
+
 void CMainDlg::_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent)
 {
 	const size_t count = umaEvent.eventOptions.size();
@@ -825,9 +988,65 @@ void CMainDlg::_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent)
 		const int IDC_OPTION = IDC_EDIT_OPTION1 + i;
 		const int IDC_EFFECT = IDC_EDIT_EFFECT1 + i;
 		GetDlgItem(IDC_OPTION).SetWindowText(umaEvent.eventOptions[i].option.c_str());
-		GetDlgItem(IDC_EFFECT).SetWindowText(umaEvent.eventOptions[i].effect.c_str());
+		//GetDlgItem(IDC_EFFECT).SetWindowText(umaEvent.eventOptions[i].effect.c_str());
+		_UpdateEventEffect(GetDlgItem(IDC_EFFECT).m_hWnd, umaEvent.eventOptions[i].effect);
 
+		// 最後の選択肢が存在するかどうかで、4番目の選択肢エディットを表示するかどうかを決める
+		if (i == (kMaxOptionEffect - 1)) {
+			bool row3 = umaEvent.eventOptions[i].option.empty();
+			_SwitchRow3Row4(row3);
+		}
 	}
+}
+
+void CMainDlg::_UpdateEventEffect(CRichEditCtrl richEdit, const std::wstring& effectText)
+{
+	richEdit.SetWindowText(effectText.c_str());
+
+	auto funcChangeTextColor = [this](CRichEditCtrl richEdit, CString searchText, COLORREF textColor) 
+	{
+		// 選択範囲のテキストフォーマット
+		CHARFORMAT2W cf = {};
+		cf.dwMask = CFM_COLOR | CFM_WEIGHT;
+		cf.crTextColor = textColor;
+		cf.wWeight = FW_BOLD;
+
+		const int textLength = richEdit.GetTextLength();
+
+		FINDTEXTEXW ft = {};
+		ft.chrg.cpMax = -1;
+		ft.lpstrText = searchText;
+		while (LONG pos = richEdit.FindTextW(FR_DOWN, ft) != -1) {
+
+			// 後ろに数字があれば選択範囲を拡大させる
+			++ft.chrgText.cpMax;
+			richEdit.SetSel(ft.chrgText.cpMin, ft.chrgText.cpMax);
+
+			CString selText;
+			richEdit.GetSelText(selText);
+			if (selText.GetLength()) {
+				while (std::iswdigit(selText[selText.GetLength() - 1])) {
+					++ft.chrgText.cpMax;
+					if (textLength < ft.chrgText.cpMax) {
+						break;
+					}
+					richEdit.SetSel(ft.chrgText.cpMin, ft.chrgText.cpMax);
+					richEdit.GetSelText(selText);
+				}
+			}
+			--ft.chrgText.cpMax;
+			richEdit.SetSel(ft.chrgText.cpMin, ft.chrgText.cpMax);
+			richEdit.SetSelectionCharFormat(cf);
+
+			ft.chrg.cpMin = ft.chrgText.cpMax;	// 次へ
+		}
+	};
+	// ステータス上昇降下へ色を付ける
+	funcChangeTextColor(richEdit, L"+", m_effectStatusInc);
+	funcChangeTextColor(richEdit, L"-", m_effectStatusDec);
+	richEdit.SetSel(0, 0);
+
+	// ToDo: 獲得スキルの詳細を追記する
 }
 
 

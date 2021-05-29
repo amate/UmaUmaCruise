@@ -223,6 +223,7 @@
     <ClCompile Include="PreviewWindow.cpp" />
     <ClCompile Include="RaceDateLibrary.cpp" />
     <ClCompile Include="RaceListWindow.cpp" />
+    <ClCompile Include="RichEditPopup.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -255,6 +256,7 @@
     <ClInclude Include="RaceDateLibrary.h" />
     <ClInclude Include="RaceListWindow.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RichEditPopup.h" />
     <ClInclude Include="simstring\cdbpp.h" />
     <ClInclude Include="simstring\measure.h" />
     <ClInclude Include="simstring\memory_mapped_file.h" />
