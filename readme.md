@@ -95,6 +95,8 @@ http://iconhoihoi.oops.jp/
 
 ビルドに必要なライブラリは、[vcpkg](https://github.com/microsoft/vcpkg)によって自動的にダウンロード、ライブラリ(.lib)の生成が行われるようになっています
 
+vcpkgがVisual Studio 2019の英語の言語パックを要求するので、Visual Studioのインストール時に追加しておいてください  
+
 https://github.com/microsoft/vcpkg/archive/refs/tags/2021.04.30.zip  
 まず上記URLから"vcpkg-2021.04.30.zip"をダウンロードして、適当なフォルダに解凍します
 
@@ -143,6 +145,17 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+v1.9
+・[add] UmaMusumeLibrary.jsonに、追加キャラとウマ箱のサポートカードのイベントを追加
+・[add] 4択選択肢に対応
+・[add] 選択肢効果のテキストががエディットボックスをはみ出すときに、テキストを一度に確認できるようマウスオーバーでテキストをポップアップ表示させるようにした
+・[add] 選択肢効果のステータス上昇下降に色をつけてわかりやすくした #6
+・[fix] URA予想で出場距離を間違うことがあるのを修正
+・[fix] 手動でダークモードに設定したとき、レース一覧のリストビューの背景が白いままだったのを修正
+・[fix] BuildUmaMusumeLibrary.pyを最新のwikiに対応させた
+・[fix] メジロライアンの"初詣"イベントを検出できなかったのを修正 #57
+・[add] UmaMusumeLibraryURLの取得にキャッシュ回避処理を追加
 
 v1.8
 ・[add] スマートファルコンのキャライベントを追加
