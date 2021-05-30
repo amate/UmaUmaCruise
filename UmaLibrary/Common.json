@@ -75,6 +75,9 @@
                 "BkFavorite": "#78181E",
                 "BkRow1": "#211E5C",
                 "BkRow2": "#502A71"
+            },
+            "RichEditPopup": {
+                "Background": "#37474F"
             }
         },
         "Light": {
@@ -84,6 +87,9 @@
                 "BkFavorite": "#FFD700",
                 "BkRow1": "#E6E7FF",
                 "BkRow2": "#FCE4D6"
+            },
+            "RichEditPopup": {
+                "Background": "#E3F2FD"
             }
         }
     }

@@ -224,6 +224,7 @@
     <ClCompile Include="RaceDateLibrary.cpp" />
     <ClCompile Include="RaceListWindow.cpp" />
     <ClCompile Include="RichEditPopup.cpp" />
+    <ClCompile Include="SkillLibrary.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -264,6 +265,7 @@
     <ClInclude Include="simstring\memory_mapped_file_win32.h" />
     <ClInclude Include="simstring\ngram.h" />
     <ClInclude Include="simstring\simstring.h" />
+    <ClInclude Include="SkillLibrary.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TesseractWrapper.h" />
     <ClInclude Include="UmaEventLibrary.h" />

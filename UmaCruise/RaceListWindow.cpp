@@ -292,9 +292,9 @@ LRESULT RaceListWindow::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	funcAddColumn(L"開催日", 0, 120);
 	funcAddColumn(L"レース名", 1, 144);
 	funcAddColumn(L"距離", 2, 110);
-	funcAddColumn(L"コース", 3, 42);
+	funcAddColumn(L"コース", 3, 43);
 	funcAddColumn(L"方向", 4, 38);
-	funcAddColumn(L"レース場", 5, 58);
+	funcAddColumn(L"レース場", 5, 57);
 
 	// 設定読み込み
 	{
