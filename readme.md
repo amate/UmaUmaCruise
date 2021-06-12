@@ -146,6 +146,20 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.11
+・[add] 育成ウマ娘選択画面から、育成ウマ娘を取得するようにした (手動設定を不要に)
+・[add] "スクリーンショット"ボタンを右クリックで、screenshotフォルダを開くようにした
+・[add] 設定に、"メインウィンドウを最前面表示する"オプションを追加
+・[add] 選択肢にイベント打ち切りがある場合、選択肢効果に表示するようにした #51
+・[add] レース一覧のチェック状態を、育成ウマ娘毎に保存/復元するようにした
+・[add] about画面のdebugに、IkuseiUmaMusumeSubNameBoundsとIkuseiUmaMusumeNameBoundsを追加
+・[add] 設定で、"UmaMusumeLibrary.jsonの更新確認"を実行時にキャッシュを無視するようにした
+・[add] 設定で、"UmaMusumeLibrary.jsonの更新確認"を実行した後に、再起動を不要にした
+・[add] AnbigiousChangeIkuseImaMusumeで、育成ウマ娘名検索時の最小閾値をCommon.jsonの"UmaMusumeNameMinThreshold"から引っ張ってくるようにした(ウマ娘ウィンドウが小さい場合引っかからないので、検索閾値を引き下げた)
+・[fix] TextRecognizerで、最下部のイベント選択肢名の取得時に、白背景化を行っていなかったのを修正 (スーパークリークの初詣イベントが出てこなかったのを修正)
+・[fix] 旧バージョン(v1.9以下)用に、"https://raw.githubusercontent.com/amate/UmaUmaCruise/master/UmaLibrary/UmaMusumeLibrary.json"は4択選択肢を切り詰めたバージョンにし、
+新バージョンは4択選択肢がある "https://raw.githubusercontent.com/amate/UmaUmaCruise/master/UmaLibrary/UmaMusumeLibrary_v2.json"から更新データを取得するようにした
+
 v1.10
 ・[add] 選択肢で取得できるスキル効果を確認できるようになった
 ・[fix] 選択肢効果をポップアップ中にイベントが更新されると、ポップアップが消えた時に前の選択肢効果のテキストに巻き戻るバグを修正 #60

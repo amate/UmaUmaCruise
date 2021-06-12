@@ -211,9 +211,17 @@ void RaceListWindow::ChangeIkuseiUmaMusume(const std::wstring& umaName)
 		m_currentFavoriteRaceList.clear();
 		if (umaName.length()) {
 			// お気に入りレースを切り替え
-			const json& jCharaFavoriteRaceList = m_jsonCharaFavoriteRaceList[UTF8fromUTF16(umaName)];
-			if (jCharaFavoriteRaceList.is_array()) {
-				m_currentFavoriteRaceList = jCharaFavoriteRaceList.get<std::unordered_set<std::string>>();
+			const json& jChara = m_jsonCharaFavoriteRaceList[UTF8fromUTF16(umaName)];
+			if (jChara.is_object()) {
+				const json& jCharaFavoriteRaceList = jChara["FavoriteRaceList"];
+				if (jCharaFavoriteRaceList.is_array()) {
+					m_currentFavoriteRaceList = jCharaFavoriteRaceList.get<std::unordered_set<std::string>>();
+				}
+				// レースチェック状態の切り替え
+				int32_t state = jChara.value<int32_t>("RaceMatchState", -1);
+				if (state != -1) {
+					_SetRaceMatchState(state);
+				}
 			}
 		}
 		m_currentIkuseUmaMusume = umaName;
@@ -369,6 +377,7 @@ LRESULT RaceListWindow::OnDestroy(UINT, WPARAM, LPARAM, BOOL&)
 	}
 	{
 		std::ofstream ofs((GetExeDirectory() / "CharaFavoriteRaceList.json").wstring());
+		m_jsonCharaFavoriteRaceList["*Version*"] = kFavoriteRaceListVersion;
 		ofs << m_jsonCharaFavoriteRaceList.dump(4);
 		ofs.close();
 	}
@@ -467,6 +476,7 @@ void RaceListWindow::OnShowRaceAfterCurrentDate(UINT uNotifyCode, int nID, CWind
 	_UpdateRaceList((LPCWSTR)m_currentTurn);
 }
 
+// レース一覧のチェック切り替え時
 void RaceListWindow::OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	DoDataExchange(DDX_SAVE);
@@ -491,6 +501,11 @@ void RaceListWindow::OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndC
 			}
 		}
 		DoDataExchange(DDX_LOAD);
+	}
+
+	if (m_currentIkuseUmaMusume.length()) {
+		auto& jChara = m_jsonCharaFavoriteRaceList[UTF8fromUTF16(m_currentIkuseUmaMusume)];
+		jChara["RaceMatchState"] = _GetRaceMatchState();
 	}
 
 	_UpdateRaceList((LPCWSTR)m_currentTurn);
@@ -615,6 +630,7 @@ void RaceListWindow::_SetRaceMatchState(int32_t state)
 		const int checkBoxID = IDC_CHECK_LOCATION_SAPPORO + i;
 		CButton(GetDlgItem(checkBoxID)).SetCheck(check);
 	}
+	DoDataExchange(DDX_LOAD);
 }
 
 void RaceListWindow::_SwitchFavoriteRace(int index)
@@ -640,7 +656,9 @@ void RaceListWindow::_SwitchFavoriteRace(int index)
 	}
 	if (m_currentIkuseUmaMusume.length()) {
 		// jsonへ保存
-		m_jsonCharaFavoriteRaceList[UTF8fromUTF16(m_currentIkuseUmaMusume)] = m_currentFavoriteRaceList;
+		auto& jChara = m_jsonCharaFavoriteRaceList[UTF8fromUTF16(m_currentIkuseUmaMusume)];
+		jChara["FavoriteRaceList"] = m_currentFavoriteRaceList;
+		jChara["RaceMatchState"] = _GetRaceMatchState();
 	}
 
 	const int top = m_raceListView.GetTopIndex();

@@ -46,11 +46,15 @@ INetHandle	HttpConnect(const CUrl& url)
 	return hConnect;
 }
 
-INetHandle	HttpOpenRequest(const CUrl& url, const INetHandle& hConnect, LPCWSTR Verb /*= L"GET"*/, const CString& referer /*= CString()*/)
+INetHandle	HttpOpenRequest(const CUrl& url, const INetHandle& hConnect, LPCWSTR Verb /*= L"GET"*/, const CString& referer /*= CString()*/, bool noCache /*= false*/)
 {
 	DWORD flags = 0;
-	if (url.GetSSLPortNumber())
-		flags = WINHTTP_FLAG_SECURE;
+	if (url.GetSSLPortNumber()) {
+		flags |= WINHTTP_FLAG_SECURE;
+	}
+	if (noCache) {
+		flags |= WINHTTP_FLAG_REFRESH;
+	}
 	INetHandle hRequest(::WinHttpOpenRequest(hConnect.get(), Verb, url.GetPath(), NULL, 
 		referer.IsEmpty() ? nullptr : (LPCWSTR)referer, WINHTTP_DEFAULT_ACCEPT_TYPES, flags));
 	if (hRequest == nullptr)
@@ -191,7 +195,7 @@ boost::optional<std::string>	HttpDownloadData(const CString& url)
 	try {
 		CUrl	downloadUrl(url);
 		auto hConnect = HttpConnect(downloadUrl);
-		auto hRequest = HttpOpenRequest(downloadUrl, hConnect);
+		auto hRequest = HttpOpenRequest(downloadUrl, hConnect, L"GET", L"", true);
 		if (HttpSendRequestAndReceiveResponse(hRequest)) {
 			if (HttpQueryStatusCode(hRequest) == 200) {
 				return HttpReadData(hRequest);

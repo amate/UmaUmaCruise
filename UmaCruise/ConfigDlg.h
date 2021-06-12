@@ -15,6 +15,10 @@ public:
 
 	ConfigDlg(Config& config);
 
+	bool	IsUpdateLibrary() const {
+		return m_bUpdateLibrary;
+	}
+
 	BEGIN_DDX_MAP(ConfigDlg)
 		DDX_CONTROL_HANDLE(IDC_COMBO_REFRESHINTERVAL, m_cmbRefreshInterval)
 		DDX_CHECK(IDC_CHECK_AUTOSTART, m_autoStart)
@@ -22,6 +26,7 @@ public:
 		DDX_CHECK(IDC_CHECK_POPUP_RACELISTWINDOW, m_popupRaceListWindow)
 		DDX_CHECK(IDC_CHECK_NOTIFY_FAVORITERACEHOLD, m_notifyFavoriteRaceHold)
 		DDX_COMBO_INDEX(IDC_COMBO_THEME, m_theme)
+		DDX_CHECK(IDC_CHECK_WINDOW_TOPMOST, m_windowTopMost)
 	END_DDX_MAP()
 
 	BEGIN_MSG_MAP_EX(ConfigDlg)
@@ -53,5 +58,8 @@ private:
 	bool	m_popupRaceListWindow = false;
 	bool	m_notifyFavoriteRaceHold = true;
 	int		m_theme = Config::kAuto;
+	bool	m_windowTopMost = false;
+
+	bool	m_bUpdateLibrary = false;
 
 };

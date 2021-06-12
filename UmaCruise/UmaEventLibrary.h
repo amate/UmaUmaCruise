@@ -91,6 +91,7 @@ private:
 	std::unique_ptr<simstring::reader>	m_dbOptionReader;
 
 	double	m_kMinThreshold = 0.4;
+	double	m_kUmaMusumeNameMinThreshold = 0.3;
 
 	std::function<void (std::wstring)> m_funcNotifyChangeIkuseiUmaMusume;
 };

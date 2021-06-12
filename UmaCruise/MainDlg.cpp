@@ -74,7 +74,7 @@ bool SaveScreenShot(const std::wstring& device, const std::wstring& filePath)
 
 /////////////////////////////////////////////////////////////////////////////
 
-CMainDlg::CMainDlg() : m_raceListWindow(m_config)
+CMainDlg::CMainDlg() : m_raceListWindow(m_config), m_wndScreenShotButton(this, 1)
 {
 }
 
@@ -145,7 +145,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		const int IDC_EFFECT = IDC_EDIT_EFFECT1 + i;
 
 		// これを設定しないとフォント表示がおかしくなる
-		GetDlgItem(IDC_EFFECT).SendMessage(EM_SETLANGOPTIONS, 0, (LPARAM)IMF_UIFONTS/*dwLangOptions*/);
+		GetDlgItem(IDC_EFFECT).SendMessage(EM_SETLANGOPTIONS, 0, (LPARAM)IMF_UIFONTS);
 		//GetDlgItem(IDC_EFFECT).SetFont(m_effectFont);
 	}
 
@@ -160,19 +160,8 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	});
 
 	// UmaMusumeLibraryを読み込み
-	if (!m_umaEventLibrary.LoadUmaMusumeLibrary()) {
-		ERROR_LOG << L"LoadUmaMusumeLibrary failed";
-		ATLASSERT(FALSE);
-	} else {
-		// 育成ウマ娘のリストをコンボボックスに追加
-		CString currentProperty;
-		for (const auto& uma : m_umaEventLibrary.GetIkuseiUmaMusumeEventList()) {
-			if (currentProperty != uma->property.c_str()) {
-				currentProperty = uma->property.c_str();
-				m_cmbUmaMusume.AddString(currentProperty);
-			}
-			m_cmbUmaMusume.AddString(uma->name.c_str());
-		}
+	if (!_ReloadUmaMusumeLibrary()) {
+		MessageBox(L"UmaMusumeLibrary.jsonの読み込みに失敗");
 	}
 
 	// SkillLibraryを読み込み
@@ -224,6 +213,9 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 				if (windowRect.is_null() == false) {
 					CRect rc(windowRect[0], windowRect[1], windowRect[2], windowRect[3]);
 					SetWindowPos(NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER);
+				}
+				if (m_config.windowTopMost) {
+					SetWindowPos(HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 				}
 
 				m_bShowRaceList = jsonSetting["MainDlg"].value<bool>("ShowRaceList", m_bShowRaceList);
@@ -357,6 +349,13 @@ void CMainDlg::OnShowConfigDlg(UINT uNotifyCode, int nID, CWindow wndCtl)
 			m_raceListWindow.OnThemeChanged();
 			m_previewWindow.OnThemeChanged();
 			m_popupRichEdit.OnThemeChanged();
+		}
+
+		SetWindowPos(m_config.windowTopMost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);	
+	}
+	if (dlg.IsUpdateLibrary()) {
+		if (!_ReloadUmaMusumeLibrary()) {
+			MessageBox(L"UmaMusumeLibrary.jsonの読み込みに失敗");
 		}
 	}
 }
@@ -874,6 +873,40 @@ BOOL CMainDlg::OnSetCursor(CWindow wnd, UINT nHitTest, UINT message)
 	return 0;
 }
 
+// スクリーンショット 右クリック
+void CMainDlg::OnScreenShotButtonUp(UINT nFlags, CPoint point)
+{
+	const auto ssFolderPath = GetExeDirectory() / L"screenshot";
+	::ShellExecute(NULL, NULL, ssFolderPath.c_str(), NULL, NULL, SW_NORMAL);
+}
+
+
+bool CMainDlg::_ReloadUmaMusumeLibrary()
+{
+	if (!m_umaEventLibrary.LoadUmaMusumeLibrary()) {
+		ERROR_LOG << L"LoadUmaMusumeLibrary failed";
+		ATLASSERT(FALSE);
+		return false;
+	} else {
+		// 育成ウマ娘のリストをコンボボックスに追加
+		m_cmbUmaMusume.ResetContent();
+
+		const std::wstring& currentIkuseiUmaMusume = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
+
+		CString currentProperty;
+		for (const auto& uma : m_umaEventLibrary.GetIkuseiUmaMusumeEventList()) {
+			if (currentProperty != uma->property.c_str()) {
+				currentProperty = uma->property.c_str();
+				m_cmbUmaMusume.AddString(currentProperty);
+			}
+			int n = m_cmbUmaMusume.AddString(uma->name.c_str());
+			if (uma->name == currentIkuseiUmaMusume) {
+				m_cmbUmaMusume.SetCurSel(n);
+			}
+		}
+	}
+	return true;
+}
 
 // レース一覧をメインダイアログにドッキングさせるか、ポップアップウィンドウ化させる
 void CMainDlg::_DockOrPopupRaceListWindow()
@@ -1076,6 +1109,8 @@ void CMainDlg::_UpdateEventEffect(CRichEditCtrl richEdit, const std::wstring& ef
 	// ステータス上昇降下へ色を付ける
 	funcChangeTextColor(richEdit, L"+", m_effectStatusInc);
 	funcChangeTextColor(richEdit, L"-", m_effectStatusDec);
+	funcChangeTextColor(richEdit, L"<打ち切り>", m_effectStatusDec);
+	
 	
 	richEdit.SetSel(0, 0);
 }

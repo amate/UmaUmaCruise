@@ -22,7 +22,9 @@ public:
 	enum { IDD = IDD_RACELIST };
 
 	enum {
-		kDockingMargin = 15
+		kDockingMargin = 15,
+
+		kFavoriteRaceListVersion = 1,
 	};
 
 	RaceListWindow(const Config& config) : m_config(config) {}

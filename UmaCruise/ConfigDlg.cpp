@@ -34,6 +34,7 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	m_popupRaceListWindow = m_config.popupRaceListWindow;
 	m_notifyFavoriteRaceHold = m_config.notifyFavoriteRaceHold;
 	m_theme = static_cast<int>(m_config.theme);
+	m_windowTopMost = m_config.windowTopMost;
 	DoDataExchange(DDX_LOAD);
 
 	DarkModeInit();
@@ -57,6 +58,7 @@ LRESULT ConfigDlg::OnOK(WORD, WORD wID, HWND, BOOL&)
 	m_config.popupRaceListWindow = m_popupRaceListWindow;
 	m_config.notifyFavoriteRaceHold = m_notifyFavoriteRaceHold;
 	m_config.theme = static_cast<Config::Theme>(m_theme);
+	m_config.windowTopMost = m_windowTopMost;
 
 	m_config.SaveConfig();
 
@@ -90,7 +92,7 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 		CUrl	downloadUrl(libraryURL.c_str());
 		auto hConnect = HttpConnect(downloadUrl);
-		auto hRequest = HttpOpenRequest(downloadUrl, hConnect, L"HEAD");
+		auto hRequest = HttpOpenRequest(downloadUrl, hConnect, L"HEAD", L"", true);
 		if (HttpSendRequestAndReceiveResponse(hRequest)) {
 			int statusCode = HttpQueryStatusCode(hRequest);
 			if (statusCode == 200) {
@@ -105,8 +107,9 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 						fs::rename(umaLibraryPath, prevPath);
 
 						SaveFile(umaLibraryPath, optDLData.get());
-						MessageBox(L"更新しました\n更新後の UmaMusumeLibrary.json は再起動後に有効になります", L"成功");
+						MessageBox(L"更新しました！", L"成功");
 						GetDlgItem(IDC_BUTTON_CHECK_UMALIBRARY).EnableWindow(FALSE);
+						m_bUpdateLibrary = true;
 						return;
 					} else {
 						MessageBox(L"ダウンロードに失敗しました...", L"エラー", MB_ICONERROR);

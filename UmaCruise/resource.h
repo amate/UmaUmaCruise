@@ -40,6 +40,8 @@
 #define IDC_CHECK_NOTIFY_FAVORITERACEHOLD 1040
 #define IDC_EDIT1                       1041
 #define IDC_EDIT_EXPECT_URA             1041
+#define IDC_CHECK_TOPMOST               1041
+#define IDC_CHECK_WINDOW_TOPMOST        1041
 #define IDC_SYSLINK_HOMEPAGE            1042
 #define IDC_SYSLINK3                    1043
 #define IDC_SYSLINK_VERSIONCHECK        1043
@@ -48,7 +50,7 @@
 #define IDC_RICHEDIT21                  1045
 #define IDC_RICHEDIT22                  1046
 #define IDC_RICHEDIT23                  1047
-#define IDC_GROUP_OPTION				1048
+#define IDC_GROUP_OPTION                1048
 #define IDC_EDIT_OPTION1                1500
 #define IDC_EDIT_OPTION2                1501
 #define IDC_EDIT_OPTION3                1502

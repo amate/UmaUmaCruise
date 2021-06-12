@@ -67,6 +67,7 @@ public:
 		DDX_CONTROL_HANDLE(IDC_COMBO_UMAMUSUME, m_cmbUmaMusume)
 		DDX_TEXT(IDC_EDIT_EVENTNAME, m_eventName)
 		DDX_TEXT(IDC_EDIT_EVENT_SOURCE, m_eventSource)
+		DDX_CONTROL(IDC_BUTTON_SCREENSHOT, m_wndScreenShotButton)
 	END_DDX_MAP()
 
 
@@ -101,7 +102,7 @@ public:
 
 		CHAIN_MSG_MAP(DarkModeUI<CMainDlg>)
 	ALT_MSG_MAP(1)
-		//MSG_WM_SETCURSOR(OnSetCursor)
+		MSG_WM_RBUTTONUP(OnScreenShotButtonUp)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -135,7 +136,10 @@ public:
 	// for EffectEdit
 	BOOL OnSetCursor(CWindow wnd, UINT nHitTest, UINT message);
 
+	void OnScreenShotButtonUp(UINT nFlags, CPoint point);
+
 private:
+	bool	_ReloadUmaMusumeLibrary();
 	void	_DockOrPopupRaceListWindow();
 	void	_ExtentOrShrinkWindow(bool bExtent);
 	void	_SwitchRow3Row4(bool row3);
@@ -156,6 +160,7 @@ private:
 	CString	m_targetWindowName;
 	CString m_targetClassName;
 
+	CContainedWindow	m_wndScreenShotButton;
 	CComboBox	m_cmbUmaMusume;
 	COLORREF	m_optionBkColor[kMaxOptionEffect];
 	CBrush	m_brsOptions[kMaxOptionEffect];

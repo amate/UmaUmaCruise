@@ -10,6 +10,7 @@
 #include "Utility\Logger.h"
 #include "Utility\GdiplusUtil.h"
 #include "Utility\WinHTTPWrapper.h"
+#include "Utility\json.hpp"
 #include "TesseractWrapper.h"
 #include "win32-darkmode\DarkMode.h"
 
@@ -19,6 +20,8 @@ CAppModule _Module;
 using SetThreadDpiAwarenessContextFunc = DPI_AWARENESS_CONTEXT(*)(DPI_AWARENESS_CONTEXT);
 SetThreadDpiAwarenessContextFunc	g_funcSetThreadDpiAwarenessContext = nullptr;
 
+using json = nlohmann::json;
+
 
 std::string	LogFileName()	// for boost::log
 {
@@ -26,8 +29,36 @@ std::string	LogFileName()	// for boost::log
 	return logPath.string();
 }
 
+
+void	VersionControl()
+{
+	{
+		std::ifstream fs((GetExeDirectory() / "CharaFavoriteRaceList.json").wstring());
+		if (!fs) {
+			return;
+		}
+
+		json jsonCharaFavoriteRaceList;
+		fs >> jsonCharaFavoriteRaceList;
+		fs.close();
+		const int version = jsonCharaFavoriteRaceList.value<int>("*Version*", 0);
+		if (version != 0) {
+			return;
+		}
+
+		json jsonNewCharaFavoriteRaceList;
+		for (auto& items : jsonCharaFavoriteRaceList.items()) {
+			jsonNewCharaFavoriteRaceList[items.key()]["FavoriteRaceList"] = items.value();
+		}
+		std::ofstream ofs((GetExeDirectory() / "CharaFavoriteRaceList.json").wstring());
+		ofs << jsonNewCharaFavoriteRaceList.dump(4);
+	}
+}
+
 int Run(LPTSTR /*lpstrCmdLine*/ = NULL, int nCmdShow = SW_SHOWDEFAULT)
 {
+	VersionControl();
+
 	CMessageLoop theLoop;
 	_Module.AddMessageLoop(&theLoop);
 

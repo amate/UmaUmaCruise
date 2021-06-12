@@ -30,6 +30,7 @@ bool Config::LoadConfig()
 	popupRaceListWindow = jsonSetting["Config"].value("PopupRaceListWindow", popupRaceListWindow);
 	notifyFavoriteRaceHold = jsonSetting["Config"].value("NotifyFavoriteRaceHold", notifyFavoriteRaceHold);
 	theme = jsonSetting["Config"].value("Theme", theme);
+	windowTopMost = jsonSetting["Config"].value("WindowTopMost", windowTopMost);
 
     return true;
 }
@@ -49,6 +50,7 @@ void Config::SaveConfig()
 	jsonSetting["Config"]["PopupRaceListWindow"] = popupRaceListWindow;
 	jsonSetting["Config"]["NotifyFavoriteRaceHold"] = notifyFavoriteRaceHold;
 	jsonSetting["Config"]["Theme"] = theme;
+	jsonSetting["Config"]["WindowTopMost"] = windowTopMost;
 
 	std::ofstream ofs((GetExeDirectory() / "setting.json").wstring());
 	ofs << jsonSetting.dump(4);

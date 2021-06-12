@@ -16,7 +16,7 @@ class PreviewWindow;
 #define	DEBUG_STRING
 #endif
 
-constexpr LPCWSTR	kAppVersion = L"v1.10" DEBUG_STRING;
+constexpr LPCWSTR	kAppVersion = L"v1.11" DEBUG_STRING;
 
 class CAboutDlg : public CDialogImpl<CAboutDlg>, DarkModeUI<CAboutDlg>
 {
@@ -55,10 +55,10 @@ private:
 	PreviewWindow& m_previewWindow;
 
 	enum TestBounds {
-		kDirect, kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kRaceDetailBounds, kMaxCount
+		kDirect, kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kRaceDetailBounds, kIkuseiUmaMusumeSubNameBounds, kIkuseiUmaMusumeNameBounds, kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"Direct", L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"RaceDetailBounds"
+		L"Direct", L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"RaceDetailBounds", L"IkuseiUmaMusumeSubNameBounds", L"IkuseiUmaMusumeNameBounds"
 	};
 
 

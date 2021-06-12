@@ -283,9 +283,8 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::Mat hsvImage;
 		cv::cvtColor(cutImage, hsvImage, cv::COLOR_BGR2HSV);
 
-		const double scale = 2.0;
 		cv::Mat resizedImage;
-		cv::resize(hsvImage, resizedImage, cv::Size(), scale, scale, cv::INTER_LINEAR/*INTER_CUBIC*/);
+		cv::resize(hsvImage, resizedImage, cv::Size(), kResizeScale, kResizeScale, cv::INTER_LINEAR/*INTER_CUBIC*/);
 
 		// 色による二値化
 		cv::Mat textImage;
@@ -298,7 +297,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		//INFO_LOG << L"・イベント名";
 
 		// asyncに渡す関数オブジェクト
-		auto asyncTextFromImage = [this](cv::Mat& image, std::shared_ptr<TextFromImageFunc> funcTextFromImage) -> std::wstring {
+		auto asyncTextFromImage = [this](cv::Mat image, std::shared_ptr<TextFromImageFunc> funcTextFromImage) -> std::wstring {
 			std::wstring text = (*funcTextFromImage)(image);
 			return text;
 		};
@@ -329,13 +328,15 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		cv::bitwise_not(grayImage, invertedImage);
 
 		cv::Mat resizedImage;	// 拡大
-		constexpr double scale = 2.0;
-		cv::resize(invertedImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);	// 4
+		cv::resize(invertedImage, resizedImage, cv::Size(), kResizeScale, kResizeScale, cv::INTER_CUBIC);	// 4
 
 		cv::Mat thresImage2;	// 閾値
 		//cv::threshold(grayImage, thresImage, 190.0, 255.0, cv::THRESH_BINARY_INV);
 		cv::threshold(resizedImage, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);			// 6
 
+		
+		TextFromImageFutureList.emplace_back(
+				std::async(std::launch::async, asyncTextFromImage, cutImage2, GetOCRFunction()));
 		TextFromImageFutureList.emplace_back(
 			std::async(std::launch::async, asyncTextFromImage, resizedImage, GetOCRFunction()));
 		TextFromImageFutureList.emplace_back(
@@ -358,24 +359,54 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 				cv::cvtColor(cutImage3, grayImage, cv::COLOR_RGB2GRAY);
 
 				cv::Mat resizedImage;
-				constexpr double scale = 2.0;
-				cv::resize(grayImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
+				cv::resize(grayImage, resizedImage, cv::Size(), kResizeScale, kResizeScale, cv::INTER_CUBIC);
 
 				cv::Mat thresImage;
 				cv::threshold(resizedImage, thresImage, 0.0, 255.0, cv::THRESH_OTSU);
+
+				cv::Mat invertedTextImage;
+				cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
 
 				eventBottomOptionFutureList.emplace_back(
 					std::async(std::launch::async, asyncTextFromImage, thresImage, GetOCRFunction()));
 
 				eventBottomOptionFutureList.emplace_back(
-					std::async(std::launch::async, asyncTextFromImage, textImage, GetOCRFunction()));
+					std::async(std::launch::async, asyncTextFromImage, invertedTextImage, GetOCRFunction()));
 			}
 		}
 	}
-	{	// 育成ウマ娘名
+	{	// 現在の日付
 		Utility::timer timer;
-		CRect rcSubName = _AdjustBounds(srcImage, m_testBounds[kUmaMusumeSubNameBounds]);
-		CRect rcName = _AdjustBounds(srcImage, m_testBounds[kUmaMusumeNameBounds]);
+		CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentTurnBounds]);
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcTurnBounds), L"rcTurnBounds")) {
+			return false;
+		}
+		cv::Mat cutImage(srcImage, cvRectFromCRect(rcTurnBounds));
+		cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
+
+		std::wstring invertedText;
+		// 画像における白文字率を確認して、一定比率以下のときは無視する
+		const double whiteRatio = ImageWhiteRatio(textImage);
+		if (whiteRatio > kMinWhiteTextRatioThreshold) {
+			cv::Mat invertedTextImage;
+			cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
+
+			invertedText = TextFromImage(invertedTextImage);
+			m_currentTurn.emplace_back(invertedText);
+#if 0
+			cv::Mat resizedImage;
+			constexpr double scale = 2.0;
+			cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
+
+			std::wstring resizedText = TextFromImage(resizedImage);
+			m_currentTurn.emplace_back(resizedText);
+#endif
+			//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
+		}
+		INFO_LOG << L"・現在の日付 " << timer.format() << L" (" << invertedText << L")";
+	}
+	{	// 育成ウマ娘名[能力詳細]
+		Utility::timer timer;
 
 		std::vector<std::wstring>	subNameList;
 		std::vector<std::wstring>	nameList;
@@ -412,37 +443,55 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			}
 		}
 
-		INFO_LOG << L"・育成ウマ娘 " << timer.format();
+		INFO_LOG << L"・育成ウマ娘[能力詳細] " << timer.format();
 	}
-	{	// 現在の日付
+	{	// 育成ウマ娘名[育成ウマ娘選択]
 		Utility::timer timer;
-		CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentTurnBounds]);
-		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcTurnBounds), L"rcTurnBounds")) {
-			return false;
+
+		// 現在の日付が見えない時だけ判定をする
+		bool bCurrentTurnVisible = false;
+		std::wregex rx(LR"((ジュニア|クラシック|シニア|ファイナルズ))");
+		for (const std::wstring currentTurn : m_currentTurn) {
+			if (std::regex_search(currentTurn, rx)) {
+				bCurrentTurnVisible = true;
+				break;
+			}
 		}
-		cv::Mat cutImage(srcImage, cvRectFromCRect(rcTurnBounds));
-		cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
+		if (!bCurrentTurnVisible) {
+			auto funcImageToUmaMusumeText = [&, this](int testBoundsIndex) -> std::wstring {
+				CRect rcName = _AdjustBounds(srcImage, m_testBounds[testBoundsIndex]);
+				if (!CheckCutBounds(srcImage, cvRectFromCRect(rcName), L"rcName")) {
+					return L"";
+				}
 
-		std::wstring invertedText;
-		// 画像における白文字率を確認して、一定比率以下のときは無視する
-		const double whiteRatio = ImageWhiteRatio(textImage);
-		if (whiteRatio > kMinWhiteTextRatioThreshold) {
-			cv::Mat invertedTextImage;
-			cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
+				cv::Mat cutImage(srcImage, cvRectFromCRect(rcName));
 
-			invertedText = TextFromImage(invertedTextImage);
-			m_currentTurn.emplace_back(invertedText);
-#if 0
-			cv::Mat resizedImage;
-			constexpr double scale = 2.0;
-			cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
+				cv::Mat resizedImage;
+				cv::resize(cutImage, resizedImage, cv::Size(), kResizeScale, kResizeScale, cv::INTER_CUBIC);
 
-			std::wstring resizedText = TextFromImage(resizedImage);
-			m_currentTurn.emplace_back(resizedText);
-#endif
-			//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
+				cv::Mat grayImage;
+				cv::cvtColor(resizedImage, grayImage, cv::COLOR_RGB2GRAY);
+
+				cv::Mat invertedImage;
+				cv::bitwise_not(grayImage, invertedImage);
+
+				cv::Mat thresImage2;
+				cv::threshold(invertedImage, thresImage2, 0.0, 255.0, cv::THRESH_OTSU);
+
+				std::wstring invertedThresImageText = TextFromImage(thresImage2);	// 6: 白背景黒文字(グレー反転閾値)
+				return invertedThresImageText;
+			};
+
+			std::wstring subName = funcImageToUmaMusumeText(kIkuseiUmaMusumeSubNameBounds);
+			if (subName.length()) {
+				std::wstring name = funcImageToUmaMusumeText(kIkuseiUmaMusumeNameBounds);
+				if (name.length()) {
+					std::wstring umamusumeName = subName + name;
+					m_umaMusumeName.emplace_back(umamusumeName);
+					INFO_LOG << L"育成ウマ娘名[育成ウマ娘選択]: " << umamusumeName << L" " << timer.format();
+				}
+			}
 		}
-		INFO_LOG << L"・現在の日付 " << timer.format() << L" (" << invertedText << L")";
 	}
 	{	// 現在メニュー[トレーニング]
 		Utility::timer timer;

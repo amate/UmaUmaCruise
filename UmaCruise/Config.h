@@ -11,6 +11,7 @@ struct Config
 		kAuto, kDark, kLight,
 	};
 	Theme	theme = kAuto;
+	bool	windowTopMost = false;
 
 	bool	LoadConfig();
 	void	SaveConfig();

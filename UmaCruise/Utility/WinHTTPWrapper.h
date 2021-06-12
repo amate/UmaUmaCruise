@@ -79,7 +79,7 @@ private:
 INetHandle	HttpConnect(const CUrl& url);
 
 /// コネクションから実際のリソースに対するリクエストを作成する
-INetHandle	HttpOpenRequest(const CUrl& url, const INetHandle& hConnect, LPCWSTR Verb = L"GET", const CString& referer = CString());
+INetHandle	HttpOpenRequest(const CUrl& url, const INetHandle& hConnect, LPCWSTR Verb = L"GET", const CString& referer = CString(), bool noCache = false);
 
 /// リクエストヘッダを追加する
 void		HttpAddRequestHeaders(const INetHandle& hRequest, const CString& addHeaders, DWORD dwModifiers = WINHTTP_ADDREQ_FLAG_ADD);
