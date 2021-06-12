@@ -1,6 +1,6 @@
 {
     "Common": {
-        "UmaMusumeLibraryURL":"https://raw.githubusercontent.com/amate/UmaUmaCruise/master/UmaLibrary/UmaMusumeLibrary.json",
+        "UmaMusumeLibraryURL":"https://raw.githubusercontent.com/amate/UmaUmaCruise/master/UmaLibrary/UmaMusumeLibrary_v2.json",
 
         "TargetWindow": {
             "WindowName": "umamusume",
@@ -10,7 +10,7 @@
         "TestBounds": {
             "BaseClientSize": {
                 "width": 588,
-                "height": 1045
+                "height": 1046
             },
             "UmaMusumeSubNameBounds": {
                 "x": 256, "y": 118, "width": 267, "height": 27
@@ -41,6 +41,12 @@
             },
             "RaceDetailBounds": {
                 "x": 30, "y": 451, "width": 316, "height": 29
+            },
+            "IkuseiUmaMusumeSubNameBounds": {
+                "x": 30, "y": 319, "width": 230, "height": 20
+            },
+            "IkuseiUmaMusumeNameBounds": {
+                "x": 30, "y": 340, "width": 225, "height": 20
             }
         },
 
@@ -53,7 +59,8 @@
         },
 
         "Simstring": {
-            "MinThreshold": 0.40
+            "MinThreshold": 0.40,
+            "UmaMusumeNameMinThreshold": 0.30
         }
     },
 

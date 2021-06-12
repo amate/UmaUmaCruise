@@ -2,11 +2,10 @@ import json
 import io
 import re
 import os
-import time
+import copy
 
-debug = False
-
-umaLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary.json')
+umaLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary_v2.json')
+umaOldLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary.json')
 
 umaLibraryOriginPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibraryOrigin.json')
 umaLibraryModifyPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibraryModify.json')
@@ -26,6 +25,7 @@ def main():
 
     print("AddCharactorEvent はキャラのイベント名が存在しないときのみ追加")
     print("UpdateEvent はキャラのイベント名が存在する時のみ更新します")
+    print("InterruptionEvent はキャラ名とイベント選択肢 部分一致で＜打ち切り＞を効果先頭に挿入")
     print("ReplaceEventName と ReplaceOption は完全一致で置換")
     print("ReplaceEffect は部分一致した分を置換します")
 
@@ -60,6 +60,12 @@ def main():
             for event in eventList["Event"]:
                 UpdateEvent(charaName, event)
 
+    # InterruptionEvent
+    for pair in jsonModify["Modify"]["InterruptionEvent"]:
+        charaName = pair[0]
+        optionText = pair[1]
+        InterruptionEvent(charaName, optionText)
+
     # ReplaceEventName
     for replacePair in jsonModify["Modify"]["ReplaceEventName"]:
         searchText = replacePair[0]
@@ -77,6 +83,10 @@ def main():
         searchText = replacePair[0]
         replaceText = replacePair[1]
         ReplaceEffect(searchText, replaceText)
+
+
+    # 旧バージョン向けのUmaMusumeLibraryを用意する
+    ConvertOption3forOldVersion()
 
     print("\n\n")
     print("successCount: ", successCount)
@@ -129,27 +139,58 @@ def UpdateEvent(charaName, updateEvent):
     global errorCount
     global successCount
 
-    for prop, charaList in jsonOrigin["Charactor"].items():
-        for orgCharaName, eventList in charaList.items():
-            if charaName in orgCharaName:
-                #print("jsonOriginからキャラ名が見つかったので、イベント名を探す")
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                if charaName in orgCharaName:
+                    #print("jsonOriginからキャラ名が見つかったので、イベント名を探す")
 
-                #print("同一イベントが存在するかどうか調べる")
-                for updateEventName, updateOptionList in updateEvent.items():
-                    for event in eventList["Event"]:
-                        for eventName, eventOptionList in event.items():
-                            #print(f'{eventName}')
-                            if eventName == updateEventName:
-                                print(f"イベント上書き: {eventName}")
-                                event[eventName] = updateEvent[eventName]
-                                successCount += 1
-                                return True     # とりあえず最初に発見したのだけ
+                    #print("同一イベントが存在するかどうか調べる")
+                    for updateEventName, updateOptionList in updateEvent.items():
+                        for event in eventList["Event"]:
+                            for eventName, eventOptionList in event.items():
+                                #print(f'{eventName}')
+                                if eventName == updateEventName:
+                                    print(f"イベント上書き: {eventName}")
+                                    event[eventName] = updateEvent[eventName]
+                                    successCount += 1
+                                    return True     # とりあえず最初に発見したのだけ
 
-                print(f"同一イベントが存在しませんでした: {addEventName}")
-                errorCount += 1
-                return False
+                    print(f"同一イベントが存在しませんでした: {updateEvent}")
+                    errorCount += 1
+                    return False
 
     print("キャラが存在しませんでした")
+    errorCount += 1
+    return False
+
+def InterruptionEvent(charaName, optionText):
+    print(f'InterruptionEvent: [{charaName}, {optionText}]')
+    global errorCount
+    global successCount
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                if not (charaName in orgCharaName):
+                    continue
+
+                for event in eventList["Event"]:
+                    newEvent = None
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')
+                        for eventOption in eventOptionList:
+                            if  optionText in eventOption["Option"]:
+                                newEffectText = "<打ち切り>\n" + eventOption["Effect"]
+                                eventOption["Effect"] = newEffectText
+                                replaceCount += 1
+
+    if replaceCount > 0:
+        successCount += replaceCount
+        return True
+
+    print("optionTextが見つかりませんでした")
     errorCount += 1
     return False
 
@@ -361,14 +402,43 @@ def NomarizeEventSuccessFailed():
     return False
 
 
+def ConvertOption3forOldVersion():
+    print(f'ConvertOption3forOldVersion')
+    global errorCount
+    global successCount
 
+    jsonOldOrigin = copy.deepcopy(jsonOrigin)
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOldOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    newEvent = None
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')
+                        if len(eventOptionList) >= 4:
+                            print(f'4択選択肢を切り詰める: {eventName}')
+                            eventOptionList.pop()
+                            replaceCount += 1
+
+    if replaceCount > 0:
+        successCount += replaceCount
+
+        # jsonへ保存
+        with io.open(umaOldLibraryPath, 'w', encoding="utf-8", newline='\n') as f:
+            print(f"json wrtie: {umaOldLibraryPath}")
+            json.dump(jsonOldOrigin, f, indent=2, ensure_ascii=False)
+
+        return True
+
+    print("4択選択肢が見つかりませんでした")
+    errorCount += 1
+    return False
 
 
 if __name__ == '__main__':
     print("start")
-    if not debug:
-        main()
-    else:
-        debug_main()
+    main()
     print("finish")
 
