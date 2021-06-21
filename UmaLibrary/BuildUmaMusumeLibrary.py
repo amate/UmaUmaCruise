@@ -21,7 +21,7 @@ def main():
     global successCount
 
     print("選択肢に(成功)(失敗)の場合分けが入るようになってしまったので、こちら側で元に戻す処理を入れる")
-    print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい')
+    print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい ((大成功) or (成功) も)')
 
     print("AddCharactorEvent はキャラのイベント名が存在しないときのみ追加")
     print("UpdateEvent はキャラのイベント名が存在する時のみ更新します")
@@ -302,6 +302,8 @@ def DeleteSuccessFailedOnly():
                         op1 = eventOptionList[0]["Option"]
                         op2 = eventOptionList[1]["Option"]
                         if "成功" in op1 and "失敗" in op2:
+                            deleteEventList.append(eventName)
+                        elif "大成功" in op1 and "成功" in op2:
                             deleteEventList.append(eventName)
 
                     for delEventName in deleteEventList:
