@@ -1,4 +1,5 @@
 #pragma once
+#include "boost/filesystem.hpp"
 
 struct Config
 {
@@ -12,6 +13,7 @@ struct Config
 	};
 	Theme	theme = kAuto;
 	bool	windowTopMost = false;
+	boost::filesystem::path screenShotFolder;
 
 	bool	LoadConfig();
 	void	SaveConfig();

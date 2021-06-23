@@ -35,6 +35,8 @@ public:
 		COMMAND_ID_HANDLER(IDCANCEL, OnCancel)
 
 		COMMAND_ID_HANDLER_EX(IDC_BUTTON_CHECK_UMALIBRARY, OnCheckUmaLibrary)
+		COMMAND_ID_HANDLER_EX(IDC_BUTTON_SS_SELECT, OnScreenShotFolderSelect)
+
 		CHAIN_MSG_MAP(DarkModeUI<ConfigDlg>)
 	END_MSG_MAP()
 
@@ -48,6 +50,7 @@ public:
 	LRESULT OnCancel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnScreenShotFolderSelect(UINT uNotifyCode, int nID, CWindow wndCtl);
 
 private:
 	Config&		m_config;

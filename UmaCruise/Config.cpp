@@ -31,6 +31,12 @@ bool Config::LoadConfig()
 	notifyFavoriteRaceHold = jsonSetting["Config"].value("NotifyFavoriteRaceHold", notifyFavoriteRaceHold);
 	theme = jsonSetting["Config"].value("Theme", theme);
 	windowTopMost = jsonSetting["Config"].value("WindowTopMost", windowTopMost);
+	if (jsonSetting["Config"].find("ScreenShotFolder") != jsonSetting["Config"].end())
+	{
+		auto p = boost::filesystem::path(jsonSetting["Config"]["ScreenShotFolder"].get<std::string>());
+		if (boost::filesystem::is_directory(p))
+			screenShotFolder = p;
+	}
 
     return true;
 }
@@ -51,6 +57,8 @@ void Config::SaveConfig()
 	jsonSetting["Config"]["NotifyFavoriteRaceHold"] = notifyFavoriteRaceHold;
 	jsonSetting["Config"]["Theme"] = theme;
 	jsonSetting["Config"]["WindowTopMost"] = windowTopMost;
+	if (!screenShotFolder.empty())
+		jsonSetting["Config"]["ScreenShotFolder"] = screenShotFolder.string();
 
 	std::ofstream ofs((GetExeDirectory() / "setting.json").wstring());
 	ofs << jsonSetting.dump(4);

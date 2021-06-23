@@ -29,6 +29,11 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		cmbTheme.AddString(themeText);
 	}
 
+	if (!m_config.screenShotFolder.empty())
+	{
+		SetDlgItemText(IDC_EDIT_SS_FOLDER, m_config.screenShotFolder.c_str());
+	}
+
 	m_autoStart = m_config.autoStart;
 	m_stopUpdatePreviewOnTraining = m_config.stopUpdatePreviewOnTraining;
 	m_popupRaceListWindow = m_config.popupRaceListWindow;
@@ -59,6 +64,18 @@ LRESULT ConfigDlg::OnOK(WORD, WORD wID, HWND, BOOL&)
 	m_config.notifyFavoriteRaceHold = m_notifyFavoriteRaceHold;
 	m_config.theme = static_cast<Config::Theme>(m_theme);
 	m_config.windowTopMost = m_windowTopMost;
+
+	{
+		TCHAR szFolderPath[1024];
+		GetDlgItemText(IDC_EDIT_SS_FOLDER, szFolderPath, sizeof(szFolderPath) / sizeof(szFolderPath[0]));
+		if (_tcslen(szFolderPath) > 0)
+		{
+			boost::filesystem::path p(szFolderPath);
+			p = boost::filesystem::absolute(p);
+			if (boost::filesystem::is_directory(p))
+				m_config.screenShotFolder = p;
+		}
+	}
 
 	m_config.SaveConfig();
 
@@ -137,4 +154,30 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	ATLASSERT(FALSE);
 	MessageBox(L"何かしらのエラーが発生しました...", L"エラー", MB_ICONERROR);
+}
+
+// スクリーンショットの保存先フォルダを選択する
+void ConfigDlg::OnScreenShotFolderSelect(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	TCHAR szFolder[MAX_PATH];
+	TCHAR szPath[MAX_PATH];
+
+	BROWSEINFO binfo = { 0, };
+	binfo.hwndOwner = this->m_hWnd;
+	binfo.pidlRoot = NULL;
+	binfo.pszDisplayName = szFolder;
+	binfo.lpszTitle = L"スクリーンショットの保存先を指定してください";
+	binfo.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
+
+	auto ret = SHBrowseForFolder(&binfo);
+	if (ret)
+	{
+		if (!SHGetPathFromIDList(ret, szPath))
+		{
+			MessageBox(L"保存先フォルダを正しく選択してください。", L"エラー", MB_ICONERROR);
+			return;
+		}
+
+		SetDlgItemText(IDC_EDIT_SS_FOLDER, szPath);
+	}
 }

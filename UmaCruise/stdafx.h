@@ -50,6 +50,9 @@ extern CAppModule _Module;
 #include <future>
 #include <chrono>
 
+#include <shlobj.h>
+#include <shlobj_core.h>
+
 #include <boost\filesystem.hpp>
 #include <boost\optional.hpp>
 #include <boost\algorithm\string\trim.hpp>

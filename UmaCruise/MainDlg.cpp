@@ -529,8 +529,15 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 			return;
 		}
 		auto ssFolderPath = GetExeDirectory() / L"screenshot";
-		if (!fs::is_directory(ssFolderPath)) {
-			fs::create_directory(ssFolderPath);
+		if (!m_config.screenShotFolder.empty() && boost::filesystem::is_directory(m_config.screenShotFolder))
+		{
+			ssFolderPath = m_config.screenShotFolder;
+		}
+		else
+		{
+			if (!fs::is_directory(ssFolderPath)) {
+				fs::create_directory(ssFolderPath);
+			}
 		}
 
 		auto ssPath = ssFolderPath / (L"screenshot_" + std::to_wstring(std::time(nullptr)) + L".png");
