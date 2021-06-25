@@ -12,12 +12,6 @@
                 "width": 588,
                 "height": 1046
             },
-            "UmaMusumeSubNameBounds": {
-                "x": 256, "y": 118, "width": 267, "height": 27
-            },
-            "UmaMusumeNameBounds": {
-                "x": 271, "y": 143, "width": 229, "height": 27
-            },
             "CurrentTurnBounds": {
                 "x": 11, "y": 35, "width": 166, "height": 18
             },

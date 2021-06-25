@@ -405,46 +405,6 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		}
 		INFO_LOG << L"・現在の日付 " << timer.format() << L" (" << invertedText << L")";
 	}
-	{	// 育成ウマ娘名[能力詳細]
-		Utility::timer timer;
-
-		std::vector<std::wstring>	subNameList;
-		std::vector<std::wstring>	nameList;
-
-		auto funcImageToText = [&, this](int testBoundsIndex, std::vector<std::wstring>& list) {
-			CRect rcName = _AdjustBounds(srcImage, m_testBounds[testBoundsIndex]);
-			if (!CheckCutBounds(srcImage, cvRectFromCRect(rcName), L"rcName")) {
-				return;
-			}
-			//Utility::timer timer;
-			cv::Mat cutImage(srcImage, cvRectFromCRect(rcName));
-			cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
-
-			// 画像における白文字率を確認して、一定比率以下のときは無視する
-			const double whiteRatio = ImageWhiteRatio(textImage);
-			if (whiteRatio > kMinWhiteTextRatioThreshold) {
-				cv::Mat invertedTextImage;
-				cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
-
-				std::wstring invertedText = TextFromImage(invertedTextImage);
-				list.emplace_back(invertedText);
-			}
-		};
-
-		funcImageToText(kUmaMusumeNameBounds, nameList);
-		if (nameList.size()) {
-			funcImageToText(kUmaMusumeSubNameBounds, subNameList);
-			if (subNameList.size()) {
-				const size_t size = subNameList.size();
-				for (int i = 0; i < size; ++i) {
-					std::wstring umamusumeName = subNameList[i] + nameList[i];
-					m_umaMusumeName.emplace_back(umamusumeName);
-				}
-			}
-		}
-
-		INFO_LOG << L"・育成ウマ娘[能力詳細] " << timer.format();
-	}
 	{	// 育成ウマ娘名[育成ウマ娘選択]
 		Utility::timer timer;
 
