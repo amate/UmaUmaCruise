@@ -27,6 +27,7 @@ public:
 		DDX_CHECK(IDC_CHECK_NOTIFY_FAVORITERACEHOLD, m_notifyFavoriteRaceHold)
 		DDX_COMBO_INDEX(IDC_COMBO_THEME, m_theme)
 		DDX_CHECK(IDC_CHECK_WINDOW_TOPMOST, m_windowTopMost)
+		DDX_TEXT(IDC_EDIT_SS_FOLDER, m_screenshotFolder)
 	END_DDX_MAP()
 
 	BEGIN_MSG_MAP_EX(ConfigDlg)
@@ -62,6 +63,7 @@ private:
 	bool	m_notifyFavoriteRaceHold = true;
 	int		m_theme = Config::kAuto;
 	bool	m_windowTopMost = false;
+	CString m_screenshotFolder;
 
 	bool	m_bUpdateLibrary = false;
 

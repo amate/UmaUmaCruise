@@ -529,12 +529,11 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 			return;
 		}
 		auto ssFolderPath = GetExeDirectory() / L"screenshot";
-		if (!m_config.screenShotFolder.empty() && boost::filesystem::is_directory(m_config.screenShotFolder))
-		{
+		// オプションで設定されたフォルダ
+		if (!m_config.screenShotFolder.empty() && boost::filesystem::is_directory(m_config.screenShotFolder)) {
 			ssFolderPath = m_config.screenShotFolder;
-		}
-		else
-		{
+		} else {
+			// 既定のフォルダ
 			if (!fs::is_directory(ssFolderPath)) {
 				fs::create_directory(ssFolderPath);
 			}
@@ -883,7 +882,10 @@ BOOL CMainDlg::OnSetCursor(CWindow wnd, UINT nHitTest, UINT message)
 // スクリーンショット 右クリック
 void CMainDlg::OnScreenShotButtonUp(UINT nFlags, CPoint point)
 {
-	const auto ssFolderPath = GetExeDirectory() / L"screenshot";
+	auto ssFolderPath = GetExeDirectory() / L"screenshot";
+	if (fs::is_directory(m_config.screenShotFolder)) {
+		ssFolderPath = m_config.screenShotFolder;
+	}
 	::ShellExecute(NULL, NULL, ssFolderPath.c_str(), NULL, NULL, SW_NORMAL);
 }
 

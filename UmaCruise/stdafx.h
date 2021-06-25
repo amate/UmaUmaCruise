@@ -36,6 +36,7 @@ extern CAppModule _Module;
 #include <wtl\atlcrack.h>
 #include <wtl\atlddx.h>
 #include <wtl\atlmisc.h>
+#include <wtl\atldlgs.h>
 
 #include <algorithm>
 #include <vector>
@@ -49,9 +50,6 @@ extern CAppModule _Module;
 #include <atomic>
 #include <future>
 #include <chrono>
-
-#include <shlobj.h>
-#include <shlobj_core.h>
 
 #include <boost\filesystem.hpp>
 #include <boost\optional.hpp>
