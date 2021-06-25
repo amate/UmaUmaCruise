@@ -146,6 +146,17 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.12
+・[fix] スクリーンショットフォルダの設定の保存・復元時に、文字コードの変換を行っていなかったのを修正
+・[change] スクリーンショットフォルダの選択ダイアログを、CShellFileOpenDialogを使ったものに変更
+・[add] スクリーンショットボタン右クリックで、設定で指定したフォルダを開くようにした
+
+・[del] TextRecognizerで、"育成ウマ娘名[能力詳細]"の文字認識を削除(誤爆するので)
+・[del] Common.jsonから kUmaMusumeSubNameBounds、kUmaMusumeNameBoundsを削除
+
+・[add]［祝福はフーガ］ミホノブルボン(ウマ箱2のサポートカード)のイベントを追加
+・[update] UmaMusumeLibrary.jsonの更新
+
 v1.11
 ・[add] 育成ウマ娘選択画面から、育成ウマ娘を取得するようにした (手動設定を不要に)
 ・[add] "スクリーンショット"ボタンを右クリックで、screenshotフォルダを開くようにした

@@ -351,7 +351,7 @@ def NomarizeEventSuccessFailed():
 
                             op1 = eventOptionList[i]["Option"]
                             ef1 = eventOptionList[i]["Effect"]
-                            ret1 = rx1.match(op1)
+                            ret1 = rx1.match(op1)   # 選択肢に"成功"が入ってるか見る
                             if ret1 == None:
                                 continue
 
