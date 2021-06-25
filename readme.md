@@ -25,10 +25,10 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 ## ■使い方
 起動した後に、[スタート]ボタンを押せば、自動的にDMM版ウマ娘のウィンドウを探し出し、イベント画面ならば選択肢の効果を表示します
 
-予め、コンボボックスから育成ウマ娘を選択していないと、育成ウマ娘のイベントが表示されないので注意  
-[能力詳細]ボタンから[ウマ娘詳細]を表示すると、自動的に育成ウマ娘が選択されます
+スタート実行後であれば、育成ウマ娘選択画面から自動的に、育成ウマ娘が選択されます  
+予め、コンボボックスに育成ウマ娘が選択されていないと、育成ウマ娘のイベントが表示されないので注意  
 
-![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png)
+![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss_ikusei_select_macikane.png)
 
 ### ・URA予想機能について
 
@@ -147,13 +147,12 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 v1.12
+・[add] 設定からスクリーンショットの保存フォルダを設定できるようになった #65 (PullRequest thx!)
 ・[fix] スクリーンショットフォルダの設定の保存・復元時に、文字コードの変換を行っていなかったのを修正
 ・[change] スクリーンショットフォルダの選択ダイアログを、CShellFileOpenDialogを使ったものに変更
 ・[add] スクリーンショットボタン右クリックで、設定で指定したフォルダを開くようにした
-
 ・[del] TextRecognizerで、"育成ウマ娘名[能力詳細]"の文字認識を削除(誤爆するので)
 ・[del] Common.jsonから kUmaMusumeSubNameBounds、kUmaMusumeNameBoundsを削除
-
 ・[add]［祝福はフーガ］ミホノブルボン(ウマ箱2のサポートカード)のイベントを追加
 ・[update] UmaMusumeLibrary.jsonの更新
 
