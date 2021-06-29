@@ -31,11 +31,6 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		cmbTheme.AddString(themeText);
 	}
 
-	if (!m_config.screenShotFolder.empty())
-	{
-		SetDlgItemText(IDC_EDIT_SS_FOLDER, m_config.screenShotFolder.c_str());
-	}
-
 	m_autoStart = m_config.autoStart;
 	m_stopUpdatePreviewOnTraining = m_config.stopUpdatePreviewOnTraining;
 	m_popupRaceListWindow = m_config.popupRaceListWindow;
