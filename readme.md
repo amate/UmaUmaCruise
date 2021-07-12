@@ -146,6 +146,16 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[add] BuildUmaMusumeLibrary.py エラー発生時に中断する処理を追加
+・[change] BuildUmaMusumeLibrary.py DeleteSuccessFailedOnlyとNomarizeEventSuccessFailedをAddCharactorEventとUpdateEventの後に移動させた
+・[update] SkillLibrary.json更新
+・[update] UmaMusumeLibrary.jsonの更新
+- キャラ
+【シューティンスタァ・ルヴゥ】フジキセキ
+- サポート
+［爽快!ウィニングショット!］メジロライアン
+［その心に吹きすさぶ］メジロアルダン
+
 v1.12
 ・[add] 設定からスクリーンショットの保存フォルダを設定できるようになった #65 (PullRequest thx!)
 ・[fix] スクリーンショットフォルダの設定の保存・復元時に、文字コードの変換を行っていなかったのを修正
