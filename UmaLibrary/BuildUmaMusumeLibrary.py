@@ -4,6 +4,9 @@ import re
 import os
 import copy
 
+# エラー発生時に中断させる
+debugErrorStop = True
+
 umaLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary_v2.json')
 umaOldLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary.json')
 
@@ -24,7 +27,7 @@ def main():
     print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい ((大成功) or (成功) も)')
 
     print("AddCharactorEvent はキャラのイベント名が存在しないときのみ追加")
-    print("UpdateEvent はキャラのイベント名が存在する時のみ更新します")
+    print("UpdateEvent はキャラのイベント名(完全一致)が存在する時のみ更新します")
     print("InterruptionEvent はキャラ名とイベント選択肢 部分一致で＜打ち切り＞を効果先頭に挿入")
     print("ReplaceEventName と ReplaceOption は完全一致で置換")
     print("ReplaceEffect は部分一致した分を置換します")
@@ -39,12 +42,6 @@ def main():
         jsonModify = json.load(f)
 
     print("load complete")
-    
-    # "Option": "成功",　"Option": "失敗", を消す
-    DeleteSuccessFailedOnly()
-
-    # イベント名(成功), イベント名(失敗) を正規化
-    NomarizeEventSuccessFailed()
 
     # AddCharactorEvent
     for charaEvent in jsonModify["Modify"]["AddCharactorEvent"]:
@@ -52,6 +49,8 @@ def main():
             #print(f'{charaName}')
             for event in eventList["Event"]:
                 AddCharactorEvent(charaName, event)
+    if debugErrorStop and errorCount > 0:
+        assert False
 
     # UpdateEvent
     for charaEvent in jsonModify["Modify"]["UpdateEvent"]:
@@ -59,31 +58,51 @@ def main():
             #print(f'{charaName}')
             for event in eventList["Event"]:
                 UpdateEvent(charaName, event)
+    if debugErrorStop and errorCount > 0:
+        assert False
+
+    # "Option": "成功",　"Option": "失敗", を消す
+    DeleteSuccessFailedOnly()
+    if debugErrorStop and errorCount > 0:
+        assert False
+        
+    # イベント名(成功), イベント名(失敗) を正規化
+    NomarizeEventSuccessFailed()
+    if debugErrorStop and errorCount > 0:
+        assert False
 
     # InterruptionEvent
     for pair in jsonModify["Modify"]["InterruptionEvent"]:
         charaName = pair[0]
         optionText = pair[1]
         InterruptionEvent(charaName, optionText)
-
+    if debugErrorStop and errorCount > 0:
+        assert False
+        
     # ReplaceEventName
     for replacePair in jsonModify["Modify"]["ReplaceEventName"]:
         searchText = replacePair[0]
         replaceText = replacePair[1]
         ReplaceEventName(searchText, replaceText)
-
+    if debugErrorStop and errorCount > 0:
+        assert False
+        
     # ReplaceOption
     for replacePair in jsonModify["Modify"]["ReplaceOption"]:
         searchText = replacePair[0]
         replaceText = replacePair[1]
         ReplaceOption(searchText, replaceText)
-
+    if debugErrorStop and errorCount > 0:
+        assert False
+        
     # ReplaceEffect
     for replacePair in jsonModify["Modify"]["ReplaceEffect"]:
         searchText = replacePair[0]
         replaceText = replacePair[1]
         ReplaceEffect(searchText, replaceText)
-
+    if debugErrorStop and errorCount > 0:
+        assert False
+        
 
     # 旧バージョン向けのUmaMusumeLibraryを用意する
     ConvertOption3forOldVersion()
