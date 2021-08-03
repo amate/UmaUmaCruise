@@ -575,6 +575,30 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 		{
 			INFO_LOG << L"thread begin";
 
+			auto funcChangeIkuseiUmaMusumeName = [this](const std::vector<std::wstring>& umaMusumeNameList) {
+				std::wstring prevUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
+				m_umaEventLibrary.AnbigiousChangeIkuseImaMusume(umaMusumeNameList);
+				std::wstring nowUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
+				if (prevUmaName != nowUmaName) {
+					// コンボボックスを変更
+					const int count = m_cmbUmaMusume.GetCount();
+					for (int i = 0; i < count; ++i) {
+						CString name;
+						m_cmbUmaMusume.GetLBText(i, name);
+						if (name == nowUmaName.c_str()) {
+							m_cmbUmaMusume.SetCurSel(i);
+							break;
+						}
+					}
+				}
+			};
+
+			// 初回のみ能力詳細からウマ娘名を取得する
+			std::wstring ikuseiUmaMusumeName =  m_umaTextRecoginzer.GetIkuseiUmaMusumeName();
+			if (ikuseiUmaMusumeName.length()) {
+				funcChangeIkuseiUmaMusumeName(std::vector<std::wstring>({ ikuseiUmaMusumeName }));
+			}
+
 			int count = 0;
 			while (!m_cancelAutoDetect.load()) {
 				Utility::timer timer;
@@ -593,21 +617,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 					}
 
 					// 育成ウマ娘名
-					std::wstring prevUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
-					m_umaEventLibrary.AnbigiousChangeIkuseImaMusume(m_umaTextRecoginzer.GetUmaMusumeName());
-					std::wstring nowUmaName = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
-					if (prevUmaName != nowUmaName) {
-						// コンボボックスを変更
-						const int count = m_cmbUmaMusume.GetCount();
-						for (int i = 0; i < count; ++i) {
-							CString name;
-							m_cmbUmaMusume.GetLBText(i, name);
-							if (name == nowUmaName.c_str()) {
-								m_cmbUmaMusume.SetCurSel(i);
-								break;
-							}
-						}
-					}
+					funcChangeIkuseiUmaMusumeName(m_umaTextRecoginzer.GetUmaMusumeName());
 
 					// イベント検索
 					auto optUmaEvent = m_umaEventLibrary.AmbiguousSearchEvent(
@@ -908,6 +918,7 @@ bool CMainDlg::_ReloadUmaMusumeLibrary()
 				currentProperty = uma->property.c_str();
 				m_cmbUmaMusume.AddString(currentProperty);
 			}
+
 			int n = m_cmbUmaMusume.AddString(uma->name.c_str());
 			if (uma->name == currentIkuseiUmaMusume) {
 				m_cmbUmaMusume.SetCurSel(n);

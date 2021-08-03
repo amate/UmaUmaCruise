@@ -24,6 +24,8 @@ public:
 
 	std::unique_ptr<Gdiplus::Bitmap>	ScreenShot();
 
+	std::wstring	GetIkuseiUmaMusumeName();
+
 	bool	TextRecognizer(Gdiplus::Bitmap* image = nullptr);
 
 	const std::vector<std::wstring>&	GetUmaMusumeName() const {
@@ -51,16 +53,18 @@ private:
 
 	bool	_IsEventNameIcon(cv::Mat srcImage);
 
+	cv::Mat	_InRangeHSVTextColorBounds(cv::Mat cutImage);
+
 	CString	m_targetWindowName;
 	CString m_targetClassName;
 
 	CSize	m_baseClientSize;
 
 	enum TestBounds {
-		kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kBackButtonBounds, kRaceDetailBounds, kIkuseiUmaMusumeSubNameBounds, kIkuseiUmaMusumeNameBounds,  kMaxCount
+		kUmaMusumeSubNameBounds, kUmaMusumeNameBounds, kCurrentTurnBounds, kEventCategoryBounds, kEventNameBounds, kEventNameIconBounds, kEventBottomOptionBounds, kCurrentMenuBounds, kBackButtonBounds, kRaceDetailBounds, kIkuseiUmaMusumeSubNameBounds, kIkuseiUmaMusumeNameBounds,  kMaxCount
 	};
 	static constexpr LPCWSTR kTestBoundsName[kMaxCount] = {
-		L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"BackButtonBounds", L"RaceDetailBounds", L"IkuseiUmaMusumeSubNameBounds", L"IkuseiUmaMusumeNameBounds"
+		L"UmaMusumeSubNameBounds", L"UmaMusumeNameBounds", L"CurrentTurnBounds", L"EventCategoryBounds", L"EventNameBounds", L"EventNameIconBounds", L"EventBottomOptionBounds", L"CurrentMenuBounds", L"BackButtonBounds", L"RaceDetailBounds", L"IkuseiUmaMusumeSubNameBounds", L"IkuseiUmaMusumeNameBounds"
 	};
 	std::array<CRect, kMaxCount>	m_testBounds;
 	std::unordered_map<std::wstring, std::wstring>	m_typoDictionary;

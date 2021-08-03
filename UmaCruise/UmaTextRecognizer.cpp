@@ -250,6 +250,57 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 	return std::unique_ptr<Gdiplus::Bitmap>(Gdiplus::Bitmap::FromHBITMAP(hbmp, NULL));
 }
 
+// 育成ウマ娘名[能力詳細]
+std::wstring UmaTextRecognizer::GetIkuseiUmaMusumeName()
+{	
+	std::unique_ptr<Gdiplus::Bitmap> bmpHolder = ScreenShot();
+	if (!bmpHolder) {
+		return L"";
+	}
+	cv::Mat srcImage = GdiPlusBitmapToOpenCvMat(bmpHolder.get());
+	if (srcImage.empty()) {
+		ATLASSERT(FALSE);
+		ERROR_LOG << L"GdiPlusBitmapToOpenCvMat failed";
+		return L"";
+	}
+
+	//Utility::timer timer;
+
+	auto funcImageToText = [&, this](int testBoundsIndex, std::wstring& recognizerText) {
+		CRect rcName = _AdjustBounds(srcImage, m_testBounds[testBoundsIndex]);
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcName), L"rcName")) {
+			return;
+		}
+		//Utility::timer timer;
+		cv::Mat cutImage(srcImage, cvRectFromCRect(rcName));
+		cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage);
+
+		// 画像における白文字率を確認して、一定比率以下のときは無視する
+		const double whiteRatio = ImageWhiteRatio(textImage);
+		if (whiteRatio > kMinWhiteTextRatioThreshold) {
+			cv::Mat invertedTextImage;
+			cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
+
+			std::wstring invertedText = TextFromImage(invertedTextImage);
+			recognizerText = invertedText;
+		}
+	};
+
+	std::wstring	subName;
+	std::wstring	name;
+
+	funcImageToText(kUmaMusumeNameBounds, name);
+	if (name.size()) {
+		funcImageToText(kUmaMusumeSubNameBounds, subName);
+		if (subName.size()) {
+			std::wstring ikuseUmaMusumeName = subName + name;
+			return ikuseUmaMusumeName;
+		}
+	}
+	return L"";
+	//INFO_LOG << L"・育成ウマ娘[能力詳細] " << timer.format();
+}
+
 bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 {
 	Utility::timer timer;
@@ -279,20 +330,6 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 	std::list<std::future<std::wstring>> eventBottomOptionFutureList;
 
 
-	auto funcInRangeHSVTextColorBounds = [this](cv::Mat cutImage) -> cv::Mat {
-		cv::Mat hsvImage;
-		cv::cvtColor(cutImage, hsvImage, cv::COLOR_BGR2HSV);
-
-		cv::Mat resizedImage;
-		cv::resize(hsvImage, resizedImage, cv::Size(), kResizeScale, kResizeScale, cv::INTER_LINEAR/*INTER_CUBIC*/);
-
-		// 色による二値化
-		cv::Mat textImage;
-		cv::inRange(resizedImage,
-			cv::Scalar(m_kHSVTextBounds.h_min, m_kHSVTextBounds.s_min, m_kHSVTextBounds.v_min),
-			cv::Scalar(m_kHSVTextBounds.h_max, m_kHSVTextBounds.s_max, m_kHSVTextBounds.v_max), textImage);
-		return textImage;
-	};
 	{	// イベント名
 		//INFO_LOG << L"・イベント名";
 
@@ -351,7 +388,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			CRect rcAdjustTextBounds3 = GetTextBounds(cutImage, rcEventBottomOption);
 			cv::Mat cutImage3(srcImage, cvRectFromCRect(rcAdjustTextBounds3));
 
-			cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage3);
+			cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage3);
 			// 画像における白文字率を確認して、一定比率以下のときは無視する
 			const double whiteRatio = ImageWhiteRatio(textImage);
 			if (whiteRatio > kMinWhiteTextRatioThreshold) {
@@ -382,7 +419,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			return false;
 		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcTurnBounds));
-		cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
+		cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage);
 
 		std::wstring invertedText;
 		// 画像における白文字率を確認して、一定比率以下のときは無視する
@@ -487,7 +524,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			return false;
 		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcRaceDetailBounds));
-		cv::Mat textImage = funcInRangeHSVTextColorBounds(cutImage);
+		cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage);
 
 		std::wstring invertedText;
 		// 画像における白文字率を確認して、一定比率以下のときは無視する
@@ -566,6 +603,7 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 	return true;
 }
 
+
 CRect UmaTextRecognizer::_AdjustBounds(const cv::Mat& srcImage, CRect bounds)
 {
 	//CSize imageSize(static_cast<int>(image->GetWidth()), static_cast<int>(image->GetHeight()));
@@ -613,4 +651,20 @@ bool UmaTextRecognizer::_IsEventNameIcon(cv::Mat srcImage)
 	const double whiteRatio = ImageWhiteRatio(thresImage);
 	bool isIcon = whiteRatio > kEventNameIconWhiteRatioThreshold;	// 白の比率が一定以上ならアイコンとみなす
 	return isIcon;
+}
+
+cv::Mat UmaTextRecognizer::_InRangeHSVTextColorBounds(cv::Mat cutImage)
+{
+	cv::Mat hsvImage;
+	cv::cvtColor(cutImage, hsvImage, cv::COLOR_BGR2HSV);
+
+	cv::Mat resizedImage;
+	cv::resize(hsvImage, resizedImage, cv::Size(), kResizeScale, kResizeScale, cv::INTER_LINEAR/*INTER_CUBIC*/);
+
+	// 色による二値化
+	cv::Mat textImage;
+	cv::inRange(resizedImage,
+		cv::Scalar(m_kHSVTextBounds.h_min, m_kHSVTextBounds.s_min, m_kHSVTextBounds.v_min),
+		cv::Scalar(m_kHSVTextBounds.h_max, m_kHSVTextBounds.s_max, m_kHSVTextBounds.v_max), textImage);
+	return textImage;
 }
