@@ -17,7 +17,7 @@ using json = nlohmann::json;
 using namespace CodeConvert;
 
 
-boost::optional<std::wstring> retrieve(
+boost::optional<std::pair<std::wstring, double>> retrieve(
 	simstring::reader& dbr,
 	const std::vector<std::wstring>& ambiguousEventNames,
 	int measure,
@@ -39,7 +39,7 @@ boost::optional<std::wstring> retrieve(
 	}
 	if (xstrs.size()) {
 		INFO_LOG << L"result: " << xstrs.front() << L" threshold: " << threshold;
-		return xstrs.front();
+		return std::make_pair(xstrs.front(), threshold);
 	} else {
 		return boost::none;
 	}
@@ -53,7 +53,12 @@ boost::optional<std::wstring> retrieve(
 )
 {
 	const double kMinThreshold = 0.4;
-	return retrieve(dbr, ambiguousEventNames, measure, threshold, kMinThreshold);
+	auto optResult = retrieve(dbr, ambiguousEventNames, measure, threshold, kMinThreshold);
+	if (optResult) {
+		return optResult->first;
+	} else {
+		return boost::none;
+	}
 }
 
 void	EventNameNormalize(std::wstring& eventName)
@@ -247,7 +252,7 @@ void UmaEventLibrary::AnbigiousChangeIkuseImaMusume(std::vector<std::wstring> am
 	// Output similar strings from Unicode queries.
 	auto optResult = retrieve(*m_dbUmaNameReader, ambiguousUmaMusumeNames, simstring::cosine, 0.6, m_kUmaMusumeNameMinThreshold);
 	if (optResult) {
-		ChangeIkuseiUmaMusume(optResult.get());
+		ChangeIkuseiUmaMusume(optResult->first);
 	}
 }
 
@@ -265,23 +270,27 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
 	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 1.0, m_kMinThreshold);
 
-	UmaEvent event1 = optResult ? _SearchEventOptions(optResult.get()) : UmaEvent();
-	UmaEvent event2 = optOptionResult ? _SearchEventOptionsFromBottomOption(optOptionResult.get()) : UmaEvent();
+	UmaEvent event1 = optResult ? _SearchEventOptions(optResult->first) : UmaEvent();
+	UmaEvent event2 = optOptionResult ? _SearchEventOptionsFromBottomOption(optOptionResult->first) : UmaEvent();
 	if (event1.eventName.length() && event2.eventName.length() &&
 		event1.eventName != event2.eventName) 
 	{
 		WARN_LOG << L"AmbiguousSearchEvent イベント名不一致\n"
-			<< L"・イベント名から 1: [" << event1.eventName << L"] (" << ambiguousEventNames.front() << L")\n"
-			<< L"・下部選択肢から 2: [" << event2.eventName << L"] (" << ambiguousEventBottomOptions.front() << L")";
+			<< L"・イベント名から 1: [" << event1.eventName << L"] (" 
+				<< ambiguousEventNames.front() << L") - " << optResult->second << L"\n"
+			<< L"・下部選択肢から 2: [" << event2.eventName << L"] (" 
+				<< ambiguousEventBottomOptions.front() << L") - " << optOptionResult->second;
 	}
 
 	if (optOptionResult) {	// 選択肢からの検索を優先する
-		INFO_LOG << L"AmbiguousSearchEvent result: " << event2.eventName;
-		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
+		if (!optResult || optResult->second < optOptionResult->second) {	// 類似度を比較する
+			INFO_LOG << L"AmbiguousSearchEvent result: " << event2.eventName;
+			return _SearchEventOptionsFromBottomOption(optOptionResult->first);
+		}
 	}
 	if (optResult) {
 		INFO_LOG << L"AmbiguousSearchEvent result: " << event1.eventName;
-		return _SearchEventOptions(optResult.get());
+		return _SearchEventOptions(optResult->first);
 
 	} else {
 		INFO_LOG << L"AmbiguousSearchEvent: not found";
