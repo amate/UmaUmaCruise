@@ -30,6 +30,16 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 
 ![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss_ikusei_select_macikane.png)
 
+スタートを押したときに[ウマ娘詳細]が表示されていれば、自動的に育成ウマ娘が選択されます
+
+![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png)
+
+### ・UmaMusumeLibrary.jsonについて
+
+UmaLibraryフォルダ内の"UmaMusumeLibrary.json"には、イベント名と選択肢の名前/効果が記録されています  
+キャラやサポートの追加によって選択肢が表示されない時には、[設定]->[UmaMusumeLibrary.jsonの更新確認]を実行してみてください
+
+
 ### ・URA予想機能について
 
 >短距離: 1/4
@@ -145,6 +155,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+v1.13
+・[fix] AmbiguousSearchEventで、イベント名と下部選択肢の類似度を比較して高い方のイベントを返すように変更 #66
+・[add] スタート押したときに一度だけ能力詳細からウマ娘名を取得するようにした #70
+・[update] UmaMusumeLibrary.json更新
 
 ・[update] UmaMusumeLibrary.json更新
 - キャラ
