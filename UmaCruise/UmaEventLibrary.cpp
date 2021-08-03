@@ -265,8 +265,6 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 
 	m_lastEventSource.clear();
 
-#ifdef _DEBUG
-
 	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
 	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 1.0, m_kMinThreshold);
 
@@ -284,20 +282,20 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 
 	if (optOptionResult) {	// 選択肢からの検索を優先する
 		if (!optResult || optResult->second < optOptionResult->second) {	// 類似度を比較する
-			INFO_LOG << L"AmbiguousSearchEvent result: " << event2.eventName;
-			return _SearchEventOptionsFromBottomOption(optOptionResult->first);
+			//INFO_LOG << L"AmbiguousSearchEvent result: " << event2.eventName;
+			return event2;
 		}
 	}
 	if (optResult) {
-		INFO_LOG << L"AmbiguousSearchEvent result: " << event1.eventName;
-		return _SearchEventOptions(optResult->first);
+		//INFO_LOG << L"AmbiguousSearchEvent result: " << event1.eventName;
+		return event1;
 
 	} else {
-		INFO_LOG << L"AmbiguousSearchEvent: not found";
+		//INFO_LOG << L"AmbiguousSearchEvent: not found";
 		return boost::none;
 	}
-#else
 
+#if 0
 	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
 	if (optOptionResult) {	// 選択肢からの検索を優先する
 		return _SearchEventOptionsFromBottomOption(optOptionResult.get());
