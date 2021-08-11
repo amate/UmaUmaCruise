@@ -4,6 +4,8 @@ import re
 import os
 import copy
 
+# 中断イベント一覧: https://gamerch.com/umamusume/entry/244582
+
 # エラー発生時に中断させる
 debugErrorStop = True
 

@@ -156,9 +156,14 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update] UmaMusumeLibrary.json更新
+- キャラ
+【ブルー/レイジング】メイショウドトウ
+
 v1.13
 ・[fix] AmbiguousSearchEventで、イベント名と下部選択肢の類似度を比較して高い方のイベントを返すように変更 #66
 ・[add] スタート押したときに一度だけ能力詳細からウマ娘名を取得するようにした #70
+・[fix] Releaseビルドが通らなかったのを修正
 ・[update] UmaMusumeLibrary.json更新
 
 ・[update] UmaMusumeLibrary.json更新
