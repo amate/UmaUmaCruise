@@ -158,6 +158,14 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 ・[update] UmaMusumeLibrary.json更新
 - キャラ
+【Meisterschaft】エイシンフラッシュ
+- サポート
+［願いまでは拭わない］ナイスネイチャ
+［響き合うストレイン］ビワハヤヒデ
+［nail on Turf］トーセンジョーダン
+
+・[update] UmaMusumeLibrary.json更新
+- キャラ
 【ブルー/レイジング】メイショウドトウ
 
 v1.13
