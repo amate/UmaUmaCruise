@@ -157,6 +157,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ・[update] UmaMusumeLibrary.json更新
+- サポート
+［WINNING DREAM］サイレンススズカ
+
+・[update] UmaMusumeLibrary.json更新
 - キャラ
 【Meisterschaft】エイシンフラッシュ
 - サポート
