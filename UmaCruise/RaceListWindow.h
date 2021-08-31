@@ -45,6 +45,7 @@ public:
 		// Race
 		DDX_TEXT(IDC_EDIT_NOWDATE, m_currentTurn)
 		DDX_CHECK(IDC_CHECK_SHOWRACE_AFTERCURRENTDATE, m_showRaceAfterCurrentDate)
+		DDX_TEXT(IDC_EDIT_REMAININGTURN, m_remaingTurn)
 
 		DDX_CHECK(IDC_CHECK_G1, m_gradeG1)
 		DDX_CHECK(IDC_CHECK_G2, m_gradeG2)
@@ -121,6 +122,7 @@ private:
 	RaceDateLibrary	m_raceDateLibrary;
 
 	CString	m_currentTurn;
+	CString m_remaingTurn;
 
 	bool	m_showRaceAfterCurrentDate = true;
 

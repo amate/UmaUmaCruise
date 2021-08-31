@@ -520,9 +520,11 @@ void RaceListWindow::_UpdateRaceList(const std::wstring& turn)
 	m_raceListView.SetRedraw(FALSE);
 	m_raceListView.DeleteAllItems();
 
+	const int currentTurnNumber = m_raceDateLibrary.GetTurnNumberFromTurnName(turn);
+	int nearestFavoriteRaceTurnNumber = 0;
 	size_t i = 0;
 	if (turn.length() && m_showRaceAfterCurrentDate) {
-		i = m_raceDateLibrary.GetTurnNumberFromTurnName(turn);
+		i = currentTurnNumber;
 	}
 	const int32_t state = _GetRaceMatchState();
 
@@ -548,6 +550,16 @@ void RaceListWindow::_UpdateRaceList(const std::wstring& turn)
 		bool insert = false;
 		for (const auto& race : turnOrderedRaceList[i]) {
 			const bool bFavoriteRace = funcIsFavoriteRace(date, race->RaceName());
+
+			// 現在のターン数から一番近いお気に入りレースターンを記録する
+			if (currentTurnNumber > 0 &&				// 現在がデビュー前ではない
+				bFavoriteRace &&		// お気に入りレース
+				nearestFavoriteRaceTurnNumber == 0 &&	// もうすでにお気に入りレースが登録されていない
+				currentTurnNumber <= i)	// 現在の日付以降のレースである
+			{
+				nearestFavoriteRaceTurnNumber = i;
+			}
+
 			if (race->IsMatchState(state) || bFavoriteRace) {
 				if (!insert) {
 					insert = !insert;
@@ -574,6 +586,19 @@ void RaceListWindow::_UpdateRaceList(const std::wstring& turn)
 		}
 	}
 	m_raceListView.SetRedraw(TRUE);
+
+	// 予約レースまでのターン数表示
+	if (nearestFavoriteRaceTurnNumber > 0) {
+		const int remaingTurn = nearestFavoriteRaceTurnNumber - currentTurnNumber;
+		if (remaingTurn > 0) {
+			m_remaingTurn.Format(L"予約まで あと %d ターン", remaingTurn);
+		} else {
+			m_remaingTurn = L"本番";
+		}
+	} else {
+		m_remaingTurn = L"";
+	}
+	DoDataExchange(DDX_LOAD, IDC_EDIT_REMAININGTURN);
 }
 
 int32_t RaceListWindow::_GetRaceMatchState()

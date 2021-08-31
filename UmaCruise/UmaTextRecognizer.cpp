@@ -413,34 +413,40 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 		}
 	}
 	{	// 現在の日付
-		Utility::timer timer;
-		CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[kCurrentTurnBounds]);
-		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcTurnBounds), L"rcTurnBounds")) {
-			return false;
-		}
-		cv::Mat cutImage(srcImage, cvRectFromCRect(rcTurnBounds));
-		cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage);
 
-		std::wstring invertedText;
-		// 画像における白文字率を確認して、一定比率以下のときは無視する
-		const double whiteRatio = ImageWhiteRatio(textImage);
-		if (whiteRatio > kMinWhiteTextRatioThreshold) {
-			cv::Mat invertedTextImage;
-			cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
+		auto funcReadCurrentTurn = [&](int currentTurnBounds) {
+			Utility::timer timer;
+			CRect rcTurnBounds = _AdjustBounds(srcImage, m_testBounds[currentTurnBounds]);
+			if (!CheckCutBounds(srcImage, cvRectFromCRect(rcTurnBounds), L"rcTurnBounds")) {
+				return ;
+			}
+			cv::Mat cutImage(srcImage, cvRectFromCRect(rcTurnBounds));
+			cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage);
 
-			invertedText = TextFromImage(invertedTextImage);
-			m_currentTurn.emplace_back(invertedText);
+			std::wstring invertedText;
+			// 画像における白文字率を確認して、一定比率以下のときは無視する
+			const double whiteRatio = ImageWhiteRatio(textImage);
+			if (whiteRatio > kMinWhiteTextRatioThreshold) {
+				cv::Mat invertedTextImage;
+				cv::bitwise_not(textImage, invertedTextImage);	// 白背景化
+
+				invertedText = TextFromImage(invertedTextImage);
+				m_currentTurn.emplace_back(invertedText);
 #if 0
-			cv::Mat resizedImage;
-			constexpr double scale = 2.0;
-			cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
+				cv::Mat resizedImage;
+				constexpr double scale = 2.0;
+				cv::resize(cutImage, resizedImage, cv::Size(), scale, scale, cv::INTER_CUBIC);
 
-			std::wstring resizedText = TextFromImage(resizedImage);
-			m_currentTurn.emplace_back(resizedText);
+				std::wstring resizedText = TextFromImage(resizedImage);
+				m_currentTurn.emplace_back(resizedText);
 #endif
-			//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
-		}
-		INFO_LOG << L"・現在の日付 " << timer.format() << L" (" << invertedText << L")";
+				//INFO_LOG << L"CurrentTurn, cut: " << cutImageText << L" thres: " << thresImageText;
+			}
+			INFO_LOG << L"・現在の日付 " << timer.format() << L" (" << invertedText << L")";
+		};
+
+		funcReadCurrentTurn(kURACurrentTurnBounds);
+		funcReadCurrentTurn(kAoharuCurrentTurnBounds);
 	}
 	{	// 育成ウマ娘名[育成ウマ娘選択]
 		Utility::timer timer;

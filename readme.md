@@ -156,6 +156,18 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.14
+・[fix] アオハル杯では、現在の日付が取得できなかったのを修正
+・[add] レース一覧に、予約レースまでのターン数表示を追加 #74
+・[fix] フジキセキの二つ名のtypo修正 #75
+・[update] UmaMusumeLibrary.json更新
+- キャラ
+【吉兆・初あらし】マチカネフクキタル
+- サポート
+［徹底管理主義］樫本理子
+［幸せは曲がり角の向こう］ライスシャワー
+
+
 ・[update] UmaMusumeLibrary.json更新
 - サポート
 ［WINNING DREAM］サイレンススズカ

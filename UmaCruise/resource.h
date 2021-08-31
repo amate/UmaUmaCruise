@@ -14,6 +14,8 @@
 #define IDC_EDIT_NOWDATE                1008
 #define IDC_LIST_RACE                   1009
 #define IDC_COMBO_UMAMUSUME             1010
+#define IDC_EDIT_NOWDATE2               1010
+#define IDC_EDIT_REMAININGTURN          1010
 #define IDC_COMBO_TESTBOUNDS            1011
 #define IDC_EDIT_RESULT                 1012
 #define IDC_BUTTON_OCR                  1013

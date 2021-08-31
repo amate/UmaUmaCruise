@@ -18,8 +18,11 @@
             "UmaMusumeNameBounds": {
                 "x": 271, "y": 143, "width": 229, "height": 27
             },
-            "CurrentTurnBounds": {
+            "URACurrentTurnBounds": {
                 "x": 11, "y": 35, "width": 166, "height": 18
+            },
+            "AoharuCurrentTurnBounds": {
+                "x": 135, "y": 35, "width": 166, "height": 18
             },
             "EventCategoryBounds": {
                 "x": 90, "y": 170, "width": 177, "height": 22
