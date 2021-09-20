@@ -156,6 +156,17 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新
+- キャラ
+【超特急！フルカラー特殊PP】アグネスデジタル
+- サポート
+[心と足元は温かく]イクノディクタス
+[GRMAラーメン♪]ファインモーション
+
+・[update] UmaMusumeLibrary.json更新
+- キャラ
+【ボーノ☆アラモーダ】ヒシアケボノ
+
 v1.14
 ・[fix] アオハル杯では、現在の日付が取得できなかったのを修正
 ・[add] レース一覧に、予約レースまでのターン数表示を追加 #74
