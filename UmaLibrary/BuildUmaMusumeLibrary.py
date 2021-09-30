@@ -324,7 +324,7 @@ def DeleteSuccessFailedOnly():
                         op2 = eventOptionList[1]["Option"]
                         if "成功" in op1 and "失敗" in op2:
                             deleteEventList.append(eventName)
-                        elif ("大成功" in op1 and "成功" in op2) or ("成功" in op1 and "大成功" in op2):
+                        elif "成功" in op1 and "成功" in op2:
                             deleteEventList.append(eventName)
 
                     for delEventName in deleteEventList:
@@ -385,6 +385,10 @@ def NomarizeEventSuccessFailed():
                             ef2 = eventOptionList[i + 1]["Effect"]
                             ret2 = rx2.match(op2)
                             if ret2 == None:
+                                # (成功) / (成功) パターンなら置換しない
+                                if  rx1.match(op2):
+                                    break
+
                                 print("(失敗)が見つかりません")
                                 errorCount += 1
                                 break
