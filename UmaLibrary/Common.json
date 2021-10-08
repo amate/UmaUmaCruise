@@ -50,6 +50,9 @@
             },
             "IkuseiUmaMusumeNameBounds": {
                 "x": 30, "y": 340, "width": 225, "height": 20
+            },
+            "AbilityDetailBounds": {
+                "x": 510, "y": 610, "width": 35, "height": 44
             }
         },
 

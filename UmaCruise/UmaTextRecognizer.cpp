@@ -154,6 +154,7 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 }
 
 // ==========================================================================
+// UmaTextRecognizer
 
 bool UmaTextRecognizer::LoadSetting()
 {
@@ -195,6 +196,7 @@ bool UmaTextRecognizer::LoadSetting()
 		std::wstring correct = UTF16fromUTF8(jsonTypo["Corret"].get<std::string>());
 		m_typoDictionary[typo] = correct;
 	}
+	m_desktopDuplication.Init();
 
 	return true;
 }
@@ -228,6 +230,13 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 	}
 
+	Utility::timer timer;
+	auto ssbmp = m_desktopDuplication.ScreenShot(hwndTarget, rcAdjustClient);
+//	ATLTRACE("sstime: %s\n", timer.format().c_str());
+//	WARN_LOG << "sstime: " << timer.format().c_str();
+	return ssbmp;
+
+#if  0
 	CDC dcMemory;
 	dcMemory.CreateCompatibleDC(dc);
 
@@ -247,7 +256,9 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 	//dcMemory.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), dc, 0, 0, SRCCOPY);
 	dcMemory.BitBlt(0, 0, rcAdjustClient.Width(), rcAdjustClient.Height(), dc, rcAdjustClient.left, rcAdjustClient.top, SRCCOPY);
 	dcMemory.SelectBitmap(prevhbmp);
+	WARN_LOG << "sstime: " << timer.format().c_str();
 	return std::unique_ptr<Gdiplus::Bitmap>(Gdiplus::Bitmap::FromHBITMAP(hbmp, NULL));
+#endif
 }
 
 // 育成ウマ娘名[能力詳細]
@@ -505,8 +516,10 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			return false;
 		}
 		cv::Mat cutImage(srcImage, cvRectFromCRect(rcCurrentMenuBounds));
+		cv::Mat grayImage;
+		cv::cvtColor(cutImage, grayImage, cv::COLOR_RGB2GRAY);	// 3: グレー化
 
-		std::wstring cutImageText = TextFromImage(cutImage);
+		std::wstring cutImageText = TextFromImage(grayImage);
 		if (cutImageText == L"トレーニング") {
 			CRect rcBackButtonBounds = _AdjustBounds(srcImage, m_testBounds[kBackButtonBounds]);
 			if (!CheckCutBounds(srcImage, cvRectFromCRect(rcBackButtonBounds), L"rcBackButtonBounds")) {
@@ -520,6 +533,19 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 			}
 		}
 		INFO_LOG << L"・トレーニング " << timer.format();;
+	}
+	{	// 育成トップ
+		m_bIkuseiTop = false;
+		CRect rcAbilityDetailBounds = _AdjustBounds(srcImage, m_testBounds[kAbilityDetailBounds]);
+		if (!CheckCutBounds(srcImage, cvRectFromCRect(rcAbilityDetailBounds), L"rcAbilityDetailBounds")) {
+			return false;
+		}
+		cv::Mat cutImage(srcImage, cvRectFromCRect(rcAbilityDetailBounds));
+		cv::Mat textImage = _InRangeHSVTextColorBounds(cutImage);
+		const double whiteRatio = ImageWhiteRatio(textImage);
+		if (whiteRatio > kAbilityDetailThreshold) {
+			m_bIkuseiTop = true;
+		}
 	}
 	{
 		// レース詳細

@@ -191,6 +191,9 @@
     <ClInclude Include="SkillLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DesktopDuplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UmaCruise.rc">

@@ -272,6 +272,7 @@ LRESULT CMainDlg::OnDestroy(UINT, WPARAM, LPARAM, BOOL&)
 	return 0;
 }
 
+
 LRESULT CMainDlg::OnAppAbout(WORD, WORD, HWND, BOOL&)
 {
 	CAboutDlg dlg(m_previewWindow);
@@ -510,7 +511,8 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 
 		// 現在ターン
-		m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
+		bool ikuseiTop = m_umaTextRecoginzer.IsTrainingMenu() || m_umaTextRecoginzer.IsIkuseiTop();
+		m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn(), ikuseiTop);
 
 		// レース距離
 		m_raceListWindow.EntryRaceDistance(m_umaTextRecoginzer.GetEntryRaceDistance());
@@ -635,7 +637,8 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 
 					// 現在ターン
-					m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn());
+					bool ikuseiTop = m_umaTextRecoginzer.IsTrainingMenu() || m_umaTextRecoginzer.IsIkuseiTop();
+					m_raceListWindow.AnbigiousChangeCurrentTurn(m_umaTextRecoginzer.GetCurrentTurn(), ikuseiTop);
 
 					// レース距離
 					m_raceListWindow.EntryRaceDistance(m_umaTextRecoginzer.GetEntryRaceDistance());

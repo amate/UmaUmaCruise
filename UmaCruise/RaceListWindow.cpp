@@ -54,10 +54,17 @@ void RaceListWindow::ShowWindow(bool bShow)
 	__super::ShowWindow(bShow);
 }
 
-void RaceListWindow::AnbigiousChangeCurrentTurn(const std::vector<std::wstring>& ambiguousCurrentTurn)
+void RaceListWindow::AnbigiousChangeCurrentTurn(const std::vector<std::wstring>& ambiguousCurrentTurn, bool ikuseiTop)
 {
 	std::wstring currentTurn = m_raceDateLibrary.AnbigiousChangeCurrentTurn(ambiguousCurrentTurn);
 	if (currentTurn.length() && m_currentTurn != currentTurn.c_str()) {
+		// ターン更新時
+		m_bTurnChanged = true;
+
+		_UpdateRaceList(currentTurn);
+	}
+	if (m_bTurnChanged && ikuseiTop) {
+		m_bTurnChanged = false;
 
 		if (m_config.notifyFavoriteRaceHold && _IsFavoriteRaceTurn(currentTurn)) {	// 通知する
 			// ウィンドウを振動させる
@@ -88,10 +95,8 @@ void RaceListWindow::AnbigiousChangeCurrentTurn(const std::vector<std::wstring>&
 				// 元の位置に戻す
 				wndTop.SetWindowPos(NULL, rcOriginal.left, rcOriginal.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_ASYNCWINDOWPOS);
 
-			}).detach();
+				}).detach();
 		}
-
-		_UpdateRaceList(currentTurn);
 	}
 }
 
@@ -100,6 +105,8 @@ void RaceListWindow::EntryRaceDistance(int distance)
 	if (distance == 0 || m_currentTurn.IsEmpty() || m_currentTurn == L"ファイナルズ開催中") {
 		return;
 	}
+
+	m_bTurnChanged = false;	// レース終了後に通知が来ないように
 	
 	const int currentTurn = m_raceDateLibrary.GetTurnNumberFromTurnName((LPCWSTR)m_currentTurn);
 	ATLASSERT(currentTurn != -1);
