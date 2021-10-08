@@ -156,6 +156,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.15
+・[change] ウマ娘ウィンドウの画面取り込みを GDIを使ったものから Desktop Duplication APIを使ったものに変更
+・[change] レース予約の通知を、日付変更時ではなく、育成画面になったときに行うように変更 #78
+・[fix] CurrentMenuBoundsで切り取りイメージをグレー化してからTextFromImageするように変更
+
 ・[update]UmaMusumeLibrary.json更新
 - キャラ
 【超特急！フルカラー特殊PP】アグネスデジタル
