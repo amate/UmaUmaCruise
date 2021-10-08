@@ -102,6 +102,15 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 	}
 
+	// https://stackoverflow.com/questions/63855309/process-unexpectedly-dpi-aware
+	// DuplicateOutput が勝手に SetProcessDpiAwarenessContext を呼ぶ対策
+	using SetProcessDpiAwarenessContextFunc = BOOL(*)(_In_ DPI_AWARENESS_CONTEXT value);
+	auto funcSetProcessDpiAwarenessContext = (SetProcessDpiAwarenessContextFunc)::GetProcAddress(hModUser32, "SetProcessDpiAwarenessContext");
+	if (funcSetProcessDpiAwarenessContext) {
+		BOOL b = funcSetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+	}
+
+
 	InitDarkMode();
 
 	int nRet = Run(lpstrCmdLine, nCmdShow);

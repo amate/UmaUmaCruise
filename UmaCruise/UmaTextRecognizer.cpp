@@ -210,7 +210,7 @@ std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
 		return nullptr;
 	}
 
-	CWindowDC dc(NULL/*hWndTarget*/);	// desktop
+	//CWindowDC dc(NULL/*hWndTarget*/);	// desktop
 
 	if (g_funcSetThreadDpiAwarenessContext) {	// 高DPIモニターで取得ウィンドウの位置がずれるバグを回避するため
 		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);

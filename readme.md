@@ -156,6 +156,9 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.15.1
+・[fix] 高DPI環境で、スタートを押した瞬間ウィンドウの拡大スケーリングが解除される問題を修正
+
 v1.15
 ・[change] ウマ娘ウィンドウの画面取り込みを GDIを使ったものから Desktop Duplication APIを使ったものに変更
 ・[change] レース予約の通知を、日付変更時ではなく、育成画面になったときに行うように変更 #78

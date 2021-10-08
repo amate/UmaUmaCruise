@@ -118,12 +118,12 @@ private:
 			m_lastHwndTarget = hwndTarget;
 			m_lastTargetHWNDMonitorName = monitorInfo.szDevice;
 
-			CComPtr<IDXGIFactory> factory;
-			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&factory));
+			CComPtr<IDXGIFactory1> factory;
+			CreateDXGIFactory1(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&factory));
 
 			// 全ディスプレイアダプタを調べる
-			CComPtr<IDXGIAdapter> adapter;
-			for (int i = 0; (factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND); ++i)
+			CComPtr<IDXGIAdapter1> adapter;
+			for (int i = 0; (factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND); ++i)
 			{
 				// アウトプットを一通り調べてメインモニタを探す
 				CComPtr<IDXGIOutput> output;
