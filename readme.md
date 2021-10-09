@@ -156,6 +156,9 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.15.2
+・[fix] モニターが回転していると正常に画面取り込みできなかったバグを修正
+
 v1.15.1
 ・[fix] 高DPI環境で、スタートを押した瞬間ウィンドウの拡大スケーリングが解除される問題を修正
 

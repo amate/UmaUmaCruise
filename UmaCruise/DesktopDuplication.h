@@ -92,9 +92,22 @@ public:
 		auto ssBmp24 = std::make_unique<Gdiplus::Bitmap>(
 			rcAdjustClient.Width(), rcAdjustClient.Height(), PixelFormat24bppRGB);
 		Gdiplus::Graphics graphics(ssBmp24.get());
+
+		switch (m_last_outputDesc.Rotation) {
+		case DXGI_MODE_ROTATION_ROTATE90:
+			ssMonitorBmp32->RotateFlip(Gdiplus::Rotate90FlipNone);
+			break;
+		case DXGI_MODE_ROTATION_ROTATE180:
+			ssMonitorBmp32->RotateFlip(Gdiplus::Rotate180FlipNone);
+			break;
+		case DXGI_MODE_ROTATION_ROTATE270:
+			ssMonitorBmp32->RotateFlip(Gdiplus::Rotate270FlipNone);
+			break;
+		}
+
 		graphics.DrawImage(ssMonitorBmp32.get(), 0, 0,
-			rcAdjustClient.left - m_lastDesktopCoordinates.left,
-			rcAdjustClient.top - m_lastDesktopCoordinates.top,
+			rcAdjustClient.left - m_last_outputDesc.DesktopCoordinates.left,
+			rcAdjustClient.top - m_last_outputDesc.DesktopCoordinates.top,
 			rcAdjustClient.Width(), rcAdjustClient.Height(), Gdiplus::UnitPixel);
 
 		hr = m_duplication->ReleaseFrame();
@@ -129,11 +142,9 @@ private:
 				CComPtr<IDXGIOutput> output;
 				for (int j = 0; (adapter->EnumOutputs(j, &output) != DXGI_ERROR_NOT_FOUND); j++)
 				{
-					DXGI_OUTPUT_DESC outputDesc;
-					output->GetDesc(&outputDesc);
-					m_lastDesktopCoordinates = outputDesc.DesktopCoordinates;
+					output->GetDesc(&m_last_outputDesc);
 
-					if (::wcscmp(monitorInfo.szDevice, outputDesc.DeviceName) == 0) {
+					if (::wcscmp(monitorInfo.szDevice, m_last_outputDesc.DeviceName) == 0) {
 						CComQIPtr<IDXGIOutput1> output1 = output;
 						output1->DuplicateOutput(m_device, &m_duplication);
 						ATLASSERT(m_duplication);
@@ -152,6 +163,6 @@ private:
 
 	HWND	m_lastHwndTarget;
 	std::wstring m_lastTargetHWNDMonitorName;
-	CRect	m_lastDesktopCoordinates;
+	DXGI_OUTPUT_DESC m_last_outputDesc;
 };
 
