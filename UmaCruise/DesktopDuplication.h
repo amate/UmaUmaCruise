@@ -13,20 +13,6 @@
 class DesktopDuplication
 {
 public:
-	void	Init()
-	{
-		// デバイス作成
-		HRESULT hr = ::D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0, D3D11_SDK_VERSION, &m_device, nullptr, &m_deviceContext);
-		if (FAILED(hr)) {
-			ERROR_LOG << L"D3D11CreateDevice failed";
-			throw std::runtime_error("D3D11CreateDevice");
-		}
-	}
-
-	void	Term()
-	{
-
-	}
 
 	std::unique_ptr<Gdiplus::Bitmap>	ScreenShot(HWND hwndTarget, const CRect& rcAdjustClient)
 	{
@@ -144,7 +130,19 @@ private:
 				{
 					output->GetDesc(&m_last_outputDesc);
 
+					// hwndTarget のモニターを発見
 					if (::wcscmp(monitorInfo.szDevice, m_last_outputDesc.DeviceName) == 0) {
+
+						// デバイス作成
+						m_device.Release();
+						m_deviceContext.Release();
+						HRESULT hr = ::D3D11CreateDevice(adapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0, D3D11_SDK_VERSION, &m_device, nullptr, &m_deviceContext);
+						if (FAILED(hr)) {
+							ERROR_LOG << L"D3D11CreateDevice failed";
+							//throw std::runtime_error("D3D11CreateDevice");
+							return;	// failed
+						}
+
 						CComQIPtr<IDXGIOutput1> output1 = output;
 						output1->DuplicateOutput(m_device, &m_duplication);
 						ATLASSERT(m_duplication);

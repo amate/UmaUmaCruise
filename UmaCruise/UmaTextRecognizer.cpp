@@ -196,7 +196,6 @@ bool UmaTextRecognizer::LoadSetting()
 		std::wstring correct = UTF16fromUTF8(jsonTypo["Corret"].get<std::string>());
 		m_typoDictionary[typo] = correct;
 	}
-	m_desktopDuplication.Init();
 
 	return true;
 }
