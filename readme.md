@@ -139,6 +139,9 @@ Visual Studio 2019で "UmaCruise.sln"を開き、
 実行ファイルのプロパティから 互換性->高DPI設定の変更  
 高いDPIスケールの動作を上書きにチェック、アプリケーションを選択してください
 
+- 画面取り込みに"Windows Graphics Capture"を設定した場合、ウマ娘のウィンドウに黄色く枠が現れる  
+仕様です
+
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
 ‎Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
@@ -161,6 +164,12 @@ v1.16
 ・[change] 画面取り込み方式のデフォルトをGDIに変更した
 ・[fix] スタートとストップを繰り返すとメモリリークするバグを修正
 
+・[update]UmaMusumeLibrary.json更新 2021-10-23
+- キャラ
+【Creeping Black】マンハッタンカフェ
+- サポート
+［43、8、1］ナカヤマフェスタ
+［一等星は揺らがない］シリウスシンボリ
 
 ----
 ・[update]UmaMusumeLibrary.json更新 2021-10-12
