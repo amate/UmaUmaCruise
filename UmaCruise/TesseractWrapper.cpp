@@ -44,7 +44,7 @@ namespace TesseractWrapper {
 		std::unique_lock<std::mutex> lock(s_mtx);
 		// キャッシュを返す
 		for (auto& cacheFunc : s_cacheOCRFunction) {
-			if (cacheFunc.unique()) {
+			if (cacheFunc.use_count() == 1) {
 				return cacheFunc;
 			}
 		}
@@ -88,6 +88,9 @@ namespace TesseractWrapper {
 
 	std::wstring TextFromImage(cv::Mat targetImage)
 	{
+		std::wstring text = (*GetOCRFunction())(targetImage);
+		return text;
+#if 0
 		//INFO_LOG << L"TextFromImage start";
 		Utility::timer timer;
 
@@ -119,6 +122,7 @@ namespace TesseractWrapper {
 
 		INFO_LOG << L"TextFromImage result: [" << text << L"] processing time: " << UTF16fromUTF8(timer.format());
 		return text;
+#endif
 	}
 
 	std::wstring TextFromImageBest(cv::Mat targetImage)

@@ -6,6 +6,7 @@
 
 #include <thread>
 #include <atomic>
+#include <memory>
 
 #include "UmaEventLibrary.h"
 #include "RaceDateLibrary.h"
@@ -21,7 +22,7 @@
 #include "Config.h"
 
 #include "DarkModeUI.h"
-
+#include "IScreenShotWindow.h"
 
 class CMainDlg : 
 	public CDialogImpl<CMainDlg>, 
@@ -147,6 +148,8 @@ private:
 	void	_UpdateEventOptions(const UmaEventLibrary::UmaEvent& umaEvent);
 	void	_UpdateEventEffect(CRichEditCtrl richEdit, const std::wstring& effectText);
 
+	std::unique_ptr<Gdiplus::Bitmap>	_ScreenShotUmaWindow();
+
 	Config	m_config;
 	bool	m_bShowRaceList = true;
 
@@ -181,4 +184,7 @@ private:
 	CPoint	m_ptRelativeDockingPos;
 
 	bool	m_effectRow3 = false;
+
+	std::mutex	m_mtxScreennShotWindow;
+	std::unique_ptr<IScreenShotWindow>	m_screenshotWindow;
 };

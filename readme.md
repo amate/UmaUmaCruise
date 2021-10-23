@@ -156,6 +156,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.16
+・[add] 画面取り込みに Windows Graphics Capture APIを使ったものを追加
+・[change] 画面取り込み方式のデフォルトをGDIに変更した
+・[fix] スタートとストップを繰り返すとメモリリークするバグを修正
+
+
+----
 ・[update]UmaMusumeLibrary.json更新 2021-10-12
 - キャラ
 【プリンセス・オブ・ピンク】カワカミプリンセス

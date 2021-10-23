@@ -10,11 +10,13 @@
 #include "Utility\Logger.h"
 #include "Utility\GdiplusUtil.h"
 
-class DesktopDuplication
+#include "IScreenShotWindow.h"
+
+class DesktopDuplication : public IScreenShotWindow
 {
 public:
 
-	std::unique_ptr<Gdiplus::Bitmap>	ScreenShot(HWND hwndTarget, const CRect& rcAdjustClient)
+	std::unique_ptr<Gdiplus::Bitmap>	ScreenShot(HWND hwndTarget, const CRect& rcAdjustClient) override
 	{
 		_UpdateTargtOutputDuplication(hwndTarget);
 		ATLASSERT(m_duplication);
@@ -152,6 +154,10 @@ private:
 				}
 				adapter.Release();
 			}
+			// 見つからなかった・・・
+
+		} else {
+			// 更新なし
 		}
 	}
 

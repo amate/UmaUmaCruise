@@ -15,6 +15,10 @@
 #include "Utility\timer.h"
 #include "win32-darkmode\DarkMode.h"
 
+#include "GDIWindowCapture.h"
+#include "DesktopDuplication.h"
+#include "WindowsGraphicsCapture.h"
+
 #include "ConfigDlg.h"
 
 using json = nlohmann::json;
@@ -266,7 +270,7 @@ LRESULT CMainDlg::OnDestroy(UINT, WPARAM, LPARAM, BOOL&)
 	if (m_threadAutoDetect.joinable()) {
 		m_cancelAutoDetect = true;
 		m_threadAutoDetect.detach();
-		::Sleep(2 * 1000);
+		::Sleep(5 * 1000);
 	}
 
 	return 0;
@@ -338,6 +342,7 @@ void CMainDlg::OnShowConfigDlg(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	const bool prevPopupRaceListWindow = m_config.popupRaceListWindow;
 	const int prevTheme = m_config.theme;
+	const int prevSCMethod = m_config.screenCaptureMethod;
 	ConfigDlg dlg(m_config);
 	auto ret = dlg.DoModal(m_hWnd);
 	if (ret == IDOK) {
@@ -350,6 +355,10 @@ void CMainDlg::OnShowConfigDlg(UINT uNotifyCode, int nID, CWindow wndCtl)
 			m_raceListWindow.OnThemeChanged();
 			m_previewWindow.OnThemeChanged();
 			m_popupRichEdit.OnThemeChanged();
+		}
+		if (prevSCMethod != m_config.screenCaptureMethod) {
+			std::unique_lock lock(m_mtxScreennShotWindow);
+			m_screenshotWindow.reset();
 		}
 
 		SetWindowPos(m_config.windowTopMost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);	
@@ -546,11 +555,12 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 			ssPath = ssFolderPath / L"screenshot.png";
 		}
 		// 
-		auto image = m_umaTextRecoginzer.ScreenShot();
+		auto image = _ScreenShotUmaWindow();
 		if (!image) {
 			ChangeWindowTitle(L"スクリーンショットに失敗...");
 			return;
 		}
+
 		auto pngEncoder = GetEncoderByMimeType(L"image/png");
 		auto ret = image->Save(ssPath.c_str(), &pngEncoder->Clsid);
 		bool success = ret == Gdiplus::Ok;
@@ -596,10 +606,12 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 			};
 
 			// 初回のみ能力詳細からウマ娘名を取得する
-			std::wstring ikuseiUmaMusumeName =  m_umaTextRecoginzer.GetIkuseiUmaMusumeName();
+			auto ssImage2 = _ScreenShotUmaWindow();
+			std::wstring ikuseiUmaMusumeName =  m_umaTextRecoginzer.GetIkuseiUmaMusumeName(ssImage2.get());
 			if (ikuseiUmaMusumeName.length()) {
 				funcChangeIkuseiUmaMusumeName(std::vector<std::wstring>({ ikuseiUmaMusumeName }));
 			}
+			ssImage2.reset();
 
 			int count = 0;
 			while (!m_cancelAutoDetect.load()) {
@@ -607,9 +619,13 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 				const auto begin = std::chrono::steady_clock::now();
 
-				auto ssImage = m_umaTextRecoginzer.ScreenShot();
+				auto ssImage = _ScreenShotUmaWindow();	// m_umaTextRecoginzer.ScreenShot();
 				bool success = m_umaTextRecoginzer.TextRecognizer(ssImage.get());
 				if (success) {
+					if (m_cancelAutoDetect.load()) {
+						break;	// cancel
+					}
+
 					bool updateImage = true;
 					if (m_config.stopUpdatePreviewOnTraining && !m_umaTextRecoginzer.IsTrainingMenu()) {
 						updateImage = false;
@@ -673,6 +689,11 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 				}
 			}
 			// finish
+			{
+				std::unique_lock lock(m_mtxScreennShotWindow);
+				m_screenshotWindow.reset();
+			}
+
 			if (m_threadAutoDetect.joinable()) {
 				CButton btnStart = GetDlgItem(IDC_CHECK_START);
 				btnStart.SetWindowText(L"スタート");
@@ -1136,6 +1157,42 @@ void CMainDlg::_UpdateEventEffect(CRichEditCtrl richEdit, const std::wstring& ef
 	
 	
 	richEdit.SetSel(0, 0);
+}
+
+std::unique_ptr<Gdiplus::Bitmap> CMainDlg::_ScreenShotUmaWindow()
+{
+	std::unique_lock lock(m_mtxScreennShotWindow);
+	if (!m_screenshotWindow) {
+		switch (m_config.screenCaptureMethod) {
+		case Config::kGDI:
+			m_screenshotWindow.reset(new GDIWindowCapture());
+			break;
+
+		case Config::kDesktopDuplication:
+			m_screenshotWindow.reset(new DesktopDuplication());
+			break;
+
+		case Config::kWindowsGraphicsCapture:
+			m_screenshotWindow.reset(new WindowsGraphicsCapture());
+			break;
+
+		default:
+			ERROR_LOG << L"m_config.screenCaptureMethod is unknown";
+			ATLASSERT(FALSE);
+			m_screenshotWindow.reset(new GDIWindowCapture());
+			//return nullptr;
+		}
+	}
+
+	LPCWSTR className = m_targetClassName.GetLength() ? (LPCWSTR)m_targetClassName : nullptr;
+	LPCWSTR windowName = m_targetWindowName.GetLength() ? (LPCWSTR)m_targetWindowName : nullptr;
+	CWindow hwndTarget = ::FindWindow(className, windowName);
+	if (!hwndTarget) {
+		return nullptr;
+	}
+
+	auto ss = m_screenshotWindow->ScreenShot(hwndTarget);
+	return ss;
 }
 
 

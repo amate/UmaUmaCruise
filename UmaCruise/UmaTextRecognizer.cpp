@@ -167,9 +167,6 @@ bool UmaTextRecognizer::LoadSetting()
 	json jsonCommon;
 	ifs >> jsonCommon;
 
-	m_targetWindowName = UTF16fromUTF8(jsonCommon["Common"]["TargetWindow"]["WindowName"].get<std::string>()).c_str();
-	m_targetClassName = UTF16fromUTF8(jsonCommon["Common"]["TargetWindow"]["ClassName"].get<std::string>()).c_str();
-
 	json jsonTestBounds = jsonCommon["Common"]["TestBounds"];
 
 	m_baseClientSize.cx = jsonTestBounds["BaseClientSize"]["width"];
@@ -200,74 +197,14 @@ bool UmaTextRecognizer::LoadSetting()
 	return true;
 }
 
-std::unique_ptr<Gdiplus::Bitmap> UmaTextRecognizer::ScreenShot()
-{
-	LPCWSTR className = m_targetClassName.GetLength() ? (LPCWSTR)m_targetClassName : nullptr;
-	LPCWSTR windowName = m_targetWindowName.GetLength() ? (LPCWSTR)m_targetWindowName : nullptr;
-	CWindow hwndTarget = ::FindWindow(className, windowName);
-	if (!hwndTarget) {
-		return nullptr;
-	}
-
-	//CWindowDC dc(NULL/*hWndTarget*/);	// desktop
-
-	if (g_funcSetThreadDpiAwarenessContext) {	// 高DPIモニターで取得ウィンドウの位置がずれるバグを回避するため
-		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-	}
-
-	//CRect rcWindow;
-	//::GetWindowRect(hwndTarget, &rcWindow);
-
-	CRect rcClient;
-	hwndTarget.GetClientRect(&rcClient);
-
-	CWindow wind;
-	hwndTarget.MapWindowPoints(NULL, &rcClient);
-	CRect rcAdjustClient = rcClient;
-
-	if (g_funcSetThreadDpiAwarenessContext) {
-		g_funcSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
-	}
-
-	Utility::timer timer;
-	auto ssbmp = m_desktopDuplication.ScreenShot(hwndTarget, rcAdjustClient);
-//	ATLTRACE("sstime: %s\n", timer.format().c_str());
-//	WARN_LOG << "sstime: " << timer.format().c_str();
-	return ssbmp;
-
-#if  0
-	CDC dcMemory;
-	dcMemory.CreateCompatibleDC(dc);
-
-	LPVOID           lp = nullptr;
-	BITMAPINFO       bmi = {};
-	BITMAPINFOHEADER bmiHeader = { sizeof(BITMAPINFOHEADER) };
-	bmiHeader.biWidth = rcAdjustClient.Width();
-	bmiHeader.biHeight = rcAdjustClient.Height();
-	bmiHeader.biPlanes = 1;
-	bmiHeader.biBitCount = 24;
-	bmi.bmiHeader = bmiHeader;
-
-	//CBitmap hbmp = ::CreateCompatibleBitmap(dc, rcAdjustClient.Width(), rcAdjustClient.Height());
-	CBitmap hbmp = ::CreateDIBSection(dc, (LPBITMAPINFO)&bmi, DIB_RGB_COLORS, &lp, NULL, 0);
-	auto prevhbmp = dcMemory.SelectBitmap(hbmp);
-
-	//dcMemory.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), dc, 0, 0, SRCCOPY);
-	dcMemory.BitBlt(0, 0, rcAdjustClient.Width(), rcAdjustClient.Height(), dc, rcAdjustClient.left, rcAdjustClient.top, SRCCOPY);
-	dcMemory.SelectBitmap(prevhbmp);
-	WARN_LOG << "sstime: " << timer.format().c_str();
-	return std::unique_ptr<Gdiplus::Bitmap>(Gdiplus::Bitmap::FromHBITMAP(hbmp, NULL));
-#endif
-}
 
 // 育成ウマ娘名[能力詳細]
-std::wstring UmaTextRecognizer::GetIkuseiUmaMusumeName()
+std::wstring UmaTextRecognizer::GetIkuseiUmaMusumeName(Gdiplus::Bitmap* image)
 {	
-	std::unique_ptr<Gdiplus::Bitmap> bmpHolder = ScreenShot();
-	if (!bmpHolder) {
+	if (!image) {
 		return L"";
 	}
-	cv::Mat srcImage = GdiPlusBitmapToOpenCvMat(bmpHolder.get());
+	cv::Mat srcImage = GdiPlusBitmapToOpenCvMat(image);
 	if (srcImage.empty()) {
 		ATLASSERT(FALSE);
 		ERROR_LOG << L"GdiPlusBitmapToOpenCvMat failed";
@@ -320,13 +257,8 @@ bool UmaTextRecognizer::TextRecognizer(Gdiplus::Bitmap* image)
 	m_eventName.clear();
 	m_eventBottomOption.clear();
 
-	std::unique_ptr<Gdiplus::Bitmap> bmpHolder;
 	if (!image) {
-		bmpHolder = ScreenShot();
-		if (!bmpHolder) {
-			return false;
-		}
-		image = bmpHolder.get();
+		return false;
 	}
 
 	cv::Mat srcImage = GdiPlusBitmapToOpenCvMat(image);

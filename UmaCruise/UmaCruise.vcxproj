@@ -132,6 +132,7 @@
       <PreprocessorDefinitions>_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,6 +194,8 @@
       <DebugInformationFormat />
       <PreprocessorDefinitions>_WINDOWS;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -254,6 +257,8 @@
     <ClInclude Include="ConfigDlg.h" />
     <ClInclude Include="DarkModeUI.h" />
     <ClInclude Include="DesktopDuplication.h" />
+    <ClInclude Include="GDIWindowCapture.h" />
+    <ClInclude Include="IScreenShotWindow.h" />
     <ClInclude Include="MainDlg.h" />
     <ClInclude Include="PreviewWindow.h" />
     <ClInclude Include="RaceDateLibrary.h" />
@@ -285,6 +290,7 @@
     <ClInclude Include="win32-darkmode\IatHook.h" />
     <ClInclude Include="win32-darkmode\ListViewUtil.h" />
     <ClInclude Include="win32-darkmode\win32-darkmode.h" />
+    <ClInclude Include="WindowsGraphicsCapture.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UmaCruise.rc" />

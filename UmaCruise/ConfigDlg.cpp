@@ -8,6 +8,8 @@
 #include "Utility\Logger.h"
 #include "Utility\WinHTTPWrapper.h"
 
+#include "WindowsGraphicsCapture.h"
+
 using json = nlohmann::json;
 using namespace WinHTTPWrapper;
 
@@ -38,7 +40,12 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	m_theme = static_cast<int>(m_config.theme);
 	m_windowTopMost = m_config.windowTopMost;
 	m_screenshotFolder = m_config.screenShotFolder.wstring().c_str();
+	m_screenCaptureMethod = m_config.screenCaptureMethod;
 	DoDataExchange(DDX_LOAD);
+
+	if (!WindowsGraphicsCapture::IsSupported()) {
+		GetDlgItem(IDC_RADIO_WINDOWSGRAPHICSCAPTURE).EnableWindow(FALSE);
+	}
 
 	DarkModeInit();
 
@@ -70,6 +77,7 @@ LRESULT ConfigDlg::OnOK(WORD, WORD wID, HWND, BOOL&)
 	m_config.theme = static_cast<Config::Theme>(m_theme);
 	m_config.windowTopMost = m_windowTopMost;
 	m_config.screenShotFolder = (LPCWSTR)m_screenshotFolder;
+	m_config.screenCaptureMethod = static_cast<Config::ScreenCaptureMethod>(m_screenCaptureMethod);
 
 	m_config.SaveConfig();
 

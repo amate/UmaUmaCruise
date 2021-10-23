@@ -8,6 +8,7 @@
 #include <wtl\atlmisc.h>
 #include "Utility\GdiplusUtil.h"
 #include "DesktopDuplication.h"
+#include "WindowsGraphicsCapture.h"
 
 class UmaTextRecognizer
 {
@@ -24,11 +25,9 @@ class UmaTextRecognizer
 public:
 	bool	LoadSetting();
 
-	std::unique_ptr<Gdiplus::Bitmap>	ScreenShot();
+	std::wstring	GetIkuseiUmaMusumeName(Gdiplus::Bitmap* image);
 
-	std::wstring	GetIkuseiUmaMusumeName();
-
-	bool	TextRecognizer(Gdiplus::Bitmap* image = nullptr);
+	bool	TextRecognizer(Gdiplus::Bitmap* image);
 
 	const std::vector<std::wstring>&	GetUmaMusumeName() const {
 		return m_umaMusumeName;
@@ -60,9 +59,6 @@ private:
 
 	cv::Mat	_InRangeHSVTextColorBounds(cv::Mat cutImage);
 
-	CString	m_targetWindowName;
-	CString m_targetClassName;
-
 	CSize	m_baseClientSize;
 
 	enum TestBounds {
@@ -91,6 +87,7 @@ private:
 	int							m_entryRaceDistance = 0;
 
 	DesktopDuplication	m_desktopDuplication;
+	WindowsGraphicsCapture	m_graphicsCapture;
 
 };
 

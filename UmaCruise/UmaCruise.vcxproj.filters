@@ -22,6 +22,9 @@
     <Filter Include="Header Files\win32-darkmode">
       <UniqueIdentifier>{5e8cf68a-5cf7-4ef1-a5cb-9ab22627c48c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ScreenShot">
+      <UniqueIdentifier>{d330311c-303a-4130-a5d5-ab0fc449d77c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,7 +195,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DesktopDuplication.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ScreenShot</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsGraphicsCapture.h">
+      <Filter>Header Files\ScreenShot</Filter>
+    </ClInclude>
+    <ClInclude Include="GDIWindowCapture.h">
+      <Filter>Header Files\ScreenShot</Filter>
+    </ClInclude>
+    <ClInclude Include="IScreenShotWindow.h">
+      <Filter>Header Files\ScreenShot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

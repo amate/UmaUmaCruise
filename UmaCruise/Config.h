@@ -15,6 +15,11 @@ struct Config
 	bool	windowTopMost = false;
 	boost::filesystem::path screenShotFolder;
 
+	enum ScreenCaptureMethod {
+		kGDI, kDesktopDuplication, kWindowsGraphicsCapture,
+	};
+	ScreenCaptureMethod	screenCaptureMethod = kGDI;
+
 	bool	LoadConfig();
 	void	SaveConfig();
 };
