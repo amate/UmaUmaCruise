@@ -159,6 +159,17 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[fix]設定でスリーショット保存先のフォルダ選択ダイアログを開くと応答停止状態になるバグを修正
+
+・[update]UmaMusumeLibrary.json更新 2021-10-28
+- キャラ
+【皓月の弓取り】シンボリルドルフ
+【秋桜ダンツァトリーチェ】ゴールドシチー
+- サポーｔ
+［かなし君、うつくし君］カレンチャン
+［天嗤う鏑矢］ナリタブライアン
+［宵照らす奉納舞］ユキノビジン
+
 v1.16
 ・[add] 画面取り込みに Windows Graphics Capture APIを使ったものを追加
 ・[change] 画面取り込み方式のデフォルトをGDIに変更した

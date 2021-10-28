@@ -161,11 +161,14 @@ void ConfigDlg::OnCheckUmaLibrary(UINT uNotifyCode, int nID, CWindow wndCtl)
 // スクリーンショットの保存先フォルダを選択する
 void ConfigDlg::OnScreenShotFolderSelect(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
-	DWORD dwOptions = FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST;
-	CShellFileOpenDialog dlg(nullptr, dwOptions);
-	auto ret = dlg.DoModal();
-	if (ret == IDOK) {
-		dlg.GetFilePath(m_screenshotFolder);
-		DoDataExchange(DDX_LOAD, IDC_EDIT_SS_FOLDER);
-	}
+	std::thread([this]() {
+		DWORD dwOptions = FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST;
+		CShellFileOpenDialog dlg(nullptr, dwOptions);
+		auto ret = dlg.DoModal(m_hWnd);
+		if (ret == IDOK) {
+			dlg.GetFilePath(m_screenshotFolder);
+			DoDataExchange(DDX_LOAD, IDC_EDIT_SS_FOLDER);
+		}
+	}).detach();
+
 }
