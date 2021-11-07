@@ -125,11 +125,29 @@ CRect GetTextBounds(cv::Mat cutImage, const CRect& rcBounds)
 	ATLASSERT(c == 1);
 	uchar zeroPointVal = thresImage.at<uchar>(0, 0);	// 背景色確認
 	ATLASSERT(zeroPointVal == 0 || zeroPointVal == 255);
+	
+	// イベント名の右端に黒帯が出る問題の対策
+	int rightPos = thresImage.cols;
+	// 左下から右に向かって黒帯の位置を確認する
+	for (int x = 0; x < thresImage.cols; x++) {
+		uchar val = thresImage.at<uchar>(thresImage.rows - 1, x);
+		if (val != zeroPointVal) {	// 背景色以外ならその位置を記録する
+			rightPos = x;
+			break;
+		}
+	}
+	// 黒帯発見
+	if (rightPos != thresImage.cols) {
+		enum { kBlackBandMargin = 10 };
+		if (kBlackBandMargin < rightPos) {
+			rightPos -= kBlackBandMargin;
+		}
+	}
 
 	CPoint ptLT = { thresImage.cols , thresImage.rows };
 	CPoint ptRB = { 0, 0 };
 	for (int y = 0; y < thresImage.rows; y++) {
-		for (int x = 0; x < thresImage.cols; x++) {
+		for (int x = 0; x < rightPos/*thresImage.cols*/; x++) {
 			uchar val = thresImage.at<uchar>(y, x);
 			if (val != zeroPointVal) {	// 背景色以外なら
 				// 見つかった時点で一番小さい地点を探す

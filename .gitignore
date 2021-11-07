@@ -38,5 +38,5 @@ _ReSharper*/
 /vcpkg*/
 /win32-darkmode-master/
 
-
+__pycache__/
 
