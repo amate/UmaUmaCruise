@@ -4,31 +4,40 @@ import re
 import os
 import copy
 
+# 出力名など
+umaLibraryName = 'UmaMusumeLibrary_v2.json'
+umaOldLibraryName = 'UmaMusumeLibrary.json'
+umaLibraryOriginName = 'UmaMusumeLibraryOrigin.json'
+umaLibraryModifyName = 'UmaMusumeLibraryModify.json'
+
 # 中断イベント一覧: https://gamerch.com/umamusume/entry/244582
 
 # エラー発生時に中断させる
 debugErrorStop = True
 
-umaLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary_v2.json')
-umaOldLibraryPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibrary.json')
-
-umaLibraryOriginPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibraryOrigin.json')
-umaLibraryModifyPath = os.path.join(os.path.dirname(__file__), 'UmaMusumeLibraryModify.json')
-
 jsonOrigin = None
 errorCount = 0
 successCount = 0
 
-def main():
+def main(orgFolder):
 
     global jsonOrigin
     global errorCount
     global successCount
 
+    if orgFolder == None:
+        orgFolder = os.path.dirname(__file__)
+
+    umaLibraryPath = os.path.join(orgFolder, umaLibraryName)
+    umaOldLibraryPath = os.path.join(orgFolder, umaOldLibraryName)
+
+    umaLibraryOriginPath = os.path.join(orgFolder, umaLibraryOriginName)
+    umaLibraryModifyPath = os.path.join(orgFolder, umaLibraryModifyName)
+
     print("選択肢に(成功)(失敗)の場合分けが入るようになってしまったので、こちら側で元に戻す処理を入れる")
     print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい ((大成功) or (成功) も)')
 
-    print("AddCharactorEvent はキャラのイベント名が存在しないときのみ追加")
+    print("AddCharactorEvent は キャラ/サポート のイベント名が存在しないときのみ追加")
     print("UpdateEvent はキャラのイベント名(完全一致)が存在する時のみ更新します")
     print("InterruptionEvent はキャラ名とイベント選択肢 部分一致で＜打ち切り＞を効果先頭に挿入")
     print("ReplaceEventName と ReplaceOption は完全一致で置換")
@@ -107,7 +116,7 @@ def main():
         
 
     # 旧バージョン向けのUmaMusumeLibraryを用意する
-    ConvertOption3forOldVersion()
+    ConvertOption3forOldVersion(umaOldLibraryPath)
 
     print("\n\n")
     print("successCount: ", successCount)
@@ -127,25 +136,26 @@ def AddCharactorEvent(charaName, addEvent):
     global successCount
 
     addCount = 0
-    for prop, charaList in jsonOrigin["Charactor"].items():
-        for orgCharaName, eventList in charaList.items():
-            if charaName in orgCharaName:
-                #print("jsonOriginからキャラ名が見つかったので、イベント名を探す")
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                if charaName in orgCharaName:
+                    #print("jsonOriginからキャラ名が見つかったので、イベント名を探す")
 
-                #print("同一イベントが存在するかどうか調べる")
-                for addEventName, addEventList in addEvent.items():
-                    for event in eventList["Event"]:
-                        for eventName, eventOptionList in event.items():
-                            #print(f'{eventName}')
-                            if eventName == addEvent:
-                                print(f'既に同じイベント名が存在します: {eventName}')
-                                errorCount += 1
-                                return False
+                    #print("同一イベントが存在するかどうか調べる")
+                    for addEventName, addEventList in addEvent.items():
+                        for event in eventList["Event"]:
+                            for eventName, eventOptionList in event.items():
+                                #print(f'{eventName}')
+                                if eventName == addEvent:
+                                    print(f'既に同じイベント名が存在します: {eventName}')
+                                    errorCount += 1
+                                    return False
 
-                print(f"同一イベントが存在しなかったので、追加する: {addEventName}")
-                eventList["Event"].append(addEvent)
-                addCount += 1
-                #return True    # 同キャラ名のイベントも探す
+                    print(f"同一イベントが存在しなかったので、追加する: {addEventName}")
+                    eventList["Event"].append(addEvent)
+                    addCount += 1
+                    #return True    # 同キャラ名のイベントも探す
 
     if addCount > 0:
         successCount += addCount
@@ -326,6 +336,8 @@ def DeleteSuccessFailedOnly():
                             deleteEventList.append(eventName)
                         elif "成功" in op1 and "成功" in op2:
                             deleteEventList.append(eventName)
+                        elif eventName == "":   # 空イベント
+                            deleteEventList.append(eventName)
 
                     for delEventName in deleteEventList:
                         print(f'deleteEvent: {delEventName}')
@@ -429,7 +441,7 @@ def NomarizeEventSuccessFailed():
     return False
 
 
-def ConvertOption3forOldVersion():
+def ConvertOption3forOldVersion(umaOldLibraryPath):
     print(f'ConvertOption3forOldVersion')
     global errorCount
     global successCount
@@ -466,6 +478,6 @@ def ConvertOption3forOldVersion():
 
 if __name__ == '__main__':
     print("start")
-    main()
+    main(None)
     print("finish")
 

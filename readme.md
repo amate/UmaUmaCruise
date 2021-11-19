@@ -144,7 +144,7 @@ Visual Studio 2019で "UmaCruise.sln"を開き、
 
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
-‎Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
+Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
 URL:https://gamerch.com/umamusume/
 
 ## ■著作権表示
@@ -158,6 +158,16 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+・[fix] 表示されるイベント名と選択肢の内容が異なるバグを修正
+・[update] 開発環境をVisual Studio 2019 から Visual Studio 2022 へ変更
+
+・[update]UmaMusumeLibrary.json更新 2021-11-20
+- キャラ
+【ツイステッド・ライン】メジロドーベル
+- サポート
+[おどれ・さわげ・フェスれ！]ダイタクヘリオス
+［うるさい監視役］ウオッカ
 
 ・[update]UmaMusumeLibrary.json更新 2021-11-09
 - キャラ
