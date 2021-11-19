@@ -20,7 +20,10 @@ public:
 	enum { kMaxOption = 4 };	// 1つのイベントに付き、最大4つの選択肢がある
 	typedef std::array<EventOptionEffect, kMaxOption>	EventOptions;
 
+	struct CharaEvent;
+
 	struct UmaEvent {
+		CharaEvent*		parentCharaEvent;	// キャラ名 or サポート名
 		std::wstring	eventName;		// イベント名
 		EventOptions	eventOptions;
 	};
@@ -57,11 +60,6 @@ public:
 		const std::vector<std::wstring>& ambiguousEventNames,
 		const std::vector<std::wstring>& ambiguousEventBottomOptions );
 
-	// イベントがどのキャラから発生したのかを返す
-	const std::wstring& GetLastEventSource() const {
-		return m_lastEventSource;
-	}
-
 	// 育成ウマ娘の変更を通知する関数を登録する
 	void	RegisterNotifyChangeIkuseiUmaMusume(std::function<void(std::wstring)> func) {
 		m_funcNotifyChangeIkuseiUmaMusume = func;
@@ -82,8 +80,6 @@ private:
 	CharaEventList	m_charaEventList;
 	// サポートカード
 	CharaEventList	m_supportEventList;
-
-	std::wstring	m_lastEventSource;
 
 	bool	m_simstringDBInit = false;
 	std::unique_ptr<simstring::reader>	m_dbUmaNameReader;

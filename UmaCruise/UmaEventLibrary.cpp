@@ -82,6 +82,7 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 
 				charaEvent.umaEventList.emplace_back();
 				UmaEvent& umaEvent = charaEvent.umaEventList.back();
+				umaEvent.parentCharaEvent = &charaEvent;
 				umaEvent.eventName = eventName;
 
 				int i = 0;
@@ -263,8 +264,6 @@ boost::optional<UmaEventLibrary::UmaEvent> UmaEventLibrary::AmbiguousSearchEvent
 {
 	_DBInit();
 
-	m_lastEventSource.clear();
-
 	auto optOptionResult = retrieve(*m_dbOptionReader, ambiguousEventBottomOptions, simstring::cosine, 1.0, m_kMinThreshold);
 	auto optResult = retrieve(*m_dbReader, ambiguousEventNames, simstring::cosine, 1.0, m_kMinThreshold);
 
@@ -422,7 +421,6 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstrin
 	if (m_currentIkuseiUmaEvent) {
 		for (const auto& umaEvent : m_currentIkuseiUmaEvent->umaEventList) {
 			if (umaEvent.eventName == eventName) {
-				m_lastEventSource = m_currentIkuseiUmaEvent->name;
 				return umaEvent;
 			}
 		}
@@ -432,7 +430,6 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptions(const std::wstrin
 	for (const auto& charaEvent : m_supportEventList) {
 		for (const auto& umaEvent : charaEvent->umaEventList) {
 			if (umaEvent.eventName == eventName) {
-				m_lastEventSource = charaEvent->name;
 				return umaEvent;
 			}
 		}
@@ -451,7 +448,6 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptionsFromBottomOption(c
 					continue;
 				}
 				if (it->option == bottomOption) {	// 最後の選択肢を比較
-					m_lastEventSource = m_currentIkuseiUmaEvent->name;
 					return umaEvent;
 				}
 				break;
@@ -467,7 +463,6 @@ UmaEventLibrary::UmaEvent UmaEventLibrary::_SearchEventOptionsFromBottomOption(c
 					continue;
 				}
 				if (it->option == bottomOption) {	// 最後の選択肢を比較
-					m_lastEventSource = charaEvent->name;
 					return umaEvent;
 				}
 				break;

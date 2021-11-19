@@ -514,7 +514,7 @@ void CMainDlg::OnScreenShot(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 			_UpdateEventOptions(*optUmaEvent);
 
-			m_eventSource = m_umaEventLibrary.GetLastEventSource().c_str();
+			m_eventSource = optUmaEvent->parentCharaEvent->name.c_str();
 			DoDataExchange(DDX_LOAD, IDC_EDIT_EVENT_SOURCE);
 		}
 
@@ -647,7 +647,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 						_UpdateEventOptions(*optUmaEvent);
 
-						m_eventSource = m_umaEventLibrary.GetLastEventSource().c_str();
+						m_eventSource = optUmaEvent->parentCharaEvent->name.c_str();
 						DoDataExchange(DDX_LOAD, IDC_EDIT_EVENT_SOURCE);
 					}
 
@@ -726,7 +726,7 @@ void CMainDlg::OnEventNameChanged(UINT uNotifyCode, int nID, CWindow wndCtl)
 		ChangeWindowTitle(optUmaEvent->eventName);
 		_UpdateEventOptions(*optUmaEvent);
 
-		m_eventSource = m_umaEventLibrary.GetLastEventSource().c_str();
+		m_eventSource = optUmaEvent->parentCharaEvent->name.c_str();
 		DoDataExchange(DDX_LOAD, IDC_EDIT_EVENT_SOURCE);
 	}
 	
