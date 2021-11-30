@@ -159,6 +159,15 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新 2021-11-30
+- キャラ
+【キセキの白星】オグリキャップ
+【ノエルージュ・キャロル】ビワハヤヒデ
+- サポート
+［フォーメーション：PARTY］マヤノトップガン
+［いじっぱりのマルクト］ナリタタイシン
+［スノウクリスタル・デイ］マーベラスサンデー
+
 ・[fix] 表示されるイベント名と選択肢の内容が異なるバグを修正
 ・[update] 開発環境をVisual Studio 2019 から Visual Studio 2022 へ変更
 
