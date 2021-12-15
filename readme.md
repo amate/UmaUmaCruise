@@ -158,6 +158,15 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+・[update]UmaMusumeLibrary.json更新 2021-12-16
+- キャラ
+【Noble Seamair】ファインモーション
+- サポート
+［独奏・螺旋追走曲］マンハッタンカフェ
+［泥濘一笑、真っつぐに］イナリワン
+
+・[update] SkillLibrary.jsonに「真っ向勝負」を追加
+
 
 ・[update]UmaMusumeLibrary.json更新 2021-11-30
 - キャラ
