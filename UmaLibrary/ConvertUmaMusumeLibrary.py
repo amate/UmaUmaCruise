@@ -37,6 +37,8 @@ def main(orgFolder):
     print("選択肢に(成功)(失敗)の場合分けが入るようになってしまったので、こちら側で元に戻す処理を入れる")
     print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい ((大成功) or (成功) も)')
 
+    print('スキル名に「」が付かなくなったので、元に戻す処理を入れる')
+
     print("AddCharactorEvent は キャラ/サポート のイベント名が存在しないときのみ追加")
     print("UpdateEvent はキャラのイベント名(完全一致)が存在する時のみ更新します")
     print("InterruptionEvent はキャラ名とイベント選択肢 部分一致で＜打ち切り＞を効果先頭に挿入")
@@ -79,6 +81,11 @@ def main(orgFolder):
         
     # イベント名(成功), イベント名(失敗) を正規化
     NomarizeEventSuccessFailed()
+    if debugErrorStop and errorCount > 0:
+        assert False
+
+    # スキル名に「」が付かなくなったので、元に戻す処理を入れる
+    NormarizeSkillName()
     if debugErrorStop and errorCount > 0:
         assert False
 
@@ -437,6 +444,46 @@ def NomarizeEventSuccessFailed():
         return True
 
     print("選択肢(成功),選択肢(失敗)が見つかりませんでした")
+    errorCount += 1
+    return False
+
+def NormarizeSkillName():
+    print(f'NormarizeSkillName')
+    global errorCount
+    global successCount
+
+    rxSkillHint = re.compile(r'(\S+) (Lv(?:\+|＋)\d)')
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    newEvent = None
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')      
+
+                        for eventOption in eventOptionList:
+                            op1 = eventOption["Option"]
+                            ef1 = eventOption["Effect"]
+                            effectLineList = ef1.split('\n')
+                            for i in range(len(effectLineList)):
+                                effectLine = effectLineList[i]
+                                replacedText = rxSkillHint.sub(r'「\1」\2', effectLine)
+                                if replacedText != effectLine:
+                                    print(f'"{effectLine}" -> "{replacedText}"')
+                                    effectLineList[i] = replacedText
+                                    replaceCount +=  1
+
+                            skillReplacedEffect = '\n'.join(effectLineList)
+                            eventOption["Effect"] = skillReplacedEffect
+
+
+    if replaceCount > 0:
+        successCount += replaceCount
+        return True
+
+    print("[スキル名 Lv+\d] が見つかりませんでした")
     errorCount += 1
     return False
 

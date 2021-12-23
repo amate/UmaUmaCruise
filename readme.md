@@ -158,6 +158,12 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+・[update]UmaMusumeLibrary.json更新 2021-12-23
+- キャラ
+【疾風迅雷】タマモクロス
+- サポート
+［まだ見ぬ景色を求めて］サイレンススズカ
+
 ・[update]UmaMusumeLibrary.json更新 2021-12-16
 - キャラ
 【Noble Seamair】ファインモーション
