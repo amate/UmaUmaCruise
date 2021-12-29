@@ -38,6 +38,7 @@ def main(orgFolder):
     print('"Option": "成功",　"Option": "失敗", は消すだけでいいっぽい ((大成功) or (成功) も)')
 
     print('スキル名に「」が付かなくなったので、元に戻す処理を入れる')
+    print('イベント名から末尾の"①"や"（イベント進行①）"などの文字列を取り除く')
 
     print("AddCharactorEvent は キャラ/サポート のイベント名が存在しないときのみ追加")
     print("UpdateEvent はキャラのイベント名(完全一致)が存在する時のみ更新します")
@@ -86,6 +87,11 @@ def main(orgFolder):
 
     # スキル名に「」が付かなくなったので、元に戻す処理を入れる
     NormarizeSkillName()
+    if debugErrorStop and errorCount > 0:
+        assert False
+
+    # イベント名から末尾の"①"や"（イベント進行①）"などの文字列を取り除く
+    EraseEventNameSuffixMetaData()
     if debugErrorStop and errorCount > 0:
         assert False
 
@@ -199,6 +205,44 @@ def UpdateEvent(charaName, updateEvent):
                     return False
 
     print("キャラが存在しませんでした")
+    errorCount += 1
+    return False
+
+
+def EraseEventNameSuffixMetaData():
+    print(f'EraseEventNameSuffixMetaData: ')
+    global errorCount
+    global successCount
+
+    rx = re.compile(r'( ?(①|②|③)|（.+(①|②|③)）)$')
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    newEvent = None
+                    newEventName = None
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')
+                        replaceResult = rx.subn('', eventName)
+                        if replaceResult[1] > 0:
+                            newEventName = replaceResult[0]
+                            newEvent = {newEventName: eventOptionList}
+                            break
+
+                    if newEvent != None:
+                        event.pop(eventName)
+                        event.update(newEvent)
+
+                        print(f"イベント名を置換: {orgCharaName} [{eventName}]->[{newEventName}]")
+                        replaceCount += 1
+
+    if replaceCount > 0:
+        successCount += replaceCount
+        return True
+
+    print("serachTextが見つかりませんでした")
     errorCount += 1
     return False
 

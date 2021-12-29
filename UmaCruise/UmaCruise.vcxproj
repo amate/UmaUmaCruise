@@ -47,6 +47,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -241,7 +242,10 @@
     <ClCompile Include="UmaTextRecognizer.cpp" />
     <ClCompile Include="Utility\CodeConvert.cpp" />
     <ClCompile Include="Utility\CommonUtility.cpp" />
-    <ClCompile Include="Utility\GdiplusUtil.cpp" />
+    <ClCompile Include="Utility\GdiplusUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Utility\Logger.cpp" />
     <ClCompile Include="Utility\WinHTTPWrapper.cpp" />
     <ClCompile Include="win32-darkmode\DarkMode.cpp">
@@ -290,7 +294,7 @@
     <ClInclude Include="win32-darkmode\IatHook.h" />
     <ClInclude Include="win32-darkmode\ListViewUtil.h" />
     <ClInclude Include="win32-darkmode\win32-darkmode.h" />
-    <ClInclude Include="WindowsGraphicsCapture.h" />
+    <ClInclude Include="WindowsGraphicsCaptureWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UmaCruise.rc" />

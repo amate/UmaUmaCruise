@@ -26,10 +26,12 @@ boost::optional<std::pair<std::wstring, double>> retrieve(
 {
 	// Retrieve similar strings into a string vector.
 	std::vector<std::wstring> xstrs;
+	std::wstring query_org;
 	for (; threshold > minThreshold/*kMinThreshold*/; threshold -= 0.05) {	// 少なくとも一つが見つかるような閾値を探す
 		for (const std::wstring& query : ambiguousEventNames) {
 			dbr.retrieve(query, measure, threshold, std::back_inserter(xstrs));
 			if (xstrs.size()) {
+				query_org = query;
 				break;
 			}
 		}
@@ -37,6 +39,41 @@ boost::optional<std::pair<std::wstring, double>> retrieve(
 			break;
 		}
 	}
+	if (xstrs.size() >= 2) {
+		INFO_LOG << L"retrieve - 候補が複数あります [" << query_org << L"]";
+		// 類似度が高い方を調べる
+		simstring::ngram_generator ngen(1, false);
+		std::vector<std::wstring> query_ngrams;
+		ngen(query_org, std::back_inserter(query_ngrams));
+		ATLASSERT(query_ngrams.size());
+		if (query_ngrams.empty()) {
+			return boost::none;
+		}
+		std::wstring topSimilrartyText;
+		double topSimilrartyRatio = 0.0;
+		for (const std::wstring& str : xstrs) {
+			std::vector<std::wstring> str_ngrams;
+			ngen(str, std::back_inserter(str_ngrams));
+			ATLASSERT(str_ngrams.size());
+			int matchCount = 0;
+			for (const std::wstring& gram : str_ngrams) {
+				bool found = std::find(query_ngrams.begin(), query_ngrams.end(), gram) != query_ngrams.end();
+				if (found) {
+					++matchCount;
+				}
+			}
+			const int maxSize = static_cast<int>(std::max(query_ngrams.size(), str_ngrams.size()));
+			const double simRatio = static_cast<double>(matchCount) / maxSize;
+			INFO_LOG << L"[" << str << L"] - " << simRatio;
+			if (topSimilrartyRatio < simRatio) {
+				topSimilrartyRatio = simRatio;
+				topSimilrartyText = str;	// 前のより類似度が高い
+			}
+		}
+		INFO_LOG << L"topSimilrartyText -> [" << topSimilrartyText << L"]";
+		return std::make_pair(topSimilrartyText, topSimilrartyRatio);
+	}
+
 	if (xstrs.size()) {
 		INFO_LOG << L"result: " << xstrs.front() << L" threshold: " << threshold;
 		return std::make_pair(xstrs.front(), threshold);
@@ -61,12 +98,6 @@ boost::optional<std::wstring> retrieve(
 	}
 }
 
-void	EventNameNormalize(std::wstring& eventName)
-{
-	std::wregex rx(L"（進行度[^\\）]+）");
-	eventName = std::regex_replace(eventName, rx, L"");
-}
-
 // ==============================================================
 
 bool UmaEventLibrary::LoadUmaMusumeLibrary()
@@ -78,7 +109,6 @@ bool UmaEventLibrary::LoadUmaMusumeLibrary()
 			for (const json& jsonEvent : jsonEventList) {
 				auto eventElm = *jsonEvent.items().begin();
 				std::wstring eventName = UTF16fromUTF8(eventElm.key());
-				EventNameNormalize(eventName);
 
 				charaEvent.umaEventList.emplace_back();
 				UmaEvent& umaEvent = charaEvent.umaEventList.back();

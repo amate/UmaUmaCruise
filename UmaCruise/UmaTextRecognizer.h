@@ -7,8 +7,6 @@
 #include <unordered_map>
 #include <wtl\atlmisc.h>
 #include "Utility\GdiplusUtil.h"
-#include "DesktopDuplication.h"
-#include "WindowsGraphicsCapture.h"
 
 class UmaTextRecognizer
 {
@@ -85,9 +83,6 @@ private:
 	bool						m_bTrainingMenu = false;
 	bool						m_bIkuseiTop = false;
 	int							m_entryRaceDistance = 0;
-
-	DesktopDuplication	m_desktopDuplication;
-	WindowsGraphicsCapture	m_graphicsCapture;
 
 };
 

@@ -1,0 +1,2 @@
+#define WINDOWSGRAPHICSCAPTURE_API __declspec(dllexport)
+#define WINDOWSGRAPHICSCAPTURE_API __declspec(dllimport)

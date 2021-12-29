@@ -1,4 +1,9 @@
-#pragma once
+﻿// WindowsGraphicsCapture.cpp : DLL 用にエクスポートされる関数を定義します。
+//
+
+#include "pch.h"
+#include "framework.h"
+#include "WindowsGraphicsCapture.h"
 
 #include "winrt/base.h"
 #include <winrt/Windows.Foundation.h>
@@ -22,12 +27,11 @@
 
 #include <VersionHelpers.h>
 
-#include "Utility\Logger.h"
-#include "Utility\GdiplusUtil.h"
+//#include "Utility\Logger.h"
+#include "..\UmaCruise\Utility\GdiplusUtil.h"
 
 #pragma comment(lib, "Dwmapi.lib")	// for DwmGetWindowAttribute
 
-#include "IScreenShotWindow.h"
 
 namespace winrt
 {
@@ -52,17 +56,24 @@ auto GetDXGIInterfaceFromObject(winrt::Windows::Foundation::IInspectable const& 
 class WindowsGraphicsCapture : public IScreenShotWindow
 {
 public:
+	WindowsGraphicsCapture()
+	{
+		GdiplusInit();
+	}
+
 	~WindowsGraphicsCapture()
 	{
 		_Release();
+
+		GdiplusTerm();
 	}
 
 	static bool IsSupported()
 	{
 		using fnRtlGetNtVersionNumbers = void (WINAPI*)(LPDWORD major, LPDWORD minor, LPDWORD build);
-		auto RtlGetNtVersionNumbers = 
+		auto RtlGetNtVersionNumbers =
 			reinterpret_cast<fnRtlGetNtVersionNumbers>(
-								GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "RtlGetNtVersionNumbers"));
+				GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "RtlGetNtVersionNumbers"));
 		ATLASSERT(RtlGetNtVersionNumbers);
 		DWORD major, minor, buildNumber;
 		RtlGetNtVersionNumbers(&major, &minor, &buildNumber);
@@ -131,7 +142,7 @@ public:
 
 		graphics.DrawImage(ssMonitorBmp32.get(), 0, 0,
 			left,
-			top, 
+			top,
 			rcAdjustClient.Width(), rcAdjustClient.Height(), Gdiplus::UnitPixel);
 
 		return ssBmp24;
@@ -206,7 +217,7 @@ private:
 		monitorInfo.cbSize = sizeof(monitorInfo);
 		::GetMonitorInfo(hMonitor, &monitorInfo);
 
-		if (!m_framePool  ||
+		if (!m_framePool ||
 			m_lastHwndTarget != hwndTarget ||
 			m_lastTargetHWNDMonitorName != monitorInfo.szDevice)
 		{
@@ -231,7 +242,7 @@ private:
 
 						// デバイス作成
 						_CreateDeviceAndCaptureStart(adapter, hwndTarget);
-						
+
 						return;	// update!
 					}
 					output.Release();
@@ -260,7 +271,7 @@ private:
 			hr = ::D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0, D3D11_SDK_VERSION, &m_device, nullptr, &m_deviceContext);
 		}
 		if (FAILED(hr)) {
-			ERROR_LOG << L"D3D11CreateDevice failed";
+			//ERROR_LOG << L"D3D11CreateDevice failed";
 			//throw std::runtime_error("D3D11CreateDevice");
 			return;	// failed
 		}
@@ -271,7 +282,7 @@ private:
 		winrt::com_ptr<::IInspectable> device;
 		hr = CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice, device.put());
 		if (FAILED(hr) || !device) {
-			ERROR_LOG << L"CreateDirect3D11DeviceFromDXGIDevice failed";
+			//ERROR_LOG << L"CreateDirect3D11DeviceFromDXGIDevice failed";
 			return;
 		}
 		m_rtDevice = device.as<winrt::IDirect3DDevice>();
@@ -280,7 +291,7 @@ private:
 		// ==
 		auto item = CreateCaptureItemForWindow(hwndTarget);
 		if (!item) {
-			ERROR_LOG << L"CreateCaptureItemForWindow failed";
+			//ERROR_LOG << L"CreateCaptureItemForWindow failed";
 			return;
 		}
 
@@ -291,13 +302,13 @@ private:
 			1,
 			item.Size());
 		if (!m_framePool) {
-			ERROR_LOG << L"Direct3D11CaptureFramePool::Create failed";
+			//ERROR_LOG << L"Direct3D11CaptureFramePool::Create failed";
 			return;
 		}
 
 		m_session = m_framePool.CreateCaptureSession(item);
 		if (!m_session) {
-			ERROR_LOG << L"m_framePool.CreateCaptureSession failed";
+			//ERROR_LOG << L"m_framePool.CreateCaptureSession failed";
 			return;
 		}
 		m_session.IsCursorCaptureEnabled(false);
@@ -310,6 +321,7 @@ private:
 	{
 		ATLASSERT(m_framePool);
 		enum { kMaxRetryCount = 1000 };
+		bool firstFrameSkip = true;
 		for (int retryCount = 0; retryCount < kMaxRetryCount; ++retryCount) {
 			auto frame = m_framePool.TryGetNextFrame();
 			if (!frame) {
@@ -318,8 +330,14 @@ private:
 				continue;
 			}
 
+			// 間を開けて呼ぶと古いフレームが取得されるのを避けるため
+			if (firstFrameSkip) {
+				firstFrameSkip = false;
+				continue;
+			}
+
 			// ウィンドウサイズが変更されたのでフレームバッファサイズを変更させる
-			auto frameDesc = frame.Surface().Description();			
+			auto frameDesc = frame.Surface().Description();
 			winrt::SizeInt32 size = frame.ContentSize();// { frameDesc.Width, frameDesc.Height };
 			if (size != m_lastSize) {
 				m_lastSize = size;
@@ -348,3 +366,8 @@ private:
 	winrt::SizeInt32	m_lastSize;
 
 };
+
+extern "C" WINDOWSGRAPHICSCAPTURE_API IScreenShotWindow* CreateWindowsGraphicsCapture()
+{
+	return new WindowsGraphicsCapture;
+}

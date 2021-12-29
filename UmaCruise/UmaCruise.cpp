@@ -13,6 +13,7 @@
 #include "Utility\json.hpp"
 #include "TesseractWrapper.h"
 #include "win32-darkmode\DarkMode.h"
+#include "WindowsGraphicsCaptureWrapper.h"
 
 // グローバル変数
 CAppModule _Module;
@@ -110,10 +111,18 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 		BOOL b = funcSetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 	}
 
-
 	InitDarkMode();
 
+	bool bLoadWindowsGraphicsCaptureDll = false;
+	if (WindowsGraphicsCaptureWrapper::IsSupported()) {
+		bLoadWindowsGraphicsCaptureDll = WindowsGraphicsCaptureWrapper::LoadLibrary();
+	}
+
 	int nRet = Run(lpstrCmdLine, nCmdShow);
+
+	if (bLoadWindowsGraphicsCaptureDll) {
+		WindowsGraphicsCaptureWrapper::FreeLibrary();
+	}
 
 	g_funcSetThreadDpiAwarenessContext = nullptr;
 	::FreeLibrary(hModUser32);

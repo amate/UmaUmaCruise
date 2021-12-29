@@ -17,7 +17,7 @@
 
 #include "GDIWindowCapture.h"
 #include "DesktopDuplication.h"
-#include "WindowsGraphicsCapture.h"
+#include "WindowsGraphicsCaptureWrapper.h"
 
 #include "ConfigDlg.h"
 
@@ -613,6 +613,7 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 			}
 			ssImage2.reset();
 
+			const auto milisecInterval = m_config.refreshInterval * 1000;
 			int count = 0;
 			while (!m_cancelAutoDetect.load()) {
 				Utility::timer timer;
@@ -620,6 +621,15 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 				const auto begin = std::chrono::steady_clock::now();
 
 				auto ssImage = _ScreenShotUmaWindow();	// m_umaTextRecoginzer.ScreenShot();
+				if (ssImage) {
+					const int imageWidth = ssImage->GetWidth();
+					const int imageHeight = ssImage->GetHeight();
+					if (imageHeight < imageWidth) {	// 横画面なら何もしない
+						m_previewWindow.UpdateImage(ssImage.release());
+						::Sleep(milisecInterval);
+						continue;
+					}
+				}
 				bool success = m_umaTextRecoginzer.TextRecognizer(ssImage.get());
 				if (success) {
 					if (m_cancelAutoDetect.load()) {
@@ -665,7 +675,6 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 					ChangeWindowTitle((LPCWSTR)title);
 
 					// wait
-					const auto milisecInterval = m_config.refreshInterval * 1000;
 					auto end = std::chrono::steady_clock::now();
 					auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 					do {
@@ -1173,7 +1182,11 @@ std::unique_ptr<Gdiplus::Bitmap> CMainDlg::_ScreenShotUmaWindow()
 			break;
 
 		case Config::kWindowsGraphicsCapture:
-			m_screenshotWindow.reset(new WindowsGraphicsCapture());
+			if (WindowsGraphicsCaptureWrapper::IsDllLoaded()) {
+				m_screenshotWindow.reset(WindowsGraphicsCaptureWrapper::CreateWindowsGraphicsCapture());
+			} else {
+				m_screenshotWindow.reset(new GDIWindowCapture());
+			}
 			break;
 
 		default:

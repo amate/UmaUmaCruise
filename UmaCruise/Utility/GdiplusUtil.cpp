@@ -3,10 +3,13 @@
 *	@brief	Gdi+を使うのを便利にする
 */
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "GdiplusUtil.h"
 
+#include <shlwapi.h>	// for PathMatchSpecW
+
 #pragma comment(lib, "gdiplus.lib")
+#pragma comment(lib, "Shlwapi.lib")
 
 using namespace Gdiplus;
 

@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <atlbase.h>
 #include <atlwin.h>
 #include <atltypes.h>
 

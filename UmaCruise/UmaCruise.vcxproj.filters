@@ -197,7 +197,7 @@
     <ClInclude Include="DesktopDuplication.h">
       <Filter>Header Files\ScreenShot</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsGraphicsCapture.h">
+    <ClInclude Include="WindowsGraphicsCaptureWrapper.h">
       <Filter>Header Files\ScreenShot</Filter>
     </ClInclude>
     <ClInclude Include="GDIWindowCapture.h">

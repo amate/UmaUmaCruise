@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <Windows.h>
 #include <GdiPlus.h>
 
 // 初期化/後始末

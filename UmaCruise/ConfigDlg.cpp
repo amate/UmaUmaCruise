@@ -8,7 +8,7 @@
 #include "Utility\Logger.h"
 #include "Utility\WinHTTPWrapper.h"
 
-#include "WindowsGraphicsCapture.h"
+#include "WindowsGraphicsCaptureWrapper.h"
 
 using json = nlohmann::json;
 using namespace WinHTTPWrapper;
@@ -43,7 +43,7 @@ LRESULT ConfigDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 	m_screenCaptureMethod = m_config.screenCaptureMethod;
 	DoDataExchange(DDX_LOAD);
 
-	if (!WindowsGraphicsCapture::IsSupported()) {
+	if (!WindowsGraphicsCaptureWrapper::IsDllLoaded()) {
 		GetDlgItem(IDC_RADIO_WINDOWSGRAPHICSCAPTURE).EnableWindow(FALSE);
 	}
 
