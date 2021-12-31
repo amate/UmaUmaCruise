@@ -159,11 +159,22 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新 2021-12-23
+- キャラ
+【初晴・青き絢爛】テイエムオペラオー
+【初うらら♪さくさくら】ハルウララ
+- サポート
+［袖振り合えば福となる♪］マチカネフクキタル
+［夜に暁、空に瑞星］アドマイヤベガ
+［飛びも出でぬべき心地すれ］メイショウドトウ
+============================================
+
 v1.18
 ・[fix] windows7で起動しない問題をたぶん修正 (WindowsGraphicsCapture関連の処理を WindowsGraphicsCapture.dllに移動させて、動的にロードするようにした)
 ・[change] ウマ娘ウィンドウが横画面の時は、TextRecognizerを実行しないようにした (CPU負荷対策)
 ・[fix] 選択肢の候補が複数ある時、より類似度の高い方を選ぶようにした #90
 ・[fix] イベント名末尾にある"①"や"（イベント進行①）"などの文字列を取り除いた (選択肢検出の精度を上げるため)
+・[fix] 画面取り込み方式に Windows Graphics Captureを選択した時に、画面取り込み実行時に古いフレームを取り込んでしまうのを修正
 
 ・[update]UmaMusumeLibrary.json更新 2021-12-23
 - キャラ
