@@ -160,8 +160,6 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ・[update]UmaMusumeLibrary.json更新 2022-01-14
-- キャラ
-【シューティンスタァ・ルヴゥ】フジキセキ
 - サポート
 ［ブスッといっとく？］安心沢刺々美
 ［これがウチらのいか焼きや！］タマモクロス
