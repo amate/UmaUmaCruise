@@ -183,6 +183,8 @@ def UpdateEvent(charaName, updateEvent):
     global errorCount
     global successCount
 
+    updateCount = 0
+
     for charaOrSupport, propDict in jsonOrigin.items():
         for prop, charaList in propDict.items():
             for orgCharaName, eventList in charaList.items():
@@ -198,15 +200,19 @@ def UpdateEvent(charaName, updateEvent):
                                     print(f"イベント上書き: {eventName}")
                                     event[eventName] = updateEvent[eventName]
                                     successCount += 1
-                                    return True     # とりあえず最初に発見したのだけ
+                                    updateCount += 1
+                                    #return True     # とりあえず最初に発見したのだけ
 
-                    print(f"同一イベントが存在しませんでした: {updateEvent}")
-                    errorCount += 1
-                    return False
+    if updateCount > 0:
+        return True
+    else :
+        print(f"同一イベントが存在しませんでした: {updateEvent}")
+        errorCount += 1
+        return False
 
-    print("キャラが存在しませんでした")
-    errorCount += 1
-    return False
+    # print("キャラが存在しませんでした")
+    # errorCount += 1
+    # return False
 
 
 def EraseEventNameSuffixMetaData():

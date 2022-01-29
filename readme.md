@@ -159,6 +159,19 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新 2022-01-30
+- キャラ
+【CODE:グラサージュ】ミホノブルボン
+【コレクト・ショコラティエ】エイシンフラッシュ
+- サポート
+［小さなカップに想いをこめて］ニシノフラワー
+［爆速！最速！花あらし！］サクラバクシンオー
+［In my way］トーセンジョーダン
+
+・[change] ConvertUmaMusumeLibrary.pyで UpdateEventはキャラ名にマッチする複数キャラのイベントを更新するようにした
+
+============================================
+
 ・[update]UmaMusumeLibrary.json更新 2022-01-26
 - キャラ
 【ツイステッド・ライン】メジロドーベル
