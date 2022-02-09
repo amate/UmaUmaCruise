@@ -159,6 +159,14 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新 2022-02-09
+- キャラ
+【クリノクロア・ライン】メジロアルダン
+- サポート
+［そこに“いる”幸せ］アグネスデジタル
+［頑張るキミに！］アイネスフウジン
+
+============================================
 ・[update]UmaMusumeLibrary.json更新 2022-01-30
 - キャラ
 【CODE:グラサージュ】ミホノブルボン
