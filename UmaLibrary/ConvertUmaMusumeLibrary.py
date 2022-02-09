@@ -20,7 +20,6 @@ errorCount = 0
 successCount = 0
 
 def main(orgFolder):
-
     global jsonOrigin
     global errorCount
     global successCount
@@ -79,7 +78,7 @@ def main(orgFolder):
     DeleteSuccessFailedOnly()
     if debugErrorStop and errorCount > 0:
         assert False
-        
+
     # イベント名(成功), イベント名(失敗) を正規化
     NomarizeEventSuccessFailed()
     if debugErrorStop and errorCount > 0:
@@ -102,7 +101,7 @@ def main(orgFolder):
         InterruptionEvent(charaName, optionText)
     if debugErrorStop and errorCount > 0:
         assert False
-        
+
     # ReplaceEventName
     for replacePair in jsonModify["Modify"]["ReplaceEventName"]:
         searchText = replacePair[0]
@@ -110,7 +109,7 @@ def main(orgFolder):
         ReplaceEventName(searchText, replaceText)
     if debugErrorStop and errorCount > 0:
         assert False
-        
+
     # ReplaceOption
     for replacePair in jsonModify["Modify"]["ReplaceOption"]:
         searchText = replacePair[0]
@@ -118,7 +117,7 @@ def main(orgFolder):
         ReplaceOption(searchText, replaceText)
     if debugErrorStop and errorCount > 0:
         assert False
-        
+
     # ReplaceEffect
     for replacePair in jsonModify["Modify"]["ReplaceEffect"]:
         searchText = replacePair[0]
@@ -126,7 +125,6 @@ def main(orgFolder):
         ReplaceEffect(searchText, replaceText)
     if debugErrorStop and errorCount > 0:
         assert False
-        
 
     # 旧バージョン向けのUmaMusumeLibraryを用意する
     ConvertOption3forOldVersion(umaOldLibraryPath)
@@ -139,8 +137,6 @@ def main(orgFolder):
     with io.open(umaLibraryPath, 'w', encoding="utf-8", newline='\n') as f:
         print(f"json wrtie: {umaLibraryPath}")
         json.dump(jsonOrigin, f, indent=2, ensure_ascii=False)
-
-                    
 
 
 def AddCharactorEvent(charaName, addEvent):
@@ -177,6 +173,7 @@ def AddCharactorEvent(charaName, addEvent):
     print("キャラが存在しませんでした")
     errorCount += 1
     return False
+
 
 def UpdateEvent(charaName, updateEvent):
     print(f'UpdateEvent: {charaName}')
@@ -252,6 +249,7 @@ def EraseEventNameSuffixMetaData():
     errorCount += 1
     return False
 
+
 def InterruptionEvent(charaName, optionText):
     print(f'InterruptionEvent: [{charaName}, {optionText}]')
     global errorCount
@@ -281,6 +279,7 @@ def InterruptionEvent(charaName, optionText):
     print("optionTextが見つかりませんでした")
     errorCount += 1
     return False
+
 
 def ReplaceEventName(searchText, replaceText):
     print(f'ReplaceEventName: [{searchText}, {replaceText}]')
@@ -314,6 +313,7 @@ def ReplaceEventName(searchText, replaceText):
     errorCount += 1
     return False
 
+
 def ReplaceOption(searchText, replaceText):
     print(f'ReplaceOption: [{searchText}, {replaceText}]')
     global errorCount
@@ -341,6 +341,7 @@ def ReplaceOption(searchText, replaceText):
     print("serachTextが見つかりませんでした")
     errorCount += 1
     return False
+
 
 def ReplaceEffect(searchText, replaceText):
     print(f'ReplaceEffect: [{searchText}, {replaceText}]')
@@ -370,6 +371,7 @@ def ReplaceEffect(searchText, replaceText):
     print("serachTextが見つかりませんでした")
     errorCount += 1
     return False
+
 
 def DeleteSuccessFailedOnly():
     print(f'DeleteSuccessFailedOnly')
@@ -413,6 +415,7 @@ def DeleteSuccessFailedOnly():
     errorCount += 1
     return False
 
+
 def NomarizeEventSuccessFailed():
     print(f'NomarizeEventSuccessFailed')
     global errorCount
@@ -428,7 +431,7 @@ def NomarizeEventSuccessFailed():
                 for event in eventList["Event"]:
                     newEvent = None
                     for eventName, eventOptionList in event.items():
-                        #print(f'{eventName}')                        
+                        #print(f'{eventName}')
                         newEventOptionList = []
                         optionSkip = False
                         replaced = False
@@ -480,7 +483,7 @@ def NomarizeEventSuccessFailed():
 
                         if replaced:
                             newEvent = {eventName: newEventOptionList}
-                        
+
 
                     if newEvent != None:
                         event.pop(eventName)
@@ -497,6 +500,7 @@ def NomarizeEventSuccessFailed():
     errorCount += 1
     return False
 
+
 def NormarizeSkillName():
     print(f'NormarizeSkillName')
     global errorCount
@@ -511,7 +515,7 @@ def NormarizeSkillName():
                 for event in eventList["Event"]:
                     newEvent = None
                     for eventName, eventOptionList in event.items():
-                        #print(f'{eventName}')      
+                        #print(f'{eventName}')
 
                         for eventOption in eventOptionList:
                             op1 = eventOption["Option"]
@@ -577,4 +581,3 @@ if __name__ == '__main__':
     print("start")
     main(None)
     print("finish")
-
