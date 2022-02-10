@@ -563,7 +563,8 @@ def NormarizeSkillName():
     global errorCount
     global successCount
 
-    rxSkillHint = re.compile(r'(\S+) (Lv(?:\+|＋)\d)')
+    rxSkillHint = re.compile(r'(\S+) (Lv\+\d)')
+    rxSkillHint2 = re.compile(r'^(?:([^「」]*?)「([^「」]+?)」|([^「」]+?))(の?)(?:ヒントLv|ヒント|Lv)(\+\d)(?:を獲得)?')
 
     replaceCount = 0
     for charaOrSupport, propDict in jsonOrigin.items():
@@ -581,6 +582,7 @@ def NormarizeSkillName():
                             for i in range(len(effectLineList)):
                                 effectLine = effectLineList[i]
                                 replacedText = rxSkillHint.sub(r'「\1」\2', effectLine)
+                                replacedText = rxSkillHint2.sub(r'\1「\2\3」\4ヒントLv\5', replacedText)
                                 if replacedText != effectLine:
                                     print(f'"{effectLine}" -> "{replacedText}"')
                                     effectLineList[i] = replacedText
