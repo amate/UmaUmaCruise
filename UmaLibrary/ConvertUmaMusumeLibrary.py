@@ -361,7 +361,7 @@ def ReplaceEffect(searchText, replaceText):
                         #print(f'{eventName}')
                         for eventOption in eventOptionList:
                             prevEffect = eventOption["Effect"]
-                            newEffect = eventOption["Effect"].replace(searchText, replaceText)
+                            newEffect = (eventOption["Effect"] + "\n").replace(searchText, replaceText).strip()
                             if prevEffect != newEffect:
                                 eventOption["Effect"] = newEffect
                                 print(f"効果を置換: {orgCharaName} [{searchText}]->[{replaceText}]")
