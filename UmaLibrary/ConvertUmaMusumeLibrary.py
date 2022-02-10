@@ -432,7 +432,7 @@ def NormalizeEffect():
     rxHintLevel = re.compile(r'ヒント(?:lv|レベル)', re.I)
     rxLevel = re.compile(r'lv\+?(\d+)', re.I)
     rxSkillPoint = re.compile(r'スキルPt', re.I)
-    rxLigature = re.compile(r'絆(?:ゲージ)?(\+)')
+    rxLigature = re.compile(r'絆(?:(?:ゲージ)?\+(\d)?|ゲージ(?:Lv\+1)?$)')
     rxLineHead1 = re.compile(r'^([※])\s+')
     rxLineHead2 = re.compile(r'^([└∟])\s*')
 
@@ -458,7 +458,7 @@ def NormalizeEffect():
                                 replacedText = rxHintLevel.sub(r'ヒントLv', replacedText)
                                 replacedText = rxLevel.sub(r'Lv+\1', replacedText)
                                 replacedText = rxSkillPoint.sub(r'スキルPt', replacedText)
-                                replacedText = rxLigature.sub(r'絆ゲージ\1', replacedText)
+                                replacedText = rxLigature.sub(r'絆ゲージ+\1', replacedText)
                                 replacedText = rxLineHead1.sub(r'\1', replacedText)
                                 replacedText = rxLineHead2.sub(r'└', replacedText)
                                 if replacedText != effectLine:
