@@ -79,6 +79,9 @@ def main(orgFolder):
     if debugErrorStop and errorCount > 0:
         assert False
 
+    # 効果の正規化
+    NormalizeEffect()
+
     # イベント名(成功), イベント名(失敗) を正規化
     NomarizeEventSuccessFailed()
     if debugErrorStop and errorCount > 0:
@@ -414,6 +417,60 @@ def DeleteSuccessFailedOnly():
     print("(成功,失敗)が見つかりませんでした")
     errorCount += 1
     return False
+
+
+def NormalizeEffect():
+    print(f'NormalizeEffect')
+    global successCount
+
+    rxPlus = re.compile(r'[+＋]')
+    rxMinus = re.compile(r'[-－‐-]')
+    rxTilde = re.compile(r'[~～]')
+    rxRange = re.compile(r'([+-])(\d+～)(\d+)')
+    rxEnum = re.compile(r'([+-])(\d+\/)(\d+)')
+    rxCircle = re.compile(r'[○◯〇]')
+    rxHintLevel = re.compile(r'ヒント(?:lv|レベル)', re.I)
+    rxLevel = re.compile(r'lv\+?(\d+)', re.I)
+    rxSkillPoint = re.compile(r'スキルPt', re.I)
+    rxLigature = re.compile(r'絆(?:ゲージ)?(\+)')
+    rxLineHead1 = re.compile(r'^([※])\s+')
+    rxLineHead2 = re.compile(r'^([└∟])\s*')
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    for eventName, eventOptionList in event.items():
+                        for eventOption in eventOptionList:
+                            op1 = eventOption["Option"]
+                            ef1 = eventOption["Effect"]
+                            effectLineList = ef1.split('\n')
+                            for i in range(len(effectLineList)):
+                                effectLine = effectLineList[i]
+                                replacedText = effectLine.strip()
+                                replacedText = rxPlus.sub(r'+', replacedText)
+                                replacedText = rxMinus.sub(r'-', replacedText)
+                                replacedText = rxTilde.sub(r'～', replacedText)
+                                replacedText = rxRange.sub(r'\1\2\1\3', replacedText)
+                                replacedText = rxEnum.sub(r'\1\2\1\3', replacedText)
+                                replacedText = rxCircle.sub(r'〇', replacedText)
+                                replacedText = rxHintLevel.sub(r'ヒントLv', replacedText)
+                                replacedText = rxLevel.sub(r'Lv+\1', replacedText)
+                                replacedText = rxSkillPoint.sub(r'スキルPt', replacedText)
+                                replacedText = rxLigature.sub(r'絆ゲージ\1', replacedText)
+                                replacedText = rxLineHead1.sub(r'\1', replacedText)
+                                replacedText = rxLineHead2.sub(r'└', replacedText)
+                                if replacedText != effectLine:
+                                    print(f'"{effectLine}" -> "{replacedText}"')
+                                    effectLineList[i] = replacedText
+                                    replaceCount += 1
+
+                            skillReplacedEffect = '\n'.join(effectLineList)
+                            eventOption["Effect"] = skillReplacedEffect
+
+    successCount += replaceCount
+    return True
 
 
 def NomarizeEventSuccessFailed():
