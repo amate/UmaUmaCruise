@@ -159,6 +159,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新 2022-02-17
+- キャラ
+【Starry Nocturne】アドマイヤベガ
+
+============================================
 ・[update]UmaMusumeLibrary.json更新 2022-02-09
 - キャラ
 【クリノクロア・ライン】メジロアルダン
