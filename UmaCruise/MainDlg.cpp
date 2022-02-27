@@ -247,7 +247,7 @@ LRESULT CMainDlg::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		ERROR_LOG << L"LoadConfig failed: " << (LPCWSTR)(CA2W(e.what()));
 		ATLASSERT(FALSE);
 	}
-	ChangeWindowTitle(L"init suscess!");
+	ChangeWindowTitle(L"init success!");
 
 	if (m_config.autoStart) {
 		CButton(GetDlgItem(IDC_CHECK_START)).SetCheck(BST_CHECKED);
