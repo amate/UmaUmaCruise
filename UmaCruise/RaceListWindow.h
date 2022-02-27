@@ -27,6 +27,12 @@ public:
 		kFavoriteRaceListVersion = 1,
 	};
 
+	enum ScenarioRace {
+		kURA_AOHARU = 0,	// URA or AOHARU
+		kMNT = 1,			// Make a newtrack
+	};
+
+
 	RaceListWindow(const Config& config) : m_config(config) {}
 
 	void	ShowWindow(bool bShow);
@@ -65,6 +71,7 @@ public:
 
 		DDX_CONTROL_HANDLE(IDC_LIST_RACE, m_raceListView)
 		DDX_CONTROL_HANDLE(IDC_EDIT_EXPECT_URA, m_editExpectURA)
+		DDX_CONTROL_HANDLE(IDC_COMBO_SCENARIO_RACE, m_cmbScenarioRace)		
 	END_DDX_MAP()
 
 	BEGIN_MSG_MAP_EX(RaceListWindow)
@@ -81,6 +88,8 @@ public:
 
 		NOTIFY_HANDLER_EX(IDC_LIST_RACE, NM_CLICK, OnRaceListClick)
 		NOTIFY_HANDLER_EX(IDC_LIST_RACE, NM_RCLICK, OnRaceListRClick)
+
+		COMMAND_HANDLER_EX(IDC_COMBO_SCENARIO_RACE, CBN_SELCHANGE, OnScenarioRaceChange)
 
 		// Race List
 		COMMAND_ID_HANDLER_EX(IDC_CHECK_SHOWRACE_AFTERCURRENTDATE, OnShowRaceAfterCurrentDate)
@@ -101,6 +110,8 @@ public:
 	LRESULT OnRaceListClick(LPNMHDR pnmh);
 	LRESULT OnRaceListRClick(LPNMHDR pnmh);
 
+	void OnScenarioRaceChange(UINT uNotifyCode, int nID, CWindow wndCtl);
+
 	void OnShowRaceAfterCurrentDate(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndCtl);
 
@@ -112,6 +123,8 @@ private:
 
 	void	_SwitchFavoriteRace(int index);
 	bool	_IsFavoriteRaceTurn(const std::wstring& turn);
+
+	std::string	_GetCurrentFavoriteRaceListName();
 
 	enum RaceHighlightFlag {
 		kAlter = 1 << 0,
@@ -146,6 +159,7 @@ private:
 
 	CListViewCtrl	m_raceListView;
 	CEdit			m_editExpectURA;
+	CComboBox		m_cmbScenarioRace;
 
 	std::wstring	m_currentIkuseUmaMusume;
 	nlohmann::json	m_jsonCharaFavoriteRaceList;

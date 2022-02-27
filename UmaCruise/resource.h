@@ -49,6 +49,7 @@
 #define IDC_SYSLINK_VERSIONCHECK        1043
 #define IDC_COMBO1                      1044
 #define IDC_COMBO_THEME                 1044
+#define IDC_COMBO_SCENARIO_RACE         1044
 #define IDC_RICHEDIT21                  1045
 #define IDC_RICHEDIT22                  1046
 #define IDC_RICHEDIT23                  1047
@@ -95,7 +96,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        210
+#define _APS_NEXT_RESOURCE_VALUE        211
 #define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1071
 #define _APS_NEXT_SYMED_VALUE           101

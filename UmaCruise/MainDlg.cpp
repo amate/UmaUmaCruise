@@ -377,6 +377,34 @@ void CMainDlg::OnShowPreviewWindow(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 void CMainDlg::OnTimer(UINT_PTR nIDEvent)
 {
+	if (nIDEvent == kSearchUmaMusumeNameTimerID) {
+		KillTimer(kSearchUmaMusumeNameTimerID);
+
+		CString name;
+		m_cmbUmaMusume.GetWindowText(name.GetBuffer(128), 128);
+		name.ReleaseBuffer();
+		ATLTRACE(L"name: %s\n", (LPCWSTR)name);
+
+		m_cmbUmaMusume.SetRedraw(FALSE);
+		// m_cmbUmaMusume.ResetContent();	だとなんかおかしくなるので１個づつ消す	
+		while (m_cmbUmaMusume.GetCount()) {
+			m_cmbUmaMusume.DeleteString(0);
+		}
+
+		for (const auto& uma : m_umaEventLibrary.GetIkuseiUmaMusumeEventList()) {
+			auto secondNameEndPos = uma->name.find(L"】");
+			ATLASSERT(secondNameEndPos != std::wstring::npos);
+
+			if (uma->name.find(name, secondNameEndPos + 1) != std::wstring::npos) {
+				int n = m_cmbUmaMusume.AddString(uma->name.c_str());
+			}
+		}
+		const int index = m_cmbUmaMusume.GetCurSel();
+		m_cmbUmaMusume.SetRedraw(TRUE);
+
+		m_cmbUmaMusume.ShowDropDown();
+
+	}
 }
 
 // コンボボックスから育成ウマ娘が変更された場合
@@ -390,9 +418,48 @@ void CMainDlg::OnSelChangeUmaMusume(UINT uNotifyCode, int nID, CWindow wndCtl)
 	m_cmbUmaMusume.GetLBText(index, umaName);
 	if (umaName.Left(1) == L"☆") {
 		m_umaEventLibrary.ChangeIkuseiUmaMusume(L"");
+		ChangeWindowTitle(L"育成ウマ娘変更: none");
 		return;
 	}
 	m_umaEventLibrary.ChangeIkuseiUmaMusume((LPCWSTR)umaName);
+	ChangeWindowTitle(std::wstring(L"育成ウマ娘変更: ") + (LPCWSTR)umaName);
+}
+
+void CMainDlg::OnUmaMusumeEditChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	SetTimer(kSearchUmaMusumeNameTimerID, kSearchUmaMusumeNameTimerInterval);
+}
+
+// 育成ウマ娘名ドロップダウンが閉じられた
+void CMainDlg::OnUmaMusumeDropDownClose(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	CString text;
+	m_cmbUmaMusume.GetLBText(0, text);
+	if (text.Left(1) == L"☆") {
+		return;
+	}
+
+	const int index = m_cmbUmaMusume.GetCurSel();
+
+	// 何も書かずに閉じたので、育成ウマ娘名を設定しない
+	if (m_cmbUmaMusume.GetWindowTextLength() == 0 || m_cmbUmaMusume.GetCount() == 0) {
+		m_umaEventLibrary.ChangeIkuseiUmaMusume(L"");
+		ChangeWindowTitle(L"育成ウマ娘変更: none");
+
+	} else if (index == -1) {
+		// コンボボックス上の一番上の育成ウマ娘を選択する
+		m_cmbUmaMusume.SetCurSel(0);
+		OnSelChangeUmaMusume(0, 0, NULL);
+	}
+
+	//CString name;
+	//m_cmbUmaMusume.GetWindowText(name.GetBuffer(128), 128);
+	//name.ReleaseBuffer();
+	//ATLTRACE(L"%d, name OnUmaMusumeDropDownClose: %s\n", index, (LPCWSTR)name);
+
+	Utility::timer timer;
+	_ReloadUmaMusumeLibrary(true);
+	ATLTRACE("combo closed: %s\n", timer.format().c_str());
 }
 
 // ドッキング状態ならレース一覧ウィンドウを同時に動かす
@@ -710,15 +777,12 @@ void CMainDlg::OnStart(UINT uNotifyCode, int nID, CWindow wndCtl)
 				m_threadAutoDetect.detach();
 			}
 		});
-		//OnTimer(kAutoOCRTimerID);
-		//SetTimer(kAutoOCRTimerID, kAutoOCRTimerInterval);
 	} else {
 		if (m_threadAutoDetect.joinable()) {
 			btnStart.SetWindowText(L"停止中...");
 			btnStart.EnableWindow(FALSE);
 			m_cancelAutoDetect = true;
 		}
-		//KillTimer(kAutoOCRTimerID);
 	}
 }
 
@@ -933,14 +997,15 @@ void CMainDlg::OnScreenShotButtonUp(UINT nFlags, CPoint point)
 }
 
 
-bool CMainDlg::_ReloadUmaMusumeLibrary()
+bool CMainDlg::_ReloadUmaMusumeLibrary(bool initComboOnly /*= false*/)
 {
-	if (!m_umaEventLibrary.LoadUmaMusumeLibrary()) {
+	if (!initComboOnly && !m_umaEventLibrary.LoadUmaMusumeLibrary()) {
 		ERROR_LOG << L"LoadUmaMusumeLibrary failed";
 		ATLASSERT(FALSE);
 		return false;
 	} else {
 		// 育成ウマ娘のリストをコンボボックスに追加
+		m_cmbUmaMusume.SetRedraw(FALSE);
 		m_cmbUmaMusume.ResetContent();
 
 		const std::wstring& currentIkuseiUmaMusume = m_umaEventLibrary.GetCurrentIkuseiUmaMusume();
@@ -957,6 +1022,8 @@ bool CMainDlg::_ReloadUmaMusumeLibrary()
 				m_cmbUmaMusume.SetCurSel(n);
 			}
 		}
+		m_cmbUmaMusume.SetRedraw(TRUE);
+		m_cmbUmaMusume.Invalidate();
 	}
 	return true;
 }
