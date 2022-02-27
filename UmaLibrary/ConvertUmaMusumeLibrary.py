@@ -361,7 +361,7 @@ def ReplaceEffect(searchText, replaceText):
                         #print(f'{eventName}')
                         for eventOption in eventOptionList:
                             prevEffect = eventOption["Effect"]
-                            newEffect = eventOption["Effect"].replace(searchText, replaceText)
+                            newEffect = (eventOption["Effect"] + "\n").replace(searchText, replaceText).strip()
                             if prevEffect != newEffect:
                                 eventOption["Effect"] = newEffect
                                 print(f"効果を置換: {orgCharaName} [{searchText}]->[{replaceText}]")
@@ -432,7 +432,7 @@ def NormalizeEffect():
     rxHintLevel = re.compile(r'ヒント(?:lv|レベル)', re.I)
     rxLevel = re.compile(r'lv\+?(\d+)', re.I)
     rxSkillPoint = re.compile(r'スキルPt', re.I)
-    rxLigature = re.compile(r'絆(?:ゲージ)?(\+)')
+    rxLigature = re.compile(r'絆(?:(?:ゲージ)?\+(\d)?|ゲージ(?:Lv\+1)?$)')
     rxLineHead1 = re.compile(r'^([※])\s+')
     rxLineHead2 = re.compile(r'^([└∟])\s*')
 
@@ -458,7 +458,7 @@ def NormalizeEffect():
                                 replacedText = rxHintLevel.sub(r'ヒントLv', replacedText)
                                 replacedText = rxLevel.sub(r'Lv+\1', replacedText)
                                 replacedText = rxSkillPoint.sub(r'スキルPt', replacedText)
-                                replacedText = rxLigature.sub(r'絆ゲージ\1', replacedText)
+                                replacedText = rxLigature.sub(r'絆ゲージ+\1', replacedText)
                                 replacedText = rxLineHead1.sub(r'\1', replacedText)
                                 replacedText = rxLineHead2.sub(r'└', replacedText)
                                 if replacedText != effectLine:
@@ -563,7 +563,8 @@ def NormarizeSkillName():
     global errorCount
     global successCount
 
-    rxSkillHint = re.compile(r'(\S+) (Lv(?:\+|＋)\d)')
+    rxSkillHint = re.compile(r'(\S+) (Lv\+\d)')
+    rxSkillHint2 = re.compile(r'^(?:([^「」]*?)「([^「」]+?)」|([^「」]+?))(の?)(?:ヒントLv|ヒント|Lv)(\+\d)(?:を獲得)?')
 
     replaceCount = 0
     for charaOrSupport, propDict in jsonOrigin.items():
@@ -581,6 +582,7 @@ def NormarizeSkillName():
                             for i in range(len(effectLineList)):
                                 effectLine = effectLineList[i]
                                 replacedText = rxSkillHint.sub(r'「\1」\2', effectLine)
+                                replacedText = rxSkillHint2.sub(r'\1「\2\3」\4ヒントLv\5', replacedText)
                                 if replacedText != effectLine:
                                     print(f'"{effectLine}" -> "{replacedText}"')
                                     effectLineList[i] = replacedText
