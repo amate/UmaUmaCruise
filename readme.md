@@ -162,9 +162,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 v1.19
 ・[add] 育成ウマ娘をコンボボックスから検索できるようにした
 ・[add] 開催レース一覧で、"URA/アオハル"と"MNT"に予約レース表示の切り替えをできるようにした
+・[update] "UmaMusumeLibraryMainStory.json" に、"アオハル杯" / "Make a new track!!" のイベントを追加
+・[update] UmaMusumeLibrary.jsonの生成に関するPull requestをマージ #98
 
-
-
+============================================
 ・[update]UmaMusumeLibrary.json更新 2022-02-25
 - キャラ
 ☆3
