@@ -160,6 +160,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新 2022-03-17
+アップデートされたイベント効果を更新
+
+============================================
 ・[update]UmaMusumeLibrary.json更新 2022-03-09
 - キャラ
 【Natural Brilliance】サトノダイヤモンド
