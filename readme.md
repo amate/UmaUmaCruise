@@ -159,6 +159,17 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+
+============================================
+・[update]UmaMusumeLibrary.json更新 2022-03-30
+- キャラ
+【ソワレ・ド・シャトン】セイウンスカイ
+【シュクセ・エトワーレ】フジキセキ
+- サポート
+［Escorte etoile］シリウスシンボリ
+［Enchainement］シンボリルドルフ
+［mag!c number］エアシャカール
+
 ============================================
 ・[update]UmaMusumeLibrary.json更新 2022-03-20
 - キャラ
