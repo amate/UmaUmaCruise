@@ -84,7 +84,7 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
-**[Gamerch]**様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
+[Gamerch]様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
 
 ## ■著作権表示
 Copyright (C) 2021 amate
