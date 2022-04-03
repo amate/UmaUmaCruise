@@ -1,10 +1,17 @@
 
 # ウマウマクルーズ
 
-![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss1.png)
-![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss5.png)
+---
 
-![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss2.png)
+ **[❮ 更新履歴 ❯][更新履歴]**
+
+---
+
+![Preview 1]
+
+![Preview 5]
+
+![Preview 2]
 
 ## ■はじめに
 このソフトは、自動でDMM版ウマ娘のウィンドウから、イベント選択肢の効果を知るために作られました
@@ -28,11 +35,11 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 スタート実行後であれば、育成ウマ娘選択画面から自動的に、育成ウマ娘が選択されます  
 予め、コンボボックスに育成ウマ娘が選択されていないと、育成ウマ娘のイベントが表示されないので注意  
 
-![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss_ikusei_select_macikane.png)
+![Macikane]
 
 スタートを押したときに[ウマ娘詳細]が表示されていれば、自動的に育成ウマ娘が選択されます
 
-![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png)
+![Preview 3]
 
 ### ・UmaMusumeLibrary.jsonについて
 
@@ -68,42 +75,36 @@ UmaLibraryフォルダ内の"UmaMusumeLibrary.json"には、イベント名と�
 修正や更新も、責任を負わないこととします。  
 使用にあたっては、自己責任でお願いします。  
  
-何かあれば[メールフォーム](https://ws.formzu.net/fgen/S37403840/)か、githubの[issues](https://github.com/amate/UmaUmaCruise/issues)にお願いします。  
+何かあれば[メールフォーム]か、githubの[issues]にお願いします。  
 
 
 ## ■使用ライブラリ・素材
 
-library
+### Library
 
-- opencv  
-https://opencv.org/
+- **[OpenCV]**  
 
-- Tesseract OCR  
-https://github.com/tesseract-ocr/tesseract
+- **[Tesseract OCR]**  
 
-- SimString  
-http://www.chokkan.org/software/simstring/index.html.ja
+- **[SimString]**
 
-- Boost C++ Libraries  
-https://www.boost.org/
+- **[Boost C++ Libraries][Boost]**
 
-- JSON for Modern C++  
-https://github.com/nlohmann/json
+- **[JSON for Modern C++][JSON]**
 
-- WTL  
-https://sourceforge.net/projects/wtl/
+- **[WTL]**
 
-- win32-darkmode  
-https://github.com/ysc3839/win32-darkmode
+- **[Win32 Darkmode]**
 
-icon
-- ICON HOIHOI  
-http://iconhoihoi.oops.jp/
+### Icon
+
+- **[Icon HoiHoi]**
+
 
 ## ■How to build
 実行ファイルの生成には、Visual Studio 2019が必要です  
 
-ビルドに必要なライブラリは、[vcpkg](https://github.com/microsoft/vcpkg)によって自動的にダウンロード、ライブラリ(.lib)の生成が行われるようになっています
+ビルドに必要なライブラリは、[vcpkg]によって自動的にダウンロード、ライブラリ(.lib)の生成が行われるようになっています
 
 vcpkgがVisual Studio 2019の英語の言語パックを要求するので、Visual Studioのインストール時に追加しておいてください  
 
@@ -144,8 +145,7 @@ Visual Studio 2019で "UmaCruise.sln"を開き、
 
 ## ■イベント選択肢データ(UmaMusumeLibrary.json)について
 
-Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
-URL:https://gamerch.com/umamusume/
+**[Gamerch]**様運営の"ウマ娘攻略wiki"からイベントデータを加工して、自動生成しています  
 
 ## ■著作権表示
 Copyright (C) 2021 amate
@@ -160,3 +160,29 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <!----------------------------------------------------------------------------->
 
 [更新履歴]: Documentation/Changelog.md
+[Issues]: https://github.com/amate/UmaUmaCruise/issues
+
+
+[メールフォーム]: https://ws.formzu.net/fgen/S37403840/
+[vcpkg]: https://github.com/microsoft/vcpkg
+[Gamerch]: https://gamerch.com/umamusume/
+
+
+[Preview 1]: https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss1.png
+[Preview 2]: https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss2.png
+[Preview 3]: https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png
+[Preview 5]: https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss5.png
+
+[Macikane]: https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss_ikusei_select_macikane.png
+
+
+[OpenCV]: https://opencv.org/
+[Tesseract OCR]: https://github.com/tesseract-ocr/tesseract
+[SimString]: http://www.chokkan.org/software/simstring/index.html.ja
+[Boost]: https://www.boost.org/
+[JSON]: https://github.com/nlohmann/json
+[WTL]: https://sourceforge.net/projects/wtl/
+[Win32 Darkmode]: https://github.com/ysc3839/win32-darkmode
+
+[Icon HoiHoi]: http://iconhoihoi.oops.jp/
+
