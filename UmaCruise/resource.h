@@ -17,6 +17,7 @@
 #define IDC_EDIT_NOWDATE2               1010
 #define IDC_EDIT_REMAININGTURN          1010
 #define IDC_COMBO_TESTBOUNDS            1011
+#define IDC_EDIT_ROOT_DISTANCE          1011
 #define IDC_EDIT_RESULT                 1012
 #define IDC_BUTTON_OCR                  1013
 #define IDC_SLIDER_THRESHOLD            1014

@@ -137,7 +137,7 @@ void RaceListWindow::EntryRaceDistance(int distance)
 				m_entryRaceDistanceList.clear();
 			}
 		}
-		m_entryRaceDistanceList.emplace_back(currentTurn, distanceClass);
+		m_entryRaceDistanceList.emplace_back(currentTurn, distanceClass, distance % ROOT_DISTANCE == 0);
 	}
 
 	auto funcIndexFromDistanceClass = [](int distanceClass) -> int {
@@ -207,8 +207,25 @@ void RaceListWindow::EntryRaceDistance(int distance)
 		}
 	}
 	if (text.GetLength()) {
-		text += L"\r\nURA予想: " + expectURA.second;
+		text += L"\r\nURA予想: " + expectURA.second + "\r\n";
 		m_editExpectURA.SetWindowText(text);
+	}
+
+
+	CString rootDistanceText;
+	int rootDistanceCount = 0;
+	int nonRootDistanceCount = 0;
+	for (const auto& raceData : m_entryRaceDistanceList) {
+		raceData.isRootDistance ? rootDistanceCount++ : nonRootDistanceCount++;
+	}
+	if (rootDistanceCount > 0) {
+		rootDistanceText.AppendFormat(L"根幹距離: %d ", rootDistanceCount);
+	}
+	if (nonRootDistanceCount > 0) {
+		rootDistanceText.AppendFormat(L"非根幹距離: %d ", nonRootDistanceCount);
+	}
+	if (rootDistanceText.GetLength()) {
+		m_editRootDistance.SetWindowText(rootDistanceText);
 	}
 }
 
