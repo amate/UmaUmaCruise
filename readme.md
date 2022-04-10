@@ -158,7 +158,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+============================================
+・[update]SkillLibrary.json更新
+"二の矢"の効果内容変更
+"前のめり"のスキル追加
 
+・[update]UmaMusumeLibrary.json更新
+【キセキの白星】オグリキャップ に "オグリ、決意する"のイベント追加
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新 2022-03-30
