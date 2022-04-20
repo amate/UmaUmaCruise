@@ -160,6 +160,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新 2022-04-20
+- キャラ
+【四白流星の襲】ヤエノムテキ
+
+============================================
 ・[update]UmaMusumeLibrary.json更新 2022-04-12
 - キャラ
 【ティアード・ペタル】ニシノフラワー
