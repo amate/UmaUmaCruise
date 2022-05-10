@@ -158,6 +158,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+============================================
+・[update]UmaMusumeLibrary.json更新 2022-05-11
+- キャラ
+【オールタイム・フィーバー】アイネスフウジン
+- サポート
+［Dear Mr. C.B.］ミスターシービー
+［Step! Smile! Wink!］トウカイテイオー
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新 2022-04-29
