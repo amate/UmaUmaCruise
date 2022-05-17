@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import json
 import io
 import re
@@ -139,8 +140,19 @@ def main(orgFolder):
     # jsonへ保存
     with io.open(umaLibraryPath, 'w', encoding="utf-8", newline='\n') as f:
         print(f"json wrtie: {umaLibraryPath}")
+
+        SortCharaNameDict(jsonOrigin)
         json.dump(jsonOrigin, f, indent=2, ensure_ascii=False)
 
+
+# キャラ名やサポート名でソートする
+def SortCharaNameDict(jsonOrigin):
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            sorted_charaList = OrderedDict(sorted(charaList.items(),  key=lambda x:x[0]))
+            del propDict[prop]
+            propDict[prop] = sorted_charaList
+            
 
 def AddCharactorEvent(charaName, addEvent):
     print(f'AddCharactorEvent: {charaName}')
@@ -627,6 +639,8 @@ def ConvertOption3forOldVersion(umaOldLibraryPath):
         # jsonへ保存
         with io.open(umaOldLibraryPath, 'w', encoding="utf-8", newline='\n') as f:
             print(f"json wrtie: {umaOldLibraryPath}")
+
+            SortCharaNameDict(jsonOldOrigin)
             json.dump(jsonOldOrigin, f, indent=2, ensure_ascii=False)
 
         return True
