@@ -158,6 +158,16 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+============================================
+・[update]UmaMusumeLibrary.json更新 2022-05-21
+- キャラ
+【Line Breakthrough】メジロパーマー
+
+============================================
+・[update] "【ティアード・ペタル】ニシノフラワー"の抜けイベント追加
+・[add] ConvertUmaMusumeLibrary.pyで、出力するjsonにキャラ名やサポート名でソートする処理を追加 (これからの差分が見やすくなるかもしれない)
+
 ============================================
 ・[update]UmaMusumeLibrary.json更新 2022-05-11
 - キャラ
