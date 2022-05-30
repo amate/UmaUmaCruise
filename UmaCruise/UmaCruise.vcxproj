@@ -154,6 +154,40 @@
       <TypeLibraryName>$(IntDir)/UmaCruise.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
+    <PreBuildEvent>
+      <Command>rd /s/q "$(SolutionDir)\\tmp"
+mkdir "$(SolutionDir)\\tmp"
+copy "$(OutDir)\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\tmp"
+rd /s/q "$(SolutionDir)\\x64\\Debug"
+mkdir "$(SolutionDir)\\x64\\Debug"
+copy "$(SolutionDir)\\AUTHORS.txt" "$(SolutionDir)\\x64\\Debug"
+copy "$(SolutionDir)\\readme.md" "$(SolutionDir)\\x64\\Debug"
+copy "$(SolutionDir)\\tmp\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\x64\\Debug"
+rd /s/q "$(SolutionDir)\\tmp"
+xcopy "$(SolutionDir)\\UmaCruise\\res\\se" "$(SolutionDir)\\x64\\Debug\\se" /E/I
+xcopy "$(SolutionDir)\\UmaCruise\\res\\tessdata" "$(SolutionDir)\\x64\\Debug\\tessdata" /E/I
+xcopy "$(SolutionDir)\\UmaLibrary" "$(SolutionDir)\\x64\\Debug\\UmaLibrary" /E/I
+del /s/q/f "$(SolutionDir)\\x64\\Debug\\UmaLibrary\\UmaMusumeLibrary.json"
+move "$(SolutionDir)\\x64\\Debug\\UmaLibrary\\UmaMusumeLibrary_v2.json" "$(SolutionDir)\\x64\\Debug\\UmaLibrary\\UmaMusumeLibrary.json"</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>rd /s/q "$(SolutionDir)\\tmp"
+mkdir "$(SolutionDir)\\tmp"
+copy "$(OutDir)\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\tmp"
+rd /s/q "$(SolutionDir)\\Debug"
+mkdir "$(SolutionDir)\\Debug"
+mkdir "$(SolutionDir)\\Debug\\UmaUmaCruise"
+copy "$(SolutionDir)\\AUTHORS.txt" "$(SolutionDir)\\Debug\\UmaUmaCruise"
+copy "$(SolutionDir)\\readme.md" "$(SolutionDir)\\Debug\\UmaUmaCruise"
+copy "$(SolutionDir)\\tmp\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\Debug\\UmaUmaCruise"
+rd /s/q "$(SolutionDir)\\tmp"
+xcopy "$(SolutionDir)\\UmaCruise\\res\\se" "$(SolutionDir)\\Debug\\UmaUmaCruise\\se" /E/I
+xcopy "$(SolutionDir)\\UmaCruise\\res\\tessdata" "$(SolutionDir)\\Debug\\UmaUmaCruise\\tessdata" /E/I
+xcopy "$(SolutionDir)\\UmaLibrary" "$(SolutionDir)\\Debug\\UmaUmaCruise\\UmaLibrary" /E/I
+del /s/q/f "$(SolutionDir)\\x64\\Debug\\UmaLibrary\\UmaMusumeLibrary.json"
+move "$(SolutionDir)\\x64\\Debug\\UmaLibrary\\UmaMusumeLibrary_v2.json" "$(SolutionDir)\\x64\\Debug\\UmaLibrary\\UmaMusumeLibrary.json"
+copy "$(targetPath)" "$(SolutionDir)\\Debug\\UmaUmaCruise\\UmaCruise.exe"</Command>
+    </PostBuildEvent>
     <Manifest />
     <Manifest />
   </ItemDefinitionGroup>
@@ -216,8 +250,39 @@
       <TypeLibraryName>$(IntDir)/UmaCruise.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
+    <PreBuildEvent>
+      <Command>rd /s/q "$(SolutionDir)\\tmp"
+mkdir "$(SolutionDir)\\tmp"
+copy "$(OutDir)\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\tmp"
+rd /s/q "$(SolutionDir)\\x64\\Release"
+mkdir "$(SolutionDir)\\x64\\Release"
+copy "$(SolutionDir)\\AUTHORS.txt" "$(SolutionDir)\\x64\\Release"
+copy "$(SolutionDir)\\readme.md" "$(SolutionDir)\\x64\\Release"
+copy "$(SolutionDir)\\tmp\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\x64\\Release"
+rd /s/q "$(SolutionDir)\\tmp"
+xcopy "$(SolutionDir)\\UmaCruise\\res\\se" "$(SolutionDir)\\x64\\Release\\se" /E/I
+xcopy "$(SolutionDir)\\UmaCruise\\res\\tessdata" "$(SolutionDir)\\x64\\Release\\tessdata" /E/I
+xcopy "$(SolutionDir)\\UmaLibrary" "$(SolutionDir)\\x64\\Release\\UmaLibrary" /E/I
+del /s/q/f "$(SolutionDir)\\x64\\Release\\UmaLibrary\\UmaMusumeLibrary.json"
+move "$(SolutionDir)\\x64\\Release\\UmaLibrary\\UmaMusumeLibrary_v2.json" "$(SolutionDir)\\x64\\Release\\UmaLibrary\\UmaMusumeLibrary.json"</Command>
+    </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy "$(targetPath)" "$(SolutionDir)#Release\UmaUmaCruise\UmaUmaCruise.exe"</Command>
+      <Command>rd /s/q "$(SolutionDir)\\tmp"
+mkdir "$(SolutionDir)\\tmp"
+copy "$(OutDir)\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\tmp"
+rd /s/q "$(SolutionDir)\\Release"
+mkdir "$(SolutionDir)\\Release"
+mkdir "$(SolutionDir)\\Release\\UmaUmaCruise"
+copy "$(SolutionDir)\\AUTHORS.txt" "$(SolutionDir)\\Release\\UmaUmaCruise"
+copy "$(SolutionDir)\\readme.md" "$(SolutionDir)\\Release\\UmaUmaCruise"
+copy "$(SolutionDir)\\tmp\\WindowsGraphicsCapture.dll" "$(SolutionDir)\\Release\\UmaUmaCruise"
+rd /s/q "$(SolutionDir)\\tmp"
+xcopy "$(SolutionDir)\\UmaCruise\\res\\se" "$(SolutionDir)\\Release\\UmaUmaCruise\\se" /E/I
+xcopy "$(SolutionDir)\\UmaCruise\\res\\tessdata" "$(SolutionDir)\\Release\\UmaUmaCruise\\tessdata" /E/I
+xcopy "$(SolutionDir)\\UmaLibrary" "$(SolutionDir)\\Release\\UmaUmaCruise\\UmaLibrary" /E/I
+del /s/q/f "$(SolutionDir)\\x64\\Release\\UmaLibrary\\UmaMusumeLibrary.json"
+move "$(SolutionDir)\\x64\\Release\\UmaLibrary\\UmaMusumeLibrary_v2.json" "$(SolutionDir)\\x64\\Release\\UmaLibrary\\UmaMusumeLibrary.json"
+copy "$(targetPath)" "$(SolutionDir)\\Release\\UmaUmaCruise\\UmaCruise.exe"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
