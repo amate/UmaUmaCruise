@@ -4,6 +4,10 @@
 
 #pragma once
 
+#if defined BOOST_USE_WINAPI_VERSION 
+#undef BOOST_USE_WINAPI_VERSION
+#endif
+#define BOOST_USE_WINAPI_VERSION BOOST_WINAPI_VERSION_WIN7 
 #include <boost/log/expressions.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/log/support/date_time.hpp>
