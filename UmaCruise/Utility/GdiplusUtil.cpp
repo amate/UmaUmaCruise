@@ -89,16 +89,15 @@ void	GdiplusTerm()
 
 
 
-//---------------------------------------
-/// 拡張子を指定してエンコーダーを取得する
+/* 拡張子を指定してエンコーダーを取得する */
+
 Gdiplus::ImageCodecInfo*	GetEncoderByExtension(LPCWSTR extension)
 {
 	return GdiplusUtil.GetEncoderByExtension(extension);
 }
 
 
-//--------------------------------------
-/// MIMEタイプを指定してエンコーダを取得する
+/* MIMEタイプを指定してエンコーダを取得する */
 Gdiplus::ImageCodecInfo*	GetEncoderByMimeType(LPCWSTR mimetype)
 {
 	return GdiplusUtil.GetEncoderByMimeType(mimetype);
