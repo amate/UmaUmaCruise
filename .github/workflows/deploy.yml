@@ -1,0 +1,92 @@
+name: CI
+# Workflow file for windows
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'appversion.txt'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'appversion.txt'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Vcpkg(Pre-script)
+      run: |
+        mkdir -Force ${{ github.workspace }}/vcpkg_installed
+
+    - name: Cache(Vcpkg)
+      uses: actions/cache@v2
+      with:
+        path: ${{ github.workspace }}/vcpkg_installed
+        key: ${{ runner.os }}-dependencies
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-version: '[17.0,18.0)'
+        msbuild-architecture: x64
+
+    - name: Vcpkg(Init)
+      run: |
+        vcpkg integrate install
+        New-Item -ItemType container "${env:VCPKG_INSTALLATION_ROOT}\downloads"
+        Invoke-WebRequest -Uri "https://github.com/microsoft/vcpkg/files/7075269/nasm-2.15.05-win32.zip" -OutFile "${env:VCPKG_INSTALLATION_ROOT}\downloads\nasm-2.15.05-win32.zip"
+
+    - name: Build
+      run: |
+        cd ${{ github.workspace }}
+        msbuild /m /p:Configuration=Release /p:Platform=x64 /p:VcpkgEnableManifest=true /p:VcpkgTriplet=x64-windows-static /maxcpucount
+        cd ${{ github.workspace }}/Release
+        7z a UmaUmaCruise.7z *
+        cd ../
+        Remove-Item public -Recurse -ErrorAction Ignore
+        mkdir public
+        mv ./Release/UmaUmaCruise.7z ./public/
+        cp appversion.txt ./public/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: UmaUmaCruise
+        retention-days: 1
+        path: |
+          public/UmaUmaCruise.7z
+          public/appversion.txt
+ 
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:      
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: UmaUmaCruise
+        path: public
+    - name: Pack
+      run: |
+        VER=$(head -n 1 ./public/appversion.txt|sed 's/.//')
+        echo "TAG_NAME=v$VER" >> $GITHUB_ENV
+        rm -f ./public/appversion.txt
+        cd ./public
+        7z x UmaUmaCruise.7z
+        rm -f UmaUmaCruise.7z
+        zip -r UmaUmaCruise_$VER.zip ./*
+        cd ..
+        CONTENT="Checksum(SHA256): "$(sha256sum public//*.zip | awk '{print $1}')
+        echo "DEFAULT_CONTENT=$CONTENT" >> $GITHUB_ENV
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: ${{ env.DEFAULT_CONTENT }}
+        generate_release_notes: true
+        draft: true
+        tag_name: ${{ env.TAG_NAME }}
+        files: public/*.zip
