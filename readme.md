@@ -160,6 +160,16 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新 2022-06-01
+- キャラ
+【Titania】ファインモーション
+【朔日のマ・シェリ】カレンチャン
+- サポート
+［あこがれの景色］ライスシャワー
+［うららか・ぱっしょん♪］ハルウララ
+［愛すべき金蘭のつどい］イクノディクタス
+
+============================================
 ・[update]UmaMusumeLibrary.json更新 2022-05-21
 - キャラ
 【Line Breakthrough】メジロパーマー
