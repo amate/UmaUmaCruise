@@ -34,6 +34,8 @@ UmaUmaCruise.exeが置かれるフォルダまでのパスにunicodeが含まれ
 
 ![](https://raw.githubusercontent.com/amate/UmaUmaCruise/images/images/ss3.png)
 
+ウマ娘のウィンドウが表示されているのに、タイトルバーに"ウマ娘のウィンドウが見つかりません…"と表示される場合は、UmaUmaCruise.exeを管理者権限で起動させてみてください
+
 ### ・UmaMusumeLibrary.jsonについて
 
 UmaLibraryフォルダ内の"UmaMusumeLibrary.json"には、イベント名と選択肢の名前/効果が記録されています  
@@ -158,6 +160,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+============================================
+・[update]UmaMusumeLibrary.json更新
+ウォッカのイベント"究極の2択"が抜けていたのを修正 #111
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新 2022-06-01
