@@ -162,6 +162,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新　2022-06-12
+- キャラ
+【稲荷所縁江戸紫】イナリワン
+
+============================================
 ・[update]UmaMusumeLibrary.json更新
 ウォッカのイベント"究極の2択"が抜けていたのを修正 #111
 
