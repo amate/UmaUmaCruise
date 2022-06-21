@@ -12,6 +12,8 @@
 
 #include "resource.h"
 
+#define ROOT_DISTANCE 400
+
 class RaceListWindow : 
 	public CDialogImpl<RaceListWindow>,
 	public CWinDataExchange<RaceListWindow>,
@@ -71,6 +73,7 @@ public:
 
 		DDX_CONTROL_HANDLE(IDC_LIST_RACE, m_raceListView)
 		DDX_CONTROL_HANDLE(IDC_EDIT_EXPECT_URA, m_editExpectURA)
+		DDX_CONTROL_HANDLE(IDC_EDIT_ROOT_DISTANCE, m_editRootDistance)
 		DDX_CONTROL_HANDLE(IDC_COMBO_SCENARIO_RACE, m_cmbScenarioRace)		
 	END_DDX_MAP()
 
@@ -159,6 +162,7 @@ private:
 
 	CListViewCtrl	m_raceListView;
 	CEdit			m_editExpectURA;
+	CEdit			m_editRootDistance;
 	CComboBox		m_cmbScenarioRace;
 
 	std::wstring	m_currentIkuseUmaMusume;
@@ -174,8 +178,9 @@ private:
 	struct RaceDistanceData {
 		int turn;
 		int	distanceClass;
+		bool isRootDistance;
 
-		RaceDistanceData(int turn, int distanceClass) : turn(turn), distanceClass(distanceClass) {}
+		RaceDistanceData(int turn, int distanceClass, bool isRootDistance) : turn(turn), distanceClass(distanceClass), isRootDistance(isRootDistance) {}
 	};
 	std::vector<RaceDistanceData>	m_entryRaceDistanceList;
 
