@@ -160,6 +160,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+============================================
+・[update]UmaMusumeLibrary.json更新　2022-06-21
+- キャラ
+【プラタナス・ウィッチ】スイープトウショウ
+- サポート
+［Hands up,crook!］タイキシャトル
+［好きなんだ、ご飯が］オグリキャップ
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2022-06-12
