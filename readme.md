@@ -160,6 +160,14 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 ## ■更新履歴
 
 <pre>
+
+v1.20
+・[add] 川崎/船橋/盛岡レース場を追加
+・[add] SkillLibrary.jsonにスキル追加
+・[add] UmaMusumeLibraryMainStory.json にグランドライブのイベントを追加
+・[add] ConvertUmaMusumeLibrary.py - 大成功 / 成功 (/ 失敗) のみの選択肢をイベントリストから削除する処理を追加
+・[update]UmaMusumeLibrary.json更新　2022-11-14
+
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2022-06-21
 - キャラ

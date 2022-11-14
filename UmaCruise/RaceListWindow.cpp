@@ -305,7 +305,7 @@ LRESULT RaceListWindow::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&)
 		m_raceListView.InsertColumn(nItem, &lvc);
 	};
 	funcAddColumn(L"開催日", 0, 120);
-	funcAddColumn(L"レース名", 1, 144);
+	funcAddColumn(L"レース名", 1, 250/*144*/);
 	funcAddColumn(L"距離", 2, 110);
 	funcAddColumn(L"コース", 3, 43);
 	funcAddColumn(L"方向", 4, 38);
@@ -518,7 +518,7 @@ void RaceListWindow::OnRaceFilterChanged(UINT uNotifyCode, int nID, CWindow wndC
 			m_grass = m_dart = checked;
 		} else if (IDC_CHECK_RIGHT <= nID && nID <= IDC_CHECK_LINE) {
 			m_right = m_left = m_line = checked;
-		} else if (IDC_CHECK_LOCATION_SAPPORO <= nID && nID <= IDC_CHECK_LOCATION_OOI) {
+		} else if (IDC_CHECK_LOCATION_SAPPORO <= nID && nID <= IDC_CHECK_LOCATION_MORIOKA) {
 			for (bool& location : m_raceLocation) {
 				location = checked;
 			}

@@ -50,7 +50,11 @@ public:
 			kHanshin	= 1 << 20,
 			kOgura		= 1 << 21,
 			kOoi		= 1 << 22,
-			kMaxLocationCount = 11,
+			kKawasaki	= 1 << 23,
+			kFunabasi	= 1 << 24,
+			kMorioka	= 1 << 25,
+
+			kMaxLocationCount = 14,
 		};
 		Location		locationFlag;
 		std::vector<std::wstring>	date;	// 開催日

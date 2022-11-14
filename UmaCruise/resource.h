@@ -91,6 +91,9 @@
 #define IDC_CHECK_LOCATION_HANSHIN      1638
 #define IDC_CHECK_LOCATION_OGURA        1639
 #define IDC_CHECK_LOCATION_OOI          1640
+#define IDC_CHECK_LOCATION_KAWASAKI     1641
+#define IDC_CHECK_LOCATION_FUNABASI     1642
+#define IDC_CHECK_LOCATION_MORIOKA      1643
 
 // Next default values for new objects
 // 

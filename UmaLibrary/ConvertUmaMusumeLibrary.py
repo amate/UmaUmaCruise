@@ -83,6 +83,11 @@ def main(orgFolder):
     # 効果の正規化
     NormalizeEffect()
 
+    # 大成功 / 成功 (/ 失敗) のみの選択肢をイベントリストから削除する
+    NomarizeEventSuperSuccessSuccessFailed()
+    if debugErrorStop and errorCount > 0:
+        assert False
+
     # イベント名(成功), イベント名(失敗) を正規化
     NomarizeEventSuccessFailed()
     if debugErrorStop and errorCount > 0:
@@ -483,6 +488,128 @@ def NormalizeEffect():
 
     successCount += replaceCount
     return True
+
+
+# 大成功 / 成功 (/ 失敗) のみの選択肢をイベントリストから削除する
+def NomarizeEventSuperSuccessSuccessFailed():
+    print(f'NomarizeEventSuperSuccessSuccessFailed')
+    global errorCount
+    global successCount
+
+    rx1 = re.compile(r'(.*?)(\(|（|【)?大成功(\)|）|】)?')
+    rx2 = re.compile(r'(.*?)(\(|（|【)?成功(\)|）|】)?')
+    rx3 = re.compile(r'(.*?)(\(|（|【)?失敗(\)|）|】)?')
+
+    replaceCount = 0
+    for charaOrSupport, propDict in jsonOrigin.items():
+        for prop, charaList in propDict.items():
+            for orgCharaName, eventList in charaList.items():
+                for event in eventList["Event"]:
+                    newEvent = None
+                    for eventName, eventOptionList in event.items():
+                        #print(f'{eventName}')
+                        
+                        # 選択肢が、大成功 / 成功 (/ 失敗) かどうか調べる
+                        assert(len(eventOptionList) >= 2)
+                        op1 = eventOptionList[0]["Option"]
+                        ef1 = eventOptionList[0]["Effect"]
+                        ret1 = rx1.match(op1)   # 選択肢1 に"大成功"が入ってるか
+                        if ret1 != None:
+                            op2 = eventOptionList[1]["Option"]
+                            ef2 = eventOptionList[1]["Effect"]
+                            ret2 = rx2.match(op2)
+                            if ret2 != None:    # 選択肢2 に"成功"が入ってるか
+                                # 選択肢が同一か調べる
+                                sub1 = ret1.group(1)
+                                sub2 = ret2.group(1)
+                                if sub1 == sub2:
+                                    if len(eventOptionList) == 2:
+                                        # 大成功 / 成功 のみなので、イベントをリストから削除
+                                        event.pop(eventName)
+                                        print(f"(大成功/成功)を削除: [{eventName}]")
+                                        replaceCount += 1
+                                        break
+
+                                    # (失敗) がある場合は、そちらも調べる
+                                    if len(eventOptionList) == 3:
+                                        op3 = eventOptionList[2]["Option"]
+                                        ef3 = eventOptionList[2]["Effect"]
+                                        ret3 = rx3.match(op3)
+                                        if ret3 != None:
+                                            sub3 = ret3.group(1)
+                                            if sub2 == sub3:
+                                                # 大成功 / 成功 / 失敗 のみなので、イベントをリストから削除
+                                                event.pop(eventName)
+                                                print(f"(大成功/成功/失敗)を削除: [{eventName}]")
+                                                replaceCount += 1
+                                                break
+
+
+                        newEventOptionList = []
+                        optionSkip = False
+                        replaced = False
+                        for i in range(len(eventOptionList)):
+                            if optionSkip:
+                                optionSkip = False
+                                continue
+
+                            newEventOptionList.append(eventOptionList[i])
+
+                            op1 = eventOptionList[i]["Option"]
+                            ef1 = eventOptionList[i]["Effect"]
+                            ret1 = rx1.match(op1)   # 選択肢に"大成功"が入ってるか見る
+                            if ret1 == None:
+                                continue
+
+                            if i + 1 == len(eventOptionList):
+                                print("(成功)が見つかりません")
+                                errorCount += 1
+                                break
+
+                            op2 = eventOptionList[i + 1]["Option"]
+                            ef2 = eventOptionList[i + 1]["Effect"]
+                            ret2 = rx2.match(op2)
+                            if ret2 == None:
+                                # 単に選択肢に"大成功"が入ってるだけのパターン
+                                break
+
+                            sub1 = ret1.group(1)
+                            sub2 = ret2.group(1)
+                            if sub1 != sub2:
+                                print(f"選択肢が一致しません: {eventName}")
+                                errorCount += 1
+                                break
+
+                            optionSkip = True
+                            effectText = f"[大成功]==========\n{ef1}\n[成功]==========\n{ef2}"
+                            newEventOptionList.pop(-1)
+                            newEventOptionList.append({
+                                "Option": sub1,
+                                "Effect": effectText
+                            })
+                            replaced = True
+
+                        if replaced:
+                            newEvent = {eventName: newEventOptionList}
+
+
+                    if newEvent != None:
+                        event.pop(eventName)
+                        event.update(newEvent)
+
+                        print(f"(大成功/成功)を置換: [{eventName}]")
+                        replaceCount += 1
+
+                    # 空要素を削除する
+                    eventList["Event"] = [a for a in eventList["Event"] if a != {}]
+
+    if replaceCount > 0:
+        successCount += replaceCount
+        return True
+
+    print("選択肢(成功),選択肢(失敗)が見つかりませんでした")
+    errorCount += 1
+    return False
 
 
 def NomarizeEventSuccessFailed():

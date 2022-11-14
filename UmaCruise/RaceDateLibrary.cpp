@@ -92,7 +92,7 @@ bool RaceDateLibrary::LoadRaceDataLibrary()
 	};
 	auto funcLocationFlagFromText = [](const std::string& text) -> Race::Location {
 		LPCSTR locationNames[Race::Location::kMaxLocationCount] = {
-			u8"札幌", u8"函館", u8"福島", u8"新潟", u8"東京", u8"中山", u8"中京", u8"京都", u8"阪神", u8"小倉", u8"大井"
+			u8"札幌", u8"函館", u8"福島", u8"新潟", u8"東京", u8"中山", u8"中京", u8"京都", u8"阪神", u8"小倉", u8"大井", u8"川崎", u8"船橋", u8"盛岡"
 		};
 		for (int i = 0; i < Race::Location::kMaxLocationCount; ++i) {
 			LPCSTR location = locationNames[i];
