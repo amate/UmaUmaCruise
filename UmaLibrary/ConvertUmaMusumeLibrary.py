@@ -213,9 +213,9 @@ def UpdateEvent(charaName, updateEvent):
                         for event in eventList["Event"]:
                             for eventName, eventOptionList in event.items():
                                 #print(f'{eventName}')
-                                if eventName == updateEventName:
+                                if updateEventName in eventName:    # イベント名は部分一致でも可 (origin側に"①"とかついてるかもしれないし)
                                     print(f"イベント上書き: {eventName}")
-                                    event[eventName] = updateEvent[eventName]
+                                    event[eventName] = updateEvent[updateEventName]
                                     successCount += 1
                                     updateCount += 1
                                     #return True     # とりあえず最初に発見したのだけ
@@ -237,7 +237,7 @@ def EraseEventNameSuffixMetaData():
     global errorCount
     global successCount
 
-    rx = re.compile(r'( ?(①|②|③)|（.+(①|②|③)）)$')
+    rx = re.compile(r'( ?(①|②|③|④)|（.+(①|②|③|④)）)$')
 
     replaceCount = 0
     for charaOrSupport, propDict in jsonOrigin.items():

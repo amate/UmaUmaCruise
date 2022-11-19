@@ -150,7 +150,7 @@ Gamerch様運営の"ウマ娘攻略wiki"からイベントデータを加工し�
 URL:https://gamerch.com/umamusume/
 
 ## ■著作権表示
-Copyright (C) 2021 amate
+Copyright (C) 2021-2022 amate
 
 一連のソースコードを、個人的な利用以外に使用することを禁止します
 
@@ -161,6 +161,18 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[update]UmaMusumeLibrary.json更新　2022-11-14
+- キャラ
+【Butterfly Sting】ワンダーアキュート
+- サポート
+［Danke schön］エイシンフラッシュ
+［ストップ、委員長！］ナリタトップロード
+
+その他、選択肢効果の抜けている物を追加
+
+・[change] ConvertUmaMusumeLibrary.py で、UpdateEventのイベント名は部分一致でも置換に変更
+
+============================================
 v1.20
 ・[add] 川崎/船橋/盛岡レース場を追加
 ・[add] SkillLibrary.jsonにスキル追加
