@@ -161,7 +161,18 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
-・[update]UmaMusumeLibrary.json更新　2022-11-14
+============================================
+・[update]UmaMusumeLibrary.json更新　2022-11-29
+- キャラ
+【不凍のアクア・ウィエタ】ウオッカ
+【緋色のニュイ・エトワレ】ダイワスカーレット
+- サポート
+［Are you merry？］エアグルーヴ
+［ここからはDon’t stop！］サクラローレル
+［GLAD TIDINGS］ナリタブライアン
+
+============================================
+・[update]UmaMusumeLibrary.json更新　2022-11-19
 - キャラ
 【Butterfly Sting】ワンダーアキュート
 - サポート
