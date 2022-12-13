@@ -13,10 +13,10 @@
                 "height": 1046
             },
             "UmaMusumeSubNameBounds": {
-                "x": 256, "y": 118, "width": 267, "height": 27
+                "x": 200, "y": 120, "width": 267, "height": 26
             },
             "UmaMusumeNameBounds": {
-                "x": 271, "y": 143, "width": 229, "height": 27
+                "x": 200, "y": 143, "width": 267, "height": 26
             },
             "URACurrentTurnBounds": {
                 "x": 11, "y": 35, "width": 166, "height": 18
@@ -46,10 +46,10 @@
                 "x": 30, "y": 451, "width": 316, "height": 29
             },
             "IkuseiUmaMusumeSubNameBounds": {
-                "x": 30, "y": 319, "width": 230, "height": 20
+                "x": 35, "y": 319, "width": 226, "height": 20
             },
             "IkuseiUmaMusumeNameBounds": {
-                "x": 30, "y": 340, "width": 225, "height": 20
+                "x": 36, "y": 340, "width": 223, "height": 20
             },
             "AbilityDetailBounds": {
                 "x": 510, "y": 610, "width": 35, "height": 44

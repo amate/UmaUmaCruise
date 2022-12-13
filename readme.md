@@ -161,6 +161,9 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+v1.21
+・[fix] 育成ウマ娘名の自動認識が機能していなかったのを修正 #116
+
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2022-12-14
 - キャラ
