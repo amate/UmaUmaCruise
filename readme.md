@@ -162,6 +162,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新　2022-12-14
+- キャラ
+【Heroic Author】ゼンノロブロイ
+
+[fix] イベント修正  #116 #117 #118 #119
+
+============================================
 ・[update]UmaMusumeLibrary.json更新　2022-11-29
 - キャラ
 【不凍のアクア・ウィエタ】ウオッカ
