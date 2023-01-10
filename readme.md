@@ -162,6 +162,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新　2023-01-11
+- キャラ
+【スター・ライト・シップ】ホッコータルマエ
+
+============================================
 ・[update]UmaMusumeLibrary.json更新　2022-12-30
 - キャラ
 【真打・慶鶴之志】キタサンブラック
