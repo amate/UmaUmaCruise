@@ -162,6 +162,14 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新　2023-01-23
+- キャラ
+【Fun☆Fun☆ぱりない】ダイタクヘリオス
+- サポート
+［To you］ケイエスミラクル
+［添付ファイル、温めますか？］アストンマーチャン
+
+============================================
 ・[update]UmaMusumeLibrary.json更新　2023-01-11
 - キャラ
 【スター・ライト・シップ】ホッコータルマエ
