@@ -161,6 +161,10 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+============================================
+・[update]UmaMusumeLibrary.json更新　2023-02-16
+- キャラ
+【Wicked Punk】シンコウウインディ
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2023-02-01
