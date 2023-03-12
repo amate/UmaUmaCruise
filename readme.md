@@ -161,6 +161,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+・[fix] 育成ウマ娘名検索の閾値を下げた
+
+============================================
+・[update]UmaMusumeLibrary.json更新　2023-03-13
+- キャラ
+【華麗なる紅玉】ダイイチルビー
+
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2023-02-24
