@@ -27,7 +27,7 @@ boost::optional<std::pair<std::wstring, double>> retrieve(
 	// Retrieve similar strings into a string vector.
 	std::vector<std::wstring> xstrs;
 	std::wstring query_org;
-	for (; threshold > minThreshold/*kMinThreshold*/; threshold -= 0.05) {	// 少なくとも一つが見つかるような閾値を探す
+	for (; threshold >= minThreshold/*kMinThreshold*/; threshold -= 0.05) {	// 少なくとも一つが見つかるような閾値を探す
 		for (const std::wstring& query : ambiguousEventNames) {
 			dbr.retrieve(query, measure, threshold, std::back_inserter(xstrs));
 			if (xstrs.size()) {
