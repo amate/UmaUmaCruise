@@ -162,6 +162,11 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新　2023-04-33
+- キャラ
+【Saisir le rêve】サクラローレル
+
+============================================
 ・[update]UmaMusumeLibrary.json更新　2023-03-31
 - キャラ
 【Fleur Enneigée】サクラチヨノオー
