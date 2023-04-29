@@ -162,7 +162,21 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
-・[update]UmaMusumeLibrary.json更新　2023-04-33
+・[update]UmaMusumeLibrary.json更新　2023-04-29
+- キャラ
+【ブルー・タービュランス】マチカネタンホイザ
+【レッドホット☆リーダー】サクラバクシンオー
+- サポート
+［ミッション『心の栄養補給』］ミホノブルボン
+［刻下、桜花爛漫］サクラローレル
+［絶対皇帝］シンボリルドルフ
+［ゴルシ印のスペシャリテ］ゴールドシップ
+[デッド・エンド【通せん坊】] ジャングルポケット
+
+[add] ConvertUmaMusumeLibrary.pyでAddCharactorEventでキャラ名が見つからなかった時にSupportSSRに新規追加するようにした
+
+============================================
+・[update]UmaMusumeLibrary.json更新　2023-04-13
 - キャラ
 【Saisir le rêve】サクラローレル
 

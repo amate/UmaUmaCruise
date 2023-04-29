@@ -191,6 +191,15 @@ def AddCharactorEvent(charaName, addEvent):
         return True
 
     print("キャラが存在しませんでした")
+
+    ############################################
+    print("キャライベントを新規追加します")
+    eventArray = [addEvent]
+    jsonOrigin["Support"]["SSR"].update({charaName: {"Event": eventArray}})
+
+    successCount += 1
+    return True
+
     errorCount += 1
     return False
 
