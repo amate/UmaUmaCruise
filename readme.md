@@ -161,6 +161,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+
+============================================
+・[update]UmaMusumeLibrary.json更新　2023-05-13
+- キャラ
+【みらくるめーくあっぷ！】ヒシミラクル
+
+
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2023-04-29
 - キャラ
