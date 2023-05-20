@@ -161,6 +161,13 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 
 <pre>
 
+============================================
+・[update]UmaMusumeLibrary.json更新　2023-05-21
+- キャラ
+【身に纏うケラヴノス】タニノギムレット
+- サポート
+［The frontier］ジャングルポケット
+［激マブ！ドライブ♪］マルゼンスキー
 
 ============================================
 ・[update]UmaMusumeLibrary.json更新　2023-05-13
