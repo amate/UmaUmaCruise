@@ -162,6 +162,16 @@ https://www.kiigo.jp/disp/CSfGoodsPage_001.jsp?GOODS_NO=9
 <pre>
 
 ============================================
+・[update]UmaMusumeLibrary.json更新　2023-05-31
+- キャラ
+【Sweet Juneberry】ニシノフラワー
+【Hungry Veil】ヒシアマゾン
+- サポート
+［オートクチュール・メモリー］アストンマーチャン
+［Something Blue］ダイワスカーレット
+
+
+============================================
 ・[update]UmaMusumeLibrary.json更新　2023-05-21
 - キャラ
 【身に纏うケラヴノス】タニノギムレット
